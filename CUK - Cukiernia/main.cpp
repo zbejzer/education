@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <algorithm>
+#include <iterator>
 
 using namespace std;
 
@@ -19,6 +21,28 @@ class gablota
     }
 };
 
+bool isGreater(gablota a, gablota b)
+{
+    bool warunek = false;
+
+    cout << "Compare: " << a.id << " " << b.id << endl;
+
+    if(a.n_paczkow + a.n_rogalikow < b.n_paczkow + b.n_rogalikow)
+    {
+        warunek = true;
+    }
+    if(a.n_drozdzowek + a.n_rogalikow < b.n_drozdzowek + b.n_rogalikow)
+    {
+        warunek = true;
+    }
+    if(a.n_paczkow + a.n_drozdzowek < b.n_paczkow + b.n_drozdzowek)
+    {
+        warunek = true;
+    }
+
+    return !warunek;
+}
+
 int main()
 {
     int n_gablot;
@@ -28,34 +52,23 @@ int main()
     gablota* naj_paczkow = &Gabloty[0];
     gablota* naj_rogalikow = &Gabloty[0];
 
+    // Wczytanie zawartości gablot
     for(int i=0; i<n_gablot; i++)
     {
         cin >> Gabloty[i].n_drozdzowek >> Gabloty[i].n_paczkow >> Gabloty[i].n_rogalikow;
     }
 
-    for(int i=0; i<n_gablot; i++)
-    {
-        if( Gabloty[i].n_drozdzowek > *naj_drozdzowek.n_drozdzowek )
-        {
-            naj_drozdzowek = &Gabloty[i];
-        }
-        if( Gabloty[i].n_paczkow > *naj_paczkow->n_paczkow )
-        {
-            naj_paczkow = &Gabloty[i];
-        }
-        if( Gabloty[i].n_rogalikow > *naj_rogalikow->n_rogalikow )
-        {
-            naj_rogalikow= &Gabloty[i];
-        }
+    // Szukanie gabloty do których należy przeniesc ciastka
+    cout << "Szukanie gabloty do których należy przeniesc ciastka" << endl;
+    sort(Gabloty, Gabloty+n_gablot, isGreater);
+
+    // Wypisanie gablot
+    cout << "Wypisanie top gablot" << endl;
+    for(int i=0; i<n_gablot; i++){
+        cout << Gabloty[i].n_drozdzowek << " " << Gabloty[i].n_paczkow << " " << Gabloty[i].n_rogalikow << "  id: " << Gabloty[i].id << endl;
     }
 
-    for(int i=0; i<n_gablot; i++)
-    {
-        cout << *naj_drozdzowek->n_drozdzowek << " " << *naj_drozdzowek->n_paczkow<< " " << *naj_drozdzowek->n_rogalikow << endl;
-        cout << *naj_paczkow->n_drozdzowek << " " << *naj_paczkow->n_paczkow<< " " << *naj_paczkow->n_rogalikow << endl;
-        cout << *naj_rogalikow->n_drozdzowek << " " << *naj_rogalikow->n_paczkow<< " " << *naj_rogalikow->n_rogalikow << endl;
-    }
-
+    getchar();
     getchar();
     return 0;
 }
