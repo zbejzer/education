@@ -40,26 +40,34 @@ class gablota
     }
 };
 
-bool isGreater(gablota a, gablota b)
+bool sort_d(gablota a, gablota b)
 {
-    bool warunek = false;
-
-    //cout << "Compare: " << a.id << " " << b.id << endl;
-
-    if(a.n_paczkow + a.n_rogalikow < b.n_paczkow + b.n_rogalikow)
+    if( (a.n_drozdzowek > b.n_drozdzowek) || (a.n_drozdzowek > b.n_drozdzowek && a.isSingleType() > b.isSingleType()) )
     {
-        warunek = true;
+        return true;
+    }else{
+        return false;
     }
-    if(a.n_drozdzowek + a.n_rogalikow < b.n_drozdzowek + b.n_rogalikow)
-    {
-        warunek = true;
-    }
-    if(a.n_paczkow + a.n_drozdzowek < b.n_paczkow + b.n_drozdzowek)
-    {
-        warunek = true;
-    }
+}
 
-    return !warunek;
+bool sort_p(gablota a, gablota b)
+{
+    if( (a.n_paczkow > b.n_paczkow) || (a.n_paczkow > b.n_paczkow && a.isSingleType() > b.isSingleType()) )
+    {
+        return true;
+    }else{
+        return false;
+    }
+}
+
+bool sort_r(gablota a, gablota b)
+{
+    if( (a.n_rogalikow > b.n_rogalikow) || (a.n_rogalikow > b.n_rogalikow && a.isSingleType() > b.isSingleType()) )
+    {
+        return true;
+    }else{
+        return false;
+    }
 }
 
 int main()
@@ -78,10 +86,10 @@ int main()
     }
 
     // Szukanie gabloty do których należy przeniesc ciastka
-    //cout << "Sortowanie gablot" << endl;
-    sort(Gabloty, Gabloty+n_gablot, isGreater);
+    sort(Gabloty, Gabloty+n_gablot, sort_d);
+    sort(Gabloty+1, Gabloty+n_gablot, sort_p);
+    sort(Gabloty+2, Gabloty+n_gablot, sort_r);
 
-    //cout << endl;
     //sumowanie drozdzowek
     for(int i=0; i<n_gablot; i++)
     {
@@ -89,9 +97,7 @@ int main()
         {
             suma += Gabloty[i].n_drozdzowek;
         }
-        //cout << suma << endl;
     }
-    //cout << endl;
     //sumowanie paczkow
     for(int i=0; i<n_gablot; i++)
     {
@@ -99,9 +105,7 @@ int main()
         {
             suma += Gabloty[i].n_paczkow;
         }
-        //cout << suma << endl;
     }
-    //cout << endl;
     //sumowanie rogalikow
     for(int i=0; i<n_gablot; i++)
     {
@@ -109,9 +113,8 @@ int main()
         {
             suma += Gabloty[i].n_rogalikow;
         }
-        //cout << suma << endl;
     }
-    //cout << endl;
+
 
     // Wypisanie gablot
     for(int i=0; i<n_gablot; i++){
@@ -119,8 +122,10 @@ int main()
     }
 
     cout << suma << endl;
-
+    
     getchar();
     getchar();
+    getchar();
+    
     return 0;
 }
