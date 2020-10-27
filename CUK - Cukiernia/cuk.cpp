@@ -86,11 +86,9 @@ bool sort_r(gablota a, gablota b)
 
 int main()
 {
-    ifstream f_wej("wej.txt");
-
     int n_gablot;
     long long int suma = 0;
-    f_wej >> n_gablot;
+    cin >> n_gablot;
     vector <gablota> Gabloty;
     gablota* naj_drozdzowek = &Gabloty[0];
     gablota* naj_paczkow = &Gabloty[0];
@@ -100,7 +98,7 @@ int main()
     for(int i=0; i<n_gablot; i++)
     {
         gablota temp_wczytanie;
-        f_wej >> temp_wczytanie.n_drozdzowek >> temp_wczytanie.n_paczkow >> temp_wczytanie.n_rogalikow;
+        cin >> temp_wczytanie.n_drozdzowek >> temp_wczytanie.n_paczkow >> temp_wczytanie.n_rogalikow;
         Gabloty.push_back(temp_wczytanie);
     }
 
@@ -148,9 +146,9 @@ int main()
 
     cout << suma << endl;
     
+    /*getchar();
     getchar();
-    getchar();
-    getchar();
+    getchar();*/
     
     return 0;
 }
