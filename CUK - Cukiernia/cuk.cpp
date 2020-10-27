@@ -37,7 +37,20 @@ class gablota
         }
 
         return warunek;
-    }
+    };
+
+    int reszta()
+    {
+        int temp[3] = {
+            n_drozdzowek,
+            n_paczkow,
+            n_rogalikow
+        };
+
+        sort (temp, temp+3);
+
+        return temp[0] + temp[1];
+    };
 };
 
 bool sort_d(gablota a, gablota b)
@@ -72,8 +85,11 @@ bool sort_r(gablota a, gablota b)
 
 int main()
 {
-    int n_gablot, suma = 0;
-    cin >> n_gablot;
+    ifstream f_wej("wej.txt");
+
+    int n_gablot;
+    long long int suma = 0;
+    f_wej >> n_gablot;
     gablota Gabloty[n_gablot];
     gablota* naj_drozdzowek = &Gabloty[0];
     gablota* naj_paczkow = &Gabloty[0];
@@ -82,7 +98,7 @@ int main()
     // Wczytanie zawartości gablot
     for(int i=0; i<n_gablot; i++)
     {
-        cin >> Gabloty[i].n_drozdzowek >> Gabloty[i].n_paczkow >> Gabloty[i].n_rogalikow;
+        f_wej >> Gabloty[i].n_drozdzowek >> Gabloty[i].n_paczkow >> Gabloty[i].n_rogalikow;
     }
 
     // Szukanie gabloty do których należy przeniesc ciastka
@@ -90,36 +106,42 @@ int main()
     sort(Gabloty+1, Gabloty+n_gablot, sort_p);
     sort(Gabloty+2, Gabloty+n_gablot, sort_r);
 
-    //sumowanie drozdzowek
-    for(int i=0; i<n_gablot; i++)
+    //sumowanie 3 pierwszych stacków
+    for(int i=0; i<3; i++)
     {
         if(i != 0 && !Gabloty[i].isSingleType() )
         {
             suma += Gabloty[i].n_drozdzowek;
+            Gabloty[i].n_drozdzowek = 0;
         }
     }
-    //sumowanie paczkow
-    for(int i=0; i<n_gablot; i++)
+    for(int i=0; i<3; i++)
     {
         if(i != 1 && !Gabloty[i].isSingleType() )
         {
             suma += Gabloty[i].n_paczkow;
+            Gabloty[i].n_paczkow = 0;
         }
     }
-    //sumowanie rogalikow
-    for(int i=0; i<n_gablot; i++)
+    for(int i=0; i<3; i++)
     {
         if(i != 2 && !Gabloty[i].isSingleType() )
         {
             suma += Gabloty[i].n_rogalikow;
+            Gabloty[i].n_rogalikow = 0;
         }
     }
 
+    // sumowanie reszty
+    for(int i=0; i<n_gablot; i++)
+    {
+        suma += Gabloty[i].reszta();
+    }
 
     // Wypisanie gablot
-    for(int i=0; i<n_gablot; i++){
+    /*for(int i=0; i<n_gablot; i++){
         cout << Gabloty[i].n_drozdzowek << " " << Gabloty[i].n_paczkow << " " << Gabloty[i].n_rogalikow << "  id: " << Gabloty[i].id << endl;
-    }
+    }*/
 
     cout << suma << endl;
     
