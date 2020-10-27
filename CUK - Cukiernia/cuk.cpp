@@ -56,7 +56,7 @@ class gablota
 
 bool sort_d(gablota a, gablota b)
 {
-    if( (a.n_drozdzowek > b.n_drozdzowek) || (a.n_drozdzowek > b.n_drozdzowek && a.isSingleType() > b.isSingleType()) )
+    if( (a.n_drozdzowek > b.n_drozdzowek) || (a.n_drozdzowek == b.n_drozdzowek && a.isSingleType() > b.isSingleType()) )
     {
         return true;
     }else{
@@ -66,7 +66,7 @@ bool sort_d(gablota a, gablota b)
 
 bool sort_p(gablota a, gablota b)
 {
-    if( (a.n_paczkow > b.n_paczkow) || (a.n_paczkow > b.n_paczkow && a.isSingleType() > b.isSingleType()) )
+    if( (a.n_paczkow > b.n_paczkow) || (a.n_paczkow == b.n_paczkow && a.isSingleType() > b.isSingleType()) )
     {
         return true;
     }else{
@@ -76,7 +76,7 @@ bool sort_p(gablota a, gablota b)
 
 bool sort_r(gablota a, gablota b)
 {
-    if( (a.n_rogalikow > b.n_rogalikow) || (a.n_rogalikow > b.n_rogalikow && a.isSingleType() > b.isSingleType()) )
+    if( (a.n_rogalikow > b.n_rogalikow) || (a.n_rogalikow == b.n_rogalikow && a.isSingleType() > b.isSingleType()) )
     {
         return true;
     }else{
