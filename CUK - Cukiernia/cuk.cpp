@@ -115,17 +115,11 @@ int main()
             suma += Gabloty[i].n_drozdzowek;
             Gabloty[i].n_drozdzowek = 0;
         }
-    }
-    for(int i=0; i<3; i++)
-    {
         if(i != 1 && !Gabloty[i].isSingleType() )
         {
             suma += Gabloty[i].n_paczkow;
             Gabloty[i].n_paczkow = 0;
         }
-    }
-    for(int i=0; i<3; i++)
-    {
         if(i != 2 && !Gabloty[i].isSingleType() )
         {
             suma += Gabloty[i].n_rogalikow;
