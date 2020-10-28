@@ -1,1 +1,1 @@
-## https://sio2.mimuw.edu.pl/c/oi28-1/files/
+## Program do sprawdzania: https://sio2.mimuw.edu.pl/c/oi28-1/files/
