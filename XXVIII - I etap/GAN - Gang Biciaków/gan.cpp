@@ -28,6 +28,8 @@ class Stacja
     int miasto_a, miasto_b, typ_bic;
 };
 
+int szukaj_stacji();
+
 int main()
 {
     int n, m, z;
@@ -57,15 +59,28 @@ int main()
 
     cout << "Wczytano polaczenia" << endl;
 
-    for(int i = 0; i < n-1; i++)
+    // Wypisanie struktury
+    for(int i = 0; i < n; i++)
     {
         cout << "Miasto: " << miasta[i].numer << endl;
         for(int j = 0; j < miasta[i].synowie.size(); j++)
         {
             Miasto temp = *miasta[i].synowie[j];
-            cout << "   - " << temp.numer << endl;
+            Stacja temp_stacja;
+
+            for(int k = 0; k < n-1; k++)
+            {
+                if(stacje[k].miasto_a == miasta[i].numer && stacje[k].miasto_b == temp.numer)
+                {
+                    temp_stacja = stacje[i];
+                }
+            }
+
+            cout << "   - " << temp.numer << " via: " << temp_stacja.typ_bic << endl;
         }    
     }
+
+
 
     char c = getchar();
     cout << (int)c << endl;
