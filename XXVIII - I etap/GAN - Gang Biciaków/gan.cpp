@@ -8,12 +8,24 @@
 
 using namespace std;
 
-class Polaczenie
+int id = 1;
+
+class Miasto
 {
     public:
-    int rodzaj_bic;
-    Polaczenie * ojciec;
-    Polaczenie * syn;
+    int numer;
+    vector <Miasto*> synowie;
+
+    Miasto(){
+        numer = id;
+        id++;
+    };
+};
+
+class Stacja
+{
+    public:
+    int miasto_a, miasto_b, typ_bic;
 };
 
 int main()
@@ -22,30 +34,40 @@ int main()
     // n - ilość miast
     // m - ilość rodzajów biciaków
     // z - liczba zapytań
-    // c - rodzaj biciaka
-    char c;
 
     cin >> n >> m >> z;
     cout << "Wczytano zalozenia" << endl;
-    array <Polaczenie, n-1> polaczenia;
+    Stacja stacje[n-1];
+    Miasto miasta[n];
 
     for(int i = 0; i < n-1; i++) {
-        Polaczenie temp;
-        int a, b;
+        int t_miasta[2];
 
-        cin >> a >> b >> temp.rodzaj_bic;
+        cin >> t_miasta[0] >> t_miasta[1] >> stacje[i].typ_bic;
+        sort(t_miasta, t_miasta+2);
 
-        temp.ojciec = &polaczenia[a];
-        temp.syn = &polaczenia[b];
+        // Wpisanie do tablicy stacji
+        stacje[i].miasto_a = t_miasta[0];
+        stacje[i].miasto_b = t_miasta[1];
 
-        // Przesuniecie miejsc w tablicy o 1, stolica miejsce 0 (w poleceniu 1)
-        polaczenia[i-1]=temp;
+        // Wpisanie do tablicy miast
+        // Stosuje przesuniecie miejsc w tablicy o 1, stolica miejsce 0 (w poleceniu 1)
+        miasta[t_miasta[0]-1].synowie.push_back(&miasta[t_miasta[1]-1]);
     }
 
     cout << "Wczytano polaczenia" << endl;
 
-    c = getchar();
+    for(int i = 0; i < n-1; i++)
+    {
+        cout << "Miasto: " << miasta[i].numer << endl;
+        for(int j = 0; j < miasta[i].synowie.size(); j++)
+        {
+            Miasto temp = *miasta[i].synowie[j];
+            cout << "   - " << temp.numer << endl;
+        }    
+    }
 
+    char c = getchar();
     cout << (int)c << endl;
 
     getchar();
