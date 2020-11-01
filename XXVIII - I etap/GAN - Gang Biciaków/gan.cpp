@@ -79,7 +79,7 @@ int main()
     // z - liczba zapytań
 
     cin >> n >> m >> z;
-    cout << "Wczytano zalozenia" << endl;
+    //cout << "Wczytano zalozenia" << endl;
     SiecStacji stacje;
     Miasto miasta[n];
 
@@ -100,11 +100,11 @@ int main()
 
         // Wpisanie do tablicy miast
         // Stosuje przesuniecie miejsc w tablicy o 1, stolica miejsce 0 (w poleceniu 1)
-        cout << "Dodawanie polaczenia " << t_miasta[0]-1 << " - " << t_miasta[1]-1 << " przez: " << t_stacja.typ_bic << endl;
+        //cout << "Dodawanie polaczenia " << t_miasta[0]-1 << " - " << t_miasta[1]-1 << " przez: " << t_stacja.typ_bic << endl;
         miasta[t_miasta[0]-1].synowie.push_back(&miasta[t_miasta[1]-1]);
     }
 
-    cout << "Wczytano polaczenia" << endl;
+    //cout << "Wczytano polaczenia" << endl;
 
     for(int i=0; i<z; i++){
         char operacja;
