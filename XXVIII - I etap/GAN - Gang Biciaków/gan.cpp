@@ -166,7 +166,7 @@ int main()
                 }
             }
         }
-        recovery << "Obliczono: " << i+1 << "/" << z << endl;
+        recovery << i+1 << "/" << z << "(" << (((float)i+1)/z)*100 << "%)" << endl;
         recovery << flush;
     }
 
