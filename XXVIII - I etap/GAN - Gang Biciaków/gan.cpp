@@ -23,13 +23,16 @@ class Miasto
 
     void szukaj_miasta(int docelowe_miasto, vector <int> *odbyta_droga, vector <int> moja_droga)
     {
-        moja_droga.push_back(numer);
-        if(numer==docelowe_miasto) {
-            *odbyta_droga = moja_droga;
-        } else {
-            for(int i=0; i<synowie.size(); i++)
-            {
-                synowie[i]->szukaj_miasta(docelowe_miasto, odbyta_droga, moja_droga);
+        if(count(moja_droga.begin(), moja_droga.end(), numer) == 0)
+        {
+            moja_droga.push_back(numer);
+            if(numer==docelowe_miasto) {
+                *odbyta_droga = moja_droga;
+            } else {
+                for(int i=0; i<synowie.size(); i++)
+                {
+                    synowie[i]->szukaj_miasta(docelowe_miasto, odbyta_droga, moja_droga);
+                }
             }
         }
     }
@@ -102,6 +105,7 @@ int main()
         // Stosuje przesuniecie miejsc w tablicy o 1, stolica miejsce 0 (w poleceniu 1)
         //cout << "Dodawanie polaczenia " << t_miasta[0]-1 << " - " << t_miasta[1]-1 << " przez: " << t_stacja.typ_bic << endl;
         miasta[t_miasta[0]-1].synowie.push_back(&miasta[t_miasta[1]-1]);
+        miasta[t_miasta[1]-1].synowie.push_back(&miasta[t_miasta[0]-1]);
     }
 
     //cout << "Wczytano polaczenia" << endl;
@@ -134,6 +138,22 @@ int main()
             }
 
             cout << unikatowe_bic.size() << endl;
+        }
+
+        //Wypisanie
+        if(operacja == 'W'){
+            for(int i = 0; i < n; i++)
+            {
+                cout << "Miasto: " << miasta[i].numer << endl;
+                for(int j = 0; j < miasta[i].synowie.size(); j++)
+                {
+                    Stacja temp_stacja;
+                    cout << "   -" << miasta[i].synowie[j]->numer << " via: ";
+                    temp_stacja = *stacje.szukaj_stacji(miasta[i].numer, miasta[i].synowie[j]->numer);
+                    cout << temp_stacja.typ_bic << endl;
+
+                }
+            }
         }
     }
 
