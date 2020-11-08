@@ -8,34 +8,51 @@
 
 using namespace std;
 
-size_t dlugosc_platform;
-
 class Platforma
 {
     public:
     set <int> dziury;   // numer dziury od lewej strony
 };
 
-void wypisz(deque <Platforma> moje_platformy){
-    cout << "[WYPISYWANIE STRUKTURY]" << endl;
+class Poziom
+{
+    public:
+    vector <Platforma> platformy;
+    size_t dlugosc_platform;
+    
+    void wypisz()
+    {
+        cout << "[WYPISYWANIE STRUKTURY]" << endl;
 
-    for(int i=0; i<dlugosc_platform; i++)
-        cout << i+1 << '|';
-    cout << endl;
-
-    for(int i=0; i<moje_platformy.size(); i++){
-        for(int j=1; j<=dlugosc_platform; j++){
-            if(moje_platformy[i].dziury.count(j) != 0){
-                cout << "  ";
-            }else{
-                cout << "- ";
-            }
-        }
+        for(int i=0; i<dlugosc_platform; i++)
+            cout << i+1 << '|';
         cout << endl;
+
+        for(int i=0; i<platformy.size(); i++){
+            for(int j=1; j<=dlugosc_platform; j++){
+                if(platformy[i].dziury.count(j) != 0){
+                    cout << "  ";
+                }else{
+                    cout << "- ";
+                }
+            }
+            cout << endl;
+        }
+        cout << "[KONIEC]" << endl;
     }
 
-    cout << "[KONIEC]" << endl;
-}
+    void znajdz_droge(int start_x, int start_y, int start_droga, int *min_droga)
+    {
+        while(
+            // y-1 jako y; vector liczy platformy od 0
+            platformy[start_y-1].dziury.count(start_x+1) == 0 &&    // platforma na y, x+1
+            platformy[start_y-2].dziury.count(start_x) == 0 &&      // platforma na y-1, x
+            start_x < dlugosc_platform                              // nie jest końcem
+        ){
+            start_x++;
+        }
+    }
+};
 
 int main(){
     // n - ilość platform
@@ -46,28 +63,42 @@ int main(){
     // Entry zmienne
     size_t n_platform;
     unsigned int n_zapytan;
+    Poziom gra;
 
     // wejście
-    cin >> n_platform >> dlugosc_platform >> n_zapytan;
-
-    // Late zmienne
-    vector <Platforma> platformy (n_platform);
+    cin >> n_platform >> gra.dlugosc_platform >> n_zapytan;
 
     // Wczytanie danych
     for(int i = 0; i < n_platform; i++)
     {
         int n_dziur;
+        Platforma temp_platforma;
+
         cin >> n_dziur;
 
         for(int j=0; j<n_dziur; j++)
         {
             int miejsce_dziura;
             cin >> miejsce_dziura;
-            platformy[i].dziury.insert(miejsce_dziura);
+            temp_platforma.dziury.insert(miejsce_dziura);
         }
+
+        gra.platformy.push_back(temp_platforma);
     }
 
-    wypisz(platformy);
+    gra.wypisz();
+
+    // Zapytania
+    for(int i = 0; i < n_zapytan; i++)
+    {
+        int start_y;
+        int min_droga = __INT_MAX__;
+        cin >> start_y;
+
+        gra.znajdz_droge(1, start_y, 0, &min_droga);
+
+        cout << min_droga << endl;
+    }
 
     getchar();
     getchar();
