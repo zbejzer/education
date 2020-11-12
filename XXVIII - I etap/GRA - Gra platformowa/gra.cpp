@@ -44,7 +44,7 @@ class Poziom
 
     void znajdz_droge(int start_x, int start_y, int start_droga, int *min_droga)
     {   
-        cout << "Szukanie drogi na x: " << start_x << " y: " << start_y << " obecna droga " << start_droga << endl;
+        //cout << "Szukanie drogi na x: " << start_x << " y: " << start_y << " obecna droga " << start_droga << endl;
         if( start_y == 1 ) {                              // Górne piętro
             while(
                 // y-1 jako y; vector liczy platformy od 0
@@ -56,10 +56,12 @@ class Poziom
             
             if (platformy[start_y-1].dziury.count(start_x+1) != 0){         // dziura przed
                 znajdz_droge(start_x+2, start_y, start_droga+1, min_droga);
-                znajdz_droge(start_x+1, start_y-1, start_droga, min_droga);
+                znajdz_droge(start_x+1, start_y+1, start_droga, min_droga);
             }
-            if (start_x == dlugosc_platform && start_droga < *min_droga)    // koniec drogi
+            if (start_x == dlugosc_platform && start_droga < *min_droga){    // koniec drogi
                 *min_droga = start_droga;
+                cout << "Koniec! " << start_x << " " << start_y << endl;
+            }
         } else if ( start_y == platformy.size() ) {     // Dolne piętro
             while(
                 // y-1 jako y; vector liczy platformy od 0
@@ -71,7 +73,6 @@ class Poziom
             }
             
             if (platformy[start_y-1].dziury.count(start_x+1) != 0){         // dziura przed
-                cout << "ID: 1" << endl;
                 znajdz_droge(start_x+2, start_y, start_droga+1, min_droga);
             }
             if (platformy[start_y-2].dziury.count(start_x) != 0){           // dziura nad
@@ -80,8 +81,10 @@ class Poziom
                     znajdz_droge(start_x+1, start_y, start_droga, min_droga);
                 }
             }
-            if (start_x == dlugosc_platform && start_droga < *min_droga)    // koniec drogi
+            if (start_x == dlugosc_platform && start_droga < *min_droga){    // koniec drogi
                 *min_droga = start_droga;
+                cout << "Koniec! " << start_x << " " << start_y << endl;
+            }
                 
         } else {                                        // Piętra pomiędzy
             while(
@@ -103,8 +106,10 @@ class Poziom
                     znajdz_droge(start_x+1, start_y, start_droga, min_droga);
                 }
             }
-            if (start_x == dlugosc_platform && start_droga < *min_droga)    // koniec drogi
+            if (start_x == dlugosc_platform && start_droga < *min_droga){    // koniec drogi
                 *min_droga = start_droga;
+                cout << "Koniec! " << start_x << " " << start_y << endl;
+            }
         }
     }
 };
@@ -154,7 +159,7 @@ int main(){
         cout << min_droga << endl;
     }
 
-    getchar();
-    getchar();
+    //getchar();
+    //getchar();
     return 0;
 }
