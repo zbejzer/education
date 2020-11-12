@@ -5,6 +5,7 @@
 #include <iterator>
 #include <vector>
 #include <set>
+#include <limits.h>
 
 using namespace std;
 
@@ -42,14 +43,68 @@ class Poziom
     }
 
     void znajdz_droge(int start_x, int start_y, int start_droga, int *min_droga)
-    {
-        while(
-            // y-1 jako y; vector liczy platformy od 0
-            platformy[start_y-1].dziury.count(start_x+1) == 0 &&    // platforma na y, x+1
-            platformy[start_y-2].dziury.count(start_x) == 0 &&      // platforma na y-1, x
-            start_x < dlugosc_platform                              // nie jest końcem
-        ){
-            start_x++;
+    {   
+        cout << "Szukanie drogi na x: " << start_x << " y: " << start_y << " obecna droga " << start_droga << endl;
+        if( start_y == 1 ) {                              // Górne piętro
+            while(
+                // y-1 jako y; vector liczy platformy od 0
+                platformy[start_y-1].dziury.count(start_x+1) == 0 &&    // platforma na y, x+1
+                start_x < dlugosc_platform                              // nie jest końcem
+            ){
+                start_x++;
+            }
+            
+            if (platformy[start_y-1].dziury.count(start_x+1) != 0){         // dziura przed
+                znajdz_droge(start_x+2, start_y, start_droga+1, min_droga);
+                znajdz_droge(start_x+1, start_y-1, start_droga, min_droga);
+            }
+            if (start_x == dlugosc_platform && start_droga < *min_droga)    // koniec drogi
+                *min_droga = start_droga;
+        } else if ( start_y == platformy.size() ) {     // Dolne piętro
+            while(
+                // y-1 jako y; vector liczy platformy od 0
+                platformy[start_y-1].dziury.count(start_x+1) == 0 &&    // platforma na y, x+1
+                platformy[start_y-2].dziury.count(start_x) == 0 &&      // platforma na y-1, x
+                start_x < dlugosc_platform                              // nie jest końcem
+            ){
+                start_x++;
+            }
+            
+            if (platformy[start_y-1].dziury.count(start_x+1) != 0){         // dziura przed
+                cout << "ID: 1" << endl;
+                znajdz_droge(start_x+2, start_y, start_droga+1, min_droga);
+            }
+            if (platformy[start_y-2].dziury.count(start_x) != 0){           // dziura nad
+                znajdz_droge(start_x+1, start_y-1, start_droga+1, min_droga);
+                if (platformy[start_y-1].dziury.count(start_x+1) == 0){
+                    znajdz_droge(start_x+1, start_y, start_droga, min_droga);
+                }
+            }
+            if (start_x == dlugosc_platform && start_droga < *min_droga)    // koniec drogi
+                *min_droga = start_droga;
+                
+        } else {                                        // Piętra pomiędzy
+            while(
+                // y-1 jako y; vector liczy platformy od 0
+                platformy[start_y-1].dziury.count(start_x+1) == 0 &&    // platforma na y, x+1
+                platformy[start_y-2].dziury.count(start_x) == 0 &&      // platforma na y-1, x
+                start_x < dlugosc_platform                              // nie jest końcem
+            ){
+                start_x++;
+            }
+            
+            if (platformy[start_y-1].dziury.count(start_x+1) != 0){         // dziura przed
+                znajdz_droge(start_x+2, start_y, start_droga+1, min_droga);
+                znajdz_droge(start_x+1, start_y+1, start_droga, min_droga);
+            }
+            if (platformy[start_y-2].dziury.count(start_x) != 0){           // dziura nad
+                znajdz_droge(start_x+1, start_y-1, start_droga+1, min_droga);
+                if (platformy[start_y-1].dziury.count(start_x+1) == 0){
+                    znajdz_droge(start_x+1, start_y, start_droga, min_droga);
+                }
+            }
+            if (start_x == dlugosc_platform && start_droga < *min_droga)    // koniec drogi
+                *min_droga = start_droga;
         }
     }
 };
@@ -91,8 +146,7 @@ int main(){
     // Zapytania
     for(int i = 0; i < n_zapytan; i++)
     {
-        int start_y;
-        int min_droga = __INT_MAX__;
+        int start_y, min_droga = INT_MAX;
         cin >> start_y;
 
         gra.znajdz_droge(1, start_y, 0, &min_droga);
