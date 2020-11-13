@@ -46,15 +46,18 @@ class Poziom
     {   
         // Optymalizacja
         if(start_droga < *min_droga){
-            //cout << "Szukanie drogi na x: " << start_x << " y: " << start_y << " obecna droga " << start_droga << endl;
-            if( start_y == 1 ) {                              // Górne piętro
-                while(
-                    // y-1 jako y; vector liczy platformy od 0
-                    platformy[start_y-1].dziury.count(start_x+1) == 0 &&    // platforma na y, x+1
-                    start_x < dlugosc_platform                              // nie jest końcem
-                ){
+
+            while(!graniczy_dziura(start_x, start_y)){
                     start_x++;
-                }
+            }
+
+
+
+
+
+
+
+
                 
                 if (platformy[start_y-1].dziury.count(start_x+1) != 0){         // dziura przed
                     znajdz_droge(start_x+2, start_y, start_droga+1, min_droga);
@@ -111,6 +114,25 @@ class Poziom
                 }
             }
         }
+    }
+
+    bool graniczy_dziura(int x, int y){
+        bool graniczy = false;
+
+        if(y==1){
+            if(
+                platformy[y-1].dziury.count(x+1)    // dziura na x+1
+            ) graniczy = true;
+        }
+
+        if(y>1 && y<=platformy.size()){
+            if(
+                platformy[y-1].dziury.count(x+1) ||     // dziura na x+1
+                platformy[y-2].dziury.count(x)          // dziura na y+1
+            ) graniczy = true;
+        }
+
+        return graniczy;
     }
 };
 
