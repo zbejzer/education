@@ -42,97 +42,49 @@ class Poziom
         cout << "[KONIEC]" << endl;
     }
 
-    void znajdz_droge(int start_x, int start_y, int start_droga, int *min_droga)
+    void znajdz_droge(int start_x, int start_y, int start_droga, int *min_droga, bool spadl)
     {   
+        //cout << "Szukanie na pozycji x: " << start_x << " y: " << start_y << " obecna droga: " << start_droga << " Spadek: " << spadl << endl;
         // Optymalizacja
         if(start_droga < *min_droga){
 
-            while(!graniczy_dziura(start_x, start_y)){
-                    start_x++;
+            while( ( !jestDziuraNad(start_x, start_y) || spadl )  &&  !jestDziuraPrzed(start_x, start_y)  &&  start_x < dlugosc_platform ){
+                start_x++;
+                spadl = false;
             }
 
-
-
-
-
-
-
-
-                
-                if (platformy[start_y-1].dziury.count(start_x+1) != 0){         // dziura przed
-                    znajdz_droge(start_x+2, start_y, start_droga+1, min_droga);
-                    znajdz_droge(start_x+1, start_y+1, start_droga, min_droga);
-                }
-                if (start_x == dlugosc_platform && start_droga < *min_droga){    // koniec drogi
-                    *min_droga = start_droga;
-                }
-            } else if ( start_y == platformy.size() ) {     // Dolne piętro
-                while(
-                    // y-1 jako y; vector liczy platformy od 0
-                    platformy[start_y-1].dziury.count(start_x+1) == 0 &&    // platforma na y, x+1
-                    platformy[start_y-2].dziury.count(start_x) == 0 &&      // platforma na y-1, x
-                    start_x < dlugosc_platform                              // nie jest końcem
-                ){
-                    start_x++;
-                }
-                
-                if (platformy[start_y-1].dziury.count(start_x+1) != 0){         // dziura przed
-                    znajdz_droge(start_x+2, start_y, start_droga+1, min_droga);
-                }
-                if (platformy[start_y-2].dziury.count(start_x) != 0){           // dziura nad
-                    if (platformy[start_y-1].dziury.count(start_x+1) == 0){
-                        znajdz_droge(start_x+1, start_y, start_droga, min_droga);
-                    }
-                    znajdz_droge(start_x+1, start_y-1, start_droga+1, min_droga);
-                }
-                if (start_x == dlugosc_platform && start_droga < *min_droga){    // koniec drogi
-                    *min_droga = start_droga;
-                }
-                    
-            } else {                                        // Piętra pomiędzy
-                while(
-                    // y-1 jako y; vector liczy platformy od 0
-                    platformy[start_y-1].dziury.count(start_x+1) == 0 &&    // platforma na y, x+1
-                    platformy[start_y-2].dziury.count(start_x) == 0 &&      // platforma na y-1, x
-                    start_x < dlugosc_platform                              // nie jest końcem
-                ){
-                    start_x++;
-                }
-                
-                if (platformy[start_y-1].dziury.count(start_x+1) != 0){         // dziura przed
-                    znajdz_droge(start_x+2, start_y, start_droga+1, min_droga);
-                    znajdz_droge(start_x+1, start_y+1, start_droga, min_droga);
-                }
-                if (platformy[start_y-2].dziury.count(start_x) != 0){           // dziura nad
-                    if (platformy[start_y-1].dziury.count(start_x+1) == 0){
-                        znajdz_droge(start_x+1, start_y, start_droga, min_droga);
-                    }
-                    znajdz_droge(start_x+1, start_y-1, start_droga+1, min_droga);
-                }
-                if (start_x == dlugosc_platform && start_droga < *min_droga){    // koniec drogi
-                    *min_droga = start_droga;
-                }
+            if( jestDziuraPrzed(start_x, start_y)  &&  start_x < dlugosc_platform ){
+                if( start_y < platformy.size() ) {                                  // nie jest ostatnim pietrem
+                    znajdz_droge(start_x+2, start_y, start_droga+1, min_droga, false);
+                    znajdz_droge(start_x+1, start_y+1, start_droga, min_droga, true);
+                } else
+                    znajdz_droge(start_x+2, start_y, start_droga+1, min_droga, false);
             }
+
+            if( jestDziuraNad(start_x, start_y)  &&  start_x < dlugosc_platform && !spadl ){
+                znajdz_droge(start_x+1, start_y-1, start_droga+1, min_droga, false);
+
+                if( !jestDziuraPrzed(start_x, start_y) )
+                    znajdz_droge(start_x+1, start_y, start_droga, min_droga, false);
+            }
+
+            if ( start_x >= dlugosc_platform  &&  start_droga < *min_droga )    // koniec drogi
+                *min_droga = start_droga;
         }
     }
 
-    bool graniczy_dziura(int x, int y){
-        bool graniczy = false;
+    bool jestDziuraNad(int x, int y){
+        if( y > 1  &&  platformy[y-2].dziury.count(x))
+            return true;
+        else
+            return false;
+    }
 
-        if(y==1){
-            if(
-                platformy[y-1].dziury.count(x+1)    // dziura na x+1
-            ) graniczy = true;
-        }
-
-        if(y>1 && y<=platformy.size()){
-            if(
-                platformy[y-1].dziury.count(x+1) ||     // dziura na x+1
-                platformy[y-2].dziury.count(x)          // dziura na y+1
-            ) graniczy = true;
-        }
-
-        return graniczy;
+    bool jestDziuraPrzed(int x, int y){
+        if( platformy[y-1].dziury.count(x+1) > 0 )
+            return true;
+        else
+            return false;
     }
 };
 
@@ -176,7 +128,7 @@ int main(){
         int start_y, min_droga = INT_MAX;
         cin >> start_y;
 
-        gra.znajdz_droge(1, start_y, 0, &min_droga);
+        gra.znajdz_droge(1, start_y, 0, &min_droga, false);
 
         cout << min_droga << endl;
     }
