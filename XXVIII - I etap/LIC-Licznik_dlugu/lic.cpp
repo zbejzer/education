@@ -9,18 +9,48 @@ class Tablica
     public:
     vector <unsigned short> dlug_wew;
     vector <unsigned short> dlug_zew;
+    vector <unsigned short> suma;
 
     void set_lenght(unsigned int nowy_rozmiar)
     {
-        dlug_wew.reserve(nowy_rozmiar);
-        dlug_wew.resize(nowy_rozmiar, 0);
-        dlug_zew.reserve(nowy_rozmiar);
-        dlug_zew.resize(nowy_rozmiar, 0);
+        dlug_wew.reserve(nowy_rozmiar-1);
+        dlug_wew.resize(nowy_rozmiar-1, 0);
+        dlug_zew.reserve(nowy_rozmiar-1);
+        dlug_zew.resize(nowy_rozmiar-1, 0);
+        suma.reserve(nowy_rozmiar);
+        suma.resize(nowy_rozmiar, 0);
     }
 
-    void wypisz_pozycje(int n)
+    void przelicz_sume()
     {
-        
+        suma[0] = 0;
+
+        for(int i=1; i<=dlug_wew.size(); i++)
+            suma[suma.size() - i] = dlug_wew[dlug_wew.size()-i] + dlug_zew[dlug_zew.size()-i];
+
+        for(int i=1; i<suma.size(); i++)
+        {
+            if(suma[suma.size() - i] >= 10)
+            {
+                suma[suma.size() - i] = suma[suma.size() - i]%10;
+                suma[suma.size() - i - 1]++;
+            }
+        }
+    }
+
+    void wypisz()
+    {
+        for(int i=0; i<dlug_wew.size(); i++)
+            cout << dlug_wew[i];
+        cout << endl;
+
+        for(int i=0; i<dlug_zew.size(); i++)
+            cout << dlug_zew[i];
+        cout << endl;
+
+        for(int i=0; i<suma.size(); i++)
+            cout << suma[i];
+        cout << endl;
     }
 };
 
@@ -39,50 +69,42 @@ int main()
     moja_tablica.set_lenght(n);
 
     for(int i=0; i<n-1; i++){
-        moja_tablica.dlug_wew[n-i-1] = s_d_wewnetrzny[i] - '0';
-        moja_tablica.dlug_zew[n-i-1] = s_d_zewnetrzny[i] - '0';
+        moja_tablica.dlug_wew[i] = s_d_wewnetrzny[i] - '0';
+        moja_tablica.dlug_zew[i] = s_d_zewnetrzny[i] - '0';
     }
 
-    for(int i=0; i<moja_tablica.dlug_wew.size(); i++)
-        cout << moja_tablica.dlug_wew[i];
-
-    /*for(int i=0; i<z; i++)
+    for(int i=0; i<z; i++)
     {
         char polecenie;
-        int_d_calkowity = int_d_wewnetrzny + int_d_zewnetrzny;
         cin >> polecenie;
-
+        
         switch (polecenie)
         {
         case 'W':
             {
-            int pozycja, cyfra;
-            string s_d_wewnetrzny = to_string(int_d_wewnetrzny);
+            unsigned int pozycja, cyfra;
             cin >> pozycja >> cyfra;
 
-            s_d_wewnetrzny[s_d_wewnetrzny.size() - pozycja] = to_string(cyfra)[0];
-            int_d_wewnetrzny = stoi(s_d_wewnetrzny);
+            moja_tablica.dlug_wew[n-pozycja-1] = cyfra;
             break;
             }
 
         case 'Z':
             {
-            int pozycja, cyfra;
-            string s_d_zewnetrzny = to_string(int_d_zewnetrzny);
+            unsigned int pozycja, cyfra;
             cin >> pozycja >> cyfra;
 
-            s_d_zewnetrzny[s_d_zewnetrzny.size() - pozycja] = to_string(cyfra)[0];
-            int_d_zewnetrzny = stoi(s_d_zewnetrzny);
+            moja_tablica.dlug_zew[n-pozycja-1] = cyfra;
             break;
             }
 
         case 'S':
             {
-            string s_d_calkowity = to_string(int_d_calkowity);
-            int pozycja;
+            moja_tablica.przelicz_sume();
+            unsigned int pozycja;
             cin >> pozycja;
 
-            cout << s_d_calkowity[s_d_calkowity.size() - pozycja] << endl;
+            cout << moja_tablica.suma[n-pozycja] << endl;
             break;
             }
         
@@ -90,7 +112,7 @@ int main()
             cout << "\tZle polecenie! : " << polecenie << endl;
             break;
         }
-    }*/
+    }
 
     return 0;
 }
