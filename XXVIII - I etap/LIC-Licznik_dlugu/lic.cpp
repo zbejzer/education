@@ -4,16 +4,49 @@
 
 using namespace std;
 
+class Tablica
+{
+    public:
+    vector <unsigned short> dlug_wew;
+    vector <unsigned short> dlug_zew;
+
+    void set_lenght(unsigned int nowy_rozmiar)
+    {
+        dlug_wew.reserve(nowy_rozmiar);
+        dlug_wew.resize(nowy_rozmiar, 0);
+        dlug_zew.reserve(nowy_rozmiar);
+        dlug_zew.resize(nowy_rozmiar, 0);
+    }
+
+    void wypisz_pozycje(int n)
+    {
+        
+    }
+};
+
 int main()
 {
     // n - dlugosc wyswietlacza
     // z - liczba opracji do wykonania
-    int n, z, int_d_wewnetrzny, int_d_zewnetrzny, int_d_calkowity;
+    int n, z;
+    string s_d_wewnetrzny, s_d_zewnetrzny;
+
+    Tablica moja_tablica;
 
     cin >> n >> z;
-    cin >> int_d_wewnetrzny >> int_d_zewnetrzny;
+    cin >> s_d_wewnetrzny >> s_d_zewnetrzny;
 
-    for(int i=0; i<z; i++)
+    moja_tablica.set_lenght(n);
+
+    for(int i=0; i<n-1; i++){
+        moja_tablica.dlug_wew[n-i-1] = s_d_wewnetrzny[i] - '0';
+        moja_tablica.dlug_zew[n-i-1] = s_d_zewnetrzny[i] - '0';
+    }
+
+    for(int i=0; i<moja_tablica.dlug_wew.size(); i++)
+        cout << moja_tablica.dlug_wew[i];
+
+    /*for(int i=0; i<z; i++)
     {
         char polecenie;
         int_d_calkowity = int_d_wewnetrzny + int_d_zewnetrzny;
@@ -57,7 +90,7 @@ int main()
             cout << "\tZle polecenie! : " << polecenie << endl;
             break;
         }
-    }
+    }*/
 
     return 0;
 }
