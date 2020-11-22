@@ -81,11 +81,7 @@ int main()
     // m - ilość rodzajów biciaków
     // z - liczba zapytań
 
-    ofstream recovery("OUTPUT.txt");
-
     cin >> n >> m >> z;
-    recovery << "Wczytano zalozenia" << endl;
-    recovery << flush;
 
     SiecStacji stacje;
     vector <Miasto> miasta;
@@ -117,9 +113,6 @@ int main()
         miasta[t_miasta[0]-1].synowie.push_back(&miasta[t_miasta[1]-1]);
         miasta[t_miasta[1]-1].synowie.push_back(&miasta[t_miasta[0]-1]);
     }
-
-    recovery << "Wczytano polaczenia" << endl;
-    recovery << flush;
 
     for(int i=0; i<z; i++){
         char operacja;
@@ -166,12 +159,7 @@ int main()
                 }
             }
         }
-        recovery << i+1 << "/" << z << "(" << (((float)i+1)/z)*100 << "%)" << endl;
-        recovery << flush;
     }
-
-    recovery << "Koniec!" << endl;
-    recovery << flush;
 
     getchar();
     getchar();
