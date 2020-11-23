@@ -5,7 +5,213 @@
     "SPOJ": {
       "name": "SPOJ",
       "isOrdered": true,
-      "folders": {},
+      "folders": {
+        "AL_28_01 - Piramidka": {
+          "name": "AL_28_01 - Piramidka",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "CALC - Kalkulator": {
+          "name": "CALC - Kalkulator",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "DDZ5 - Prawie jak Fibonacci, prawie": {
+          "name": "DDZ5 - Prawie jak Fibonacci, prawie",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "DOUGHNUT - Harry and big doughnuts": {
+          "name": "DOUGHNUT - Harry and big doughnuts",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "EUCGAME - Gra Euklidesa": {
+          "name": "EUCGAME - Gra Euklidesa",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "FCTRL3 - Dwie cyfry silni": {
+          "name": "FCTRL3 - Dwie cyfry silni",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "FLAMASTE - Flamaster": {
+          "name": "FLAMASTE - Flamaster",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "GLUTTON - Obżartuchy": {
+          "name": "GLUTTON - Obżartuchy",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "JROWLIN - Równanie liniowe": {
+          "name": "JROWLIN - Równanie liniowe",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "JZAPKAB - Kabalistyczny zapis daty": {
+          "name": "JZAPKAB - Kabalistyczny zapis daty",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "LIDER - Lider": {
+          "name": "LIDER - Lider",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "MWP3_1C1 - Działka": {
+          "name": "MWP3_1C1 - Działka",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "POL - Połowa": {
+          "name": "POL - Połowa",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "POTSAM - Samolot": {
+          "name": "POTSAM - Samolot",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "PP0501A - NWD": {
+          "name": "PP0501A - NWD",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "PP0506A - Sort 1": {
+          "name": "PP0506A - Sort 1",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "PP0601B - Podzielność": {
+          "name": "PP0601B - Podzielność",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "PP0604A - Średnia arytmetyczna": {
+          "name": "PP0604A - Średnia arytmetyczna",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "PRIME_T - Liczby Pierwsze": {
+          "name": "PRIME_T - Liczby Pierwsze",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "PRZEDSZK - Przedszkolanka": {
+          "name": "PRZEDSZK - Przedszkolanka",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "PTCLTZ - Problem Collatza": {
+          "name": "PTCLTZ - Problem Collatza",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "PTROL - ROL": {
+          "name": "PTROL - ROL",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "RNO_DOD - Proste dodawanie": {
+          "name": "RNO_DOD - Proste dodawanie",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "SKARBFI - SkarbFinder": {
+          "name": "SKARBFI - SkarbFinder",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "STOS - Stos": {
+          "name": "STOS - Stos",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "SUDOKUC - Sprawdzanie sudoku": {
+          "name": "SUDOKUC - Sprawdzanie sudoku",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "T_PINTR - Punkty w trójkącie": {
+          "name": "T_PINTR - Punkty w trójkącie",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "TFIBRE - Sieć czysto światłowodowa": {
+          "name": "TFIBRE - Sieć czysto światłowodowa",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "VSR - Predkość średnia": {
+          "name": "VSR - Predkość średnia",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "WI_DZWON - Szkolne dzwonki": {
+          "name": "WI_DZWON - Szkolne dzwonki",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "WI_IDEN - Skracanie identyfikatorów": {
+          "name": "WI_IDEN - Skracanie identyfikatorów",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "WI_SZYFR - Szyfr Gronsfelda": {
+          "name": "WI_SZYFR - Szyfr Gronsfelda",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        }
+      },
+      "files": {}
+    },
+    "SZKOpul": {
+      "name": "SZKOpul",
+      "isOrdered": true,
+      "folders": {
+        "ods - Odsniezanie": {
+          "name": "ods - Odsniezanie",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        }
+      },
       "files": {}
     }
   },
