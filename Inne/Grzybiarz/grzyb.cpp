@@ -1,31 +1,42 @@
-#include<iostream>
-#include<vector>
-
+#include <iostream>
+#include <vector>
 
 // dla danego przedziału [a...b]  suma liczb w tym przedziale jest równa  sum_pref[b+1] - sum_pref[a]
 
+// cmd /c "grzyb.exe < grzyb0.in"
 
 using namespace std;
 
 int main()
 {
-    vector <int> grzyby {2, 3, 7, 5, 1, 3, 9};
-    vector <int> S_pre = {0};
-    int m=6, pozycja_g=4, najw_suma=0,suma=0;
+    int n_mushrooms, start_position, moves, max_left, max_right;
 
-    for(int i=0; i<=grzyby.size(); i++) cout << i << '\t';
-    cout << endl;
+    //cout << "Podaj liczbe grzybow: ";
+    cin >> n_mushrooms;
+    //cout << "Podaj pozycje grzybiarza: ";
+    cin >> start_position;
+    //cout << "Podaj ilosc ruchow grzybiarza: ";
+    cin >> moves;
 
-    for(int i=0; i<grzyby.size(); i++) cout << grzyby[i] << '\t';
-    cout << endl << "0" << '\t';
+    vector <int> mushrooms;
+    vector <int> prefix_sum = {0};
 
-    for(int i=1; i<=grzyby.size(); i++)
+    for(int i=0; i<n_mushrooms; i++)
     {
-        S_pre.push_back( S_pre[i-1] + grzyby[i-1] );
-        cout<< S_pre[i] << '\t';
+        int amount;
+        //cout << "Podaj ilosc grzybow na polu " << i << " :\t";
+        cin >> amount;
+        mushrooms.push_back(amount);
+        prefix_sum.push_back( prefix_sum[i] + mushrooms[i] );
     }
-    cout << endl;
 
+    for(int i=0; i<=n_mushrooms; i++) cout << i << '\t';
+    cout << endl;
+    for(int i=0; i<n_mushrooms; i++) cout << mushrooms[i] << '\t';
+    cout << endl;
+    for(int i=0; i<=n_mushrooms; i++) cout << prefix_sum[i] << '\t';
+
+    /*
     suma = abs(S_pre[pozycja_g+1] - S_pre[0]);
     if(suma>najw_suma) najw_suma=suma;
 
@@ -48,12 +59,10 @@ int main()
         cout << "Sumowanie od pozycji " << i << " do " << pozycja_g - (m - (i-pozycja_g)*2) << "\tSuma: " << suma << endl;
     }
     
-    cout<<endl<<najw_suma;
+    cout<<endl<<najw_suma;*/
 
-    getchar();
-    getchar();
     return 0;
 
     // A MNIE KURWA BOLI NIE
-    // KURWA TAK MOCNO JAPIERDOLE AAAAAAAAAA
+    // I OLKA TEŻ KURWA BOLI
 }
