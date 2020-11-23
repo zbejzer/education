@@ -9,7 +9,9 @@ using namespace std;
 
 int main()
 {
-    int n_mushrooms, start_position, moves, max_left, max_right;
+    int n_mushrooms, start_position, moves, max_left, max_right, maximal_sum = 0;
+    vector <int> mushrooms;
+    vector <int> prefix_sum = {0};
 
     //cout << "Podaj liczbe grzybow: ";
     cin >> n_mushrooms;
@@ -18,8 +20,17 @@ int main()
     //cout << "Podaj ilosc ruchow grzybiarza: ";
     cin >> moves;
 
-    vector <int> mushrooms;
-    vector <int> prefix_sum = {0};
+    // Wyznaczenie granic
+    if( start_position - moves >= 0 )
+        max_left = start_position - moves;
+    else
+        max_left = 0;
+
+    if( start_position + moves < n_mushrooms )
+        max_right = start_position + moves;
+    else
+        max_right = n_mushrooms - 1;
+
 
     for(int i=0; i<n_mushrooms; i++)
     {
@@ -35,6 +46,32 @@ int main()
     for(int i=0; i<n_mushrooms; i++) cout << mushrooms[i] << '\t';
     cout << endl;
     for(int i=0; i<=n_mushrooms; i++) cout << prefix_sum[i] << '\t';
+    cout << endl << endl;
+
+    cout << "\tMax left: " << max_left << endl;
+    cout << "\tMax right: " << max_right << endl;
+
+    for(int i=max_left; i < start_position; i++)
+    {
+        int current_end = max( start_position, start_position + moves - (start_position-i)*2 );
+        current_end = min( current_end, n_mushrooms-1);
+        int new_sum = prefix_sum[current_end + 1] - prefix_sum[i];
+        if(new_sum > maximal_sum) maximal_sum = new_sum;
+
+        cout << "\tSumowanie od pozycji " << i << " do " << current_end << endl;
+        cout << "\t\tSuma: " << new_sum << endl;
+    }
+
+    /*for(int i=max_right; i > start_position; i--)
+    {
+        int current_end = min( start_position, start_position + moves - (start_position-i)*2 );
+        current_end = min( current_end, n_mushrooms-1);
+        int new_sum = prefix_sum[i + 1] - prefix_sum[i];
+        if(new_sum > maximal_sum) maximal_sum = new_sum;
+
+        cout << "\tSumowanie od pozycji " << i << " do " << current_end << endl;
+        cout << "\t\tSuma: " << new_sum << endl;
+    }*/
 
     /*
     suma = abs(S_pre[pozycja_g+1] - S_pre[0]);
@@ -57,9 +94,9 @@ int main()
         if(suma>najw_suma) najw_suma=suma;
 
         cout << "Sumowanie od pozycji " << i << " do " << pozycja_g - (m - (i-pozycja_g)*2) << "\tSuma: " << suma << endl;
-    }
+    }*/
     
-    cout<<endl<<najw_suma;*/
+    cout << maximal_sum << endl;
 
     return 0;
 
