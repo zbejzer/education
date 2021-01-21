@@ -28,8 +28,12 @@
 
 # Executables
 *.exe
-*.out
 *.app
+
+# .in .out
+*.in
+*.out
+*.stackdump
 
 # Visual Studio Code
 .history/
