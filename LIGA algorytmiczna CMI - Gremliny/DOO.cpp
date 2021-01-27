@@ -3,7 +3,7 @@
 
 using namespace std;
 
-class komnata
+class Komnata
 {
     public:
     int n, liczonyObwod;
@@ -14,23 +14,26 @@ class komnata
     {
         cin >> n;
         
+        // Wczytanie planszy i fill wektora
         for(int i=0; i<n; i++)
         {
-            vector <char> tvector;
-            vector <bool> tvbool;
-
+            // Tymczasowe wektory
+            vector <char> tChVector;
+            vector <bool> tBVector;
+            
             for(int j=0; j<n; j++)
             {
-                char tchar;
-                cin >> tchar;
-                tvector.push_back(tchar);
-                tvbool.push_back(false);
+                char tChar;
+                cin >> tChar;
+                tChVector.push_back(tChar);
+                tBVector.push_back(false);
             }
 
-            plan.push_back(tvector);
-            sprawdzone.push_back(tvbool);
+            plan.push_back(tChVector);
+            sprawdzone.push_back(tBVector);
         }
 
+        // Wczytywanie punktow do sprawdzania
         for(int i=0; i<n; i++)
         {
             int x, y;
@@ -39,7 +42,7 @@ class komnata
         }
     }
 
-    void wypisz()
+    /*void wypisz()
     {
         for(int i=0; i<n+1; i++)
             cout << i;
@@ -53,8 +56,9 @@ class komnata
             cout << endl;
         }
         cout << endl;
-    }
+    }*/
 
+    // sprawdzenie sasiadujacych scian
     int wartoscKropki(int x, int y)
     {
         int obwodKropki;
@@ -65,9 +69,9 @@ class komnata
         return obwodKropki;
     }
 
+    // Rekurencyjne sprawdzanie per kropka
     void sprawdzaj(int x, int y)
     {
-        cout << "   SPRAWDZANIE NA POZYCJI " << x+1 << " " << y+1 << endl;
         if(!sprawdzone[x][y])
         {
             sprawdzone[x][y] = true;
@@ -79,9 +83,9 @@ class komnata
         }
     }
 
+    // Wlasciwe liczenie obwodu
     int obwod(int x, int y)
     {
-        cout << "   NOWY TEST" << endl;
         liczonyObwod = 0;
 
         for(int i=0; i<n; i++)
@@ -96,11 +100,10 @@ class komnata
 
 int main()
 {
-    komnata MojaKomnata;
+    Komnata MojaKomnata;
 
     MojaKomnata.wczytaj();
-
-    MojaKomnata.wypisz();
+    //MojaKomnata.wypisz();
 
     return 0;
 }
