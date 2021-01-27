@@ -101,9 +101,7 @@ class Komnata
 int main()
 {
     Komnata MojaKomnata;
-
     MojaKomnata.wczytaj();
-    //MojaKomnata.wypisz();
 
     return 0;
 }
