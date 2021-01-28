@@ -1,107 +1,81 @@
 #include <iostream>
-#include <vector>
+#include <unordered_map>
+#include <string>
 
 using namespace std;
 
-class Komnata
+string joinCords(int x, int y)
 {
-    public:
-    int n, liczonyObwod;
-    vector <vector<char>> plan;
-    vector <vector<bool>> sprawdzone;
+    return to_string(x) + " " + to_string(y);
+}
 
-    void wczytaj()
+class komnata
+{
+private:
+    unordered_map < string, bool > plan;
+    unordered_map < string, bool > sprawdzonyPlan;
+    int bok, licznikObwodu, n;    
+
+public:
+    void wczytajPlan();
+    void obwod(int, int);
+};
+
+void komnata::wczytajPlan()
+{
+    cin >> n;
+
+    // wczytywanie planu
+    for(int y=1; y<=n; y++)
+        for(int x=1; x<=n; x++)
+        {
+            char tempChar;
+            cin >> tempChar;
+
+            if(tempChar == '.')
+                plan[ joinCords(x, y) ] = 1;
+            else
+                plan[ joinCords(x, y) ] = 0;
+
+            sprawdzonyPlan[ joinCords(x, y) ] = 0;
+        }
+
+    // wczytanie punktow do sprawdzenia 
+    for(int i=0; i<n; i++)
     {
-        cin >> n;
+        int x, y;
+        licznikObwodu = 0;      // Resetowanie licznika
+        for(int i=1; i<=n; i++)     // resetowanie sprawdzonych pol
+            for(int j=1; j<=n; j++)
+                sprawdzonyPlan[ joinCords(j, i) ] = false;
         
-        // Wczytanie planszy i fill wektora
-        for(int i=0; i<n; i++)
-        {
-            // Tymczasowe wektory
-            vector <char> tChVector;
-            vector <bool> tBVector;
-            
-            for(int j=0; j<n; j++)
-            {
-                char tChar;
-                cin >> tChar;
-                tChVector.push_back(tChar);
-                tBVector.push_back(false);
-            }
-
-            plan.push_back(tChVector);
-            sprawdzone.push_back(tBVector);
-        }
-
-        // Wczytywanie punktow do sprawdzania
-        for(int i=0; i<n; i++)
-        {
-            int x, y;
-            cin >> x >> y;
-            cout << obwod(x-1, y-1) << endl;
-        }
+        cin >> y >> x;
+        obwod(x, y);
+        cout << licznikObwodu << endl;
     }
+};
 
-    /*void wypisz()
+// Liczenie obwodu
+void komnata::obwod(int x, int y)
+{
+    //cout << "[DEBUG] Sprawdzanie pozycji: " << joinCords(x, y) << endl;
+
+    if( !sprawdzonyPlan[ joinCords(x, y) ] )
     {
-        for(int i=0; i<n+1; i++)
-            cout << i;
+        //cout << "[DEBUG] Pozycja nie sprawdzana\n" ;
+        sprawdzonyPlan[ joinCords(x, y) ] = true;
 
-        cout << endl;    
-        for(int i=0; i<n; i++)
-        {
-            cout << i+1;
-            for(int j=0; j<n; j++)
-                cout << plan[i][j];
-            cout << endl;
-        }
-        cout << endl;
-    }*/
-
-    // sprawdzenie sasiadujacych scian
-    int wartoscKropki(int x, int y)
-    {
-        int obwodKropki;
-        if(plan[x][y+1] == '#') obwodKropki++;
-        if(plan[x][y-1] == '#') obwodKropki++;
-        if(plan[x+1][y] == '#') obwodKropki++;
-        if(plan[x-1][y] == '#') obwodKropki++;
-        return obwodKropki;
-    }
-
-    // Rekurencyjne sprawdzanie per kropka
-    void sprawdzaj(int x, int y)
-    {
-        if(!sprawdzone[x][y])
-        {
-            sprawdzone[x][y] = true;
-            liczonyObwod +=  wartoscKropki(x, y);
-            if(plan[x][y+1] == '.') sprawdzaj(x, y+1);
-            if(plan[x][y-1] == '.') sprawdzaj(x, y-1);
-            if(plan[x+1][y] == '.') sprawdzaj(x+1, y);
-            if(plan[x-1][y] == '.') sprawdzaj(x-1, y);
-        }
-    }
-
-    // Wlasciwe liczenie obwodu
-    int obwod(int x, int y)
-    {
-        liczonyObwod = 0;
-
-        for(int i=0; i<n; i++)
-            for(int j=0; j<n; j++)
-                sprawdzone[i][j] = false;
-
-        sprawdzaj(x, y);
-
-        return liczonyObwod;
+        if(!plan[ joinCords(x, y+1) ])  licznikObwodu++;    else    obwod(x, y+1);
+        if(!plan[ joinCords(x, y-1) ])  licznikObwodu++;    else    obwod(x, y-1);
+        if(!plan[ joinCords(x+1, y) ])  licznikObwodu++;    else    obwod(x+1, y);
+        if(!plan[ joinCords(x-1, y) ])  licznikObwodu++;    else    obwod(x-1, y);
     }
 };
 
 int main()
 {
-    Komnata MojaKomnata;
-    MojaKomnata.wczytaj();
+    komnata nowaKomnata;
+    nowaKomnata.wczytajPlan();
 
     return 0;
 }
