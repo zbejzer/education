@@ -32,10 +32,8 @@ void komnata::wczytajPlan()
             char tempChar;
             cin >> tempChar;
 
-            if(tempChar == '.')
-                plan[ joinCords(x, y) ] = 1;
-            else
-                plan[ joinCords(x, y) ] = 0;
+            if(tempChar == '.') plan[ joinCords(x, y) ] = 1;
+            else                plan[ joinCords(x, y) ] = 0;     
 
             sprawdzonyPlan[ joinCords(x, y) ] = 0;
         }
