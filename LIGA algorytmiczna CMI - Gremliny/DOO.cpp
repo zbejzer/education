@@ -14,7 +14,7 @@ class komnata
 private:
     unordered_map < string, bool > plan;
     unordered_map < string, bool > sprawdzonyPlan;
-    int bok, licznikObwodu, n;    
+    int licznikObwodu, n;    
 
 public:
     void wczytajPlan();
@@ -34,8 +34,6 @@ void komnata::wczytajPlan()
 
             if(tempChar == '.') plan[ joinCords(x, y) ] = 1;
             else                plan[ joinCords(x, y) ] = 0;     
-
-            sprawdzonyPlan[ joinCords(x, y) ] = 0;
         }
 
     // wczytanie punktow do sprawdzenia 
