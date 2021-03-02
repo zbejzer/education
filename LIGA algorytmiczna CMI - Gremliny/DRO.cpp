@@ -73,8 +73,9 @@ void farmaTroli::szukaj(int start, int cel, unordered_map <int, bool> sprawdzone
                 unsigned int nowyKoszt = obecnyKoszt;
 
                 nowyKoszt += koszta[ polaczenie(start, miasta[start][i]) ];
-                
-                szukaj( miasta[start][i], cel, sprawdzoneMiasta, nowyKoszt, najnizszyKoszt);
+
+                if (obecnyKoszt < *najnizszyKoszt)
+                    szukaj( miasta[start][i], cel, sprawdzoneMiasta, nowyKoszt, najnizszyKoszt);
             }
         }
     }
