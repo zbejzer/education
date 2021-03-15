@@ -7,9 +7,11 @@
 
 using namespace std;
 
-int roznica(string haslo1, string haslo2, int wynik)
+int roznica(string haslo1, string haslo2)
 {
-    if(haslo2.size() > haslo1.size())
+    int wynik;
+
+    if(haslo1.size() > haslo2.size())
         swap(haslo1, haslo2);
 
     for(int i=0; i<haslo1.size(); i++)
@@ -18,13 +20,13 @@ int roznica(string haslo1, string haslo2, int wynik)
         {
             haslo1.erase(haslo1.begin() + i);
             haslo2.erase(haslo2.begin() + i);
-            wynik++;
             i--;
         }
     }
     
-    cout << haslo1 << " " << haslo2 << endl;
+    cout << haslo1 << " " << haslo2 << " ";
 
+    wynik = max(haslo1.size(), haslo2.size());
     return wynik;
 }
 
@@ -40,7 +42,7 @@ int main()
     for(int i=0; i<n; i++)
     {
         cin >> wyraz1 >> wyraz2;
-        cout << roznica(wyraz1, wyraz2, 0);
+        cout << roznica(wyraz1, wyraz2) << endl;
     }
     
     return 0;
