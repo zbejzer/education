@@ -33,7 +33,8 @@ int main()
                 if (mode == 0)
                 {
                     counter++;
-                } else
+                }
+                else
                 {
                     array[n * columns + m] = letter_b;
                 }
@@ -44,7 +45,8 @@ int main()
     if (mode == 0)
     {
         cout << counter;
-    } else
+    }
+    else
     {
         for (size_t n = 0; n < rows; n++)
         {
