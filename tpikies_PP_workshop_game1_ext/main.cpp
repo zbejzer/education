@@ -13,8 +13,10 @@ void initGame(Game *_game);
 void handleVictory(Game *_game, Player _player[]);
 void handlePlayerStart(Game *_game, Player *_player, int _moveValue);
 void handleMove(Game *_game, Player *_player, int _moveValue);
-void handlePrint(Game *_game, Player *_player, char _arg);
+void handlePrint(Game *_game, Player _player[], char _arg);
+void handleLasso(Player *_playerCurrent, Player *_playerTarget);
 int hasPlayerStarted(Game *_game, Player *_player);
+void nextPlayer(Game *_game);
 
 struct Player
 {
@@ -168,6 +170,15 @@ void handlePrint(Game *_game, Player _player[], char _arg)
     cout << endl;
 }
 
+void handleLasso(Player *_playerCurrent, Player *_playerTarget)
+{
+    if ((_playerTarget->pos - _playerCurrent->pos) >= 2)
+    {
+        _playerTarget->pos--;
+        _playerCurrent->pos++;
+    }
+}
+
 int hasPlayerStarted(Game *_game, Player *_player)
 {
     int index = 0;
@@ -183,6 +194,15 @@ int hasPlayerStarted(Game *_game, Player *_player)
     }
 
     return 1;
+}
+
+void nextPlayer(Game *_game)
+{
+    _game->player++;
+    if (_game->player >= PLAYER_COUNT)
+    {
+        _game->player = 0;
+    }
 }
 
 int main()
@@ -225,11 +245,7 @@ int main()
             unsigned int moveValue;
             cin >> moveValue;
 
-            game.player++;
-            if (game.player >= PLAYER_COUNT)
-            {
-                game.player = 0;
-            }
+            nextPlayer(&game);
 
             if (!hasPlayerStarted(&game, &player[game.player]))
             {
@@ -267,6 +283,17 @@ int main()
             cin >> game.wallFieldNumber;
             cin >> game.wallHeight;
             game.wallSet = 1;
+        }
+        else if (command == "LASSO")
+        {
+            string targetPlayer;
+            cin >> targetPlayer;
+
+            int targetPlayerIndex = stoi(targetPlayer.substr(1, targetPlayer.size() - 1)) - 1;
+
+            nextPlayer(&game);
+
+            handleLasso(&player[game.player], &player[targetPlayerIndex]);
         }
         else
         {
