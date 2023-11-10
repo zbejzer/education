@@ -12,6 +12,7 @@ void initGame(Game *_game);
 void handleVictory(Game *_game, Player _player[]);
 void handlePlayerStart(Player *_player, int _moveValue);
 void handleMove(Game *_game, Player *_player, int _moveValue);
+int isPlayerCanStart(Player *_player);
 
 struct Player
 {
@@ -105,6 +106,11 @@ void handleMove(Game *_game, Player *_player, int _moveValue)
     }
 }
 
+int isPlayerCanStart(Player *_player)
+{
+    return (_player->got1 && _player->got6);
+}
+
 int main()
 {
     string command;
@@ -138,7 +144,7 @@ int main()
                 game.player = 0;
             }
 
-            if (!(player[game.player].got1 && player[game.player].got6))
+            if (!isPlayerCanStart(&player[game.player]))
             {
                 handlePlayerStart(&player[game.player], moveValue);
             }
