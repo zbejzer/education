@@ -12,6 +12,7 @@ void initGame(Game *_game);
 void handleVictory(Game *_game, Player _player[]);
 void handlePlayerStart(Player *_player, int _moveValue);
 void handleMove(Game *_game, Player *_player, int _moveValue);
+void handlePrint(Player *_player, char _arg);
 int isPlayerCanStart(Player *_player);
 
 struct Player
@@ -106,6 +107,34 @@ void handleMove(Game *_game, Player *_player, int _moveValue)
     }
 }
 
+void handlePrint(Player _player[], char _arg)
+{
+    unsigned char States = 0;
+
+    States = States | (0b10000000 * _player[0].got6) | (0b00100000 * _player[1].got6) | (0b00001000 * _player[2].got6) |
+             (0b00000010 * _player[3].got6);
+    States = States | (0b01000000 * (_player[0].pos % 2)) | (0b00010000 * (_player[1].pos % 2)) |
+             (0b00000100 * (_player[2].pos % 2)) | (0b00000001 * (_player[3].pos % 2));
+
+    cout << _player[0].pos << " " << _player[1].pos << " " << _player[2].pos << " " << _player[3].pos << " ";
+
+    if (_arg == '1')
+    {
+        for (unsigned int i = 0; i < 8; i++)
+        {
+            if (States & (1 << (7 - i)))
+            {
+                cout << 1;
+            }
+            else
+            {
+                cout << 0;
+            }
+        }
+    }
+    cout << endl;
+}
+
 int isPlayerCanStart(Player *_player)
 {
     return (_player->got1 && _player->got6);
@@ -164,31 +193,9 @@ int main()
         {
             // FOR 0 should print only positions. For 1 positions and diodes
             char arg;
-            unsigned char States = 0;
             cin >> arg;
 
-            States = States | (0b10000000 * player[0].got6) | (0b00100000 * player[1].got6) |
-                     (0b00001000 * player[2].got6) | (0b00000010 * player[3].got6);
-            States = States | (0b01000000 * (player[0].pos % 2)) | (0b00010000 * (player[1].pos % 2)) |
-                     (0b00000100 * (player[2].pos % 2)) | (0b00000001 * (player[3].pos % 2));
-
-            cout << player[0].pos << " " << player[1].pos << " " << player[2].pos << " " << player[3].pos << " ";
-
-            if (arg == '1')
-            {
-                for (unsigned int i = 0; i < 8; i++)
-                {
-                    if (States & (1 << (7 - i)))
-                    {
-                        cout << 1;
-                    }
-                    else
-                    {
-                        cout << 0;
-                    }
-                }
-            }
-            cout << endl;
+            handlePrint(player, arg);
         }
         else if (command == "MINED")
         {
