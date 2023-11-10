@@ -4,22 +4,24 @@
 using namespace std;
 
 const int PLAYER_COUNT = 4;
+const int MAX_START_SEQUENCE = 10;
 
 struct Player;
 struct Game;
 void initPlayer(Player *_player);
 void initGame(Game *_game);
 void handleVictory(Game *_game, Player _player[]);
-void handlePlayerStart(Player *_player, int _moveValue);
+void handlePlayerStart(Game *_game, Player *_player, int _moveValue);
 void handleMove(Game *_game, Player *_player, int _moveValue);
 void handlePrint(Player *_player, char _arg);
-int isPlayerCanStart(Player *_player);
+int isPlayerCanStart(Game *_game, Player *_player);
 
 struct Player
 {
     int got1;
     int got6;
     unsigned int pos;
+    unsigned int startSeq[MAX_START_SEQUENCE];
 };
 
 struct Game
@@ -33,13 +35,19 @@ struct Game
     int wallSet;
     unsigned int wallFieldNumber;
     unsigned int wallHeight;
+    unsigned int startSeq[MAX_START_SEQUENCE];
 };
 
 void initPlayer(Player *_player)
 {
+    _player->pos = 0;
     _player->got1 = 0;
     _player->got6 = 0;
-    _player->pos = 0;
+
+    for (size_t i = 0; i < MAX_START_SEQUENCE; i++)
+    {
+        _player->startSeq[i] = 0;
+    }
 }
 
 void initGame(Game *_game)
@@ -48,6 +56,14 @@ void initGame(Game *_game)
     _game->player = -1; // exception for the first game round
     _game->mineSet = 0;
     _game->wallSet = 0;
+
+    for (size_t i = 0; i < MAX_START_SEQUENCE; i++)
+    {
+        _game->startSeq[i] = 0;
+    }
+
+    _game->startSeq[0] = 1;
+    _game->startSeq[1] = 6;
 }
 
 void handleVictory(Game *_game, Player _player[])
@@ -62,21 +78,35 @@ void handleVictory(Game *_game, Player _player[])
     }
 }
 
-void handlePlayerStart(Player *_player, int _moveValue)
+void handlePlayerStart(Game *_game, Player *_player, int _moveValue)
 {
-    if (!_player->got1)
+    int index = 0;
+
+    while (_player->startSeq[index] == 1)
     {
-        _player->got1 = (_moveValue == 1);
+        index++;
     }
-    else if (!_player->got6)
+
+    if (_game->startSeq[index] != 0)
     {
-        if (_moveValue == 6)
+        if (_moveValue == _game->startSeq[index])
         {
-            _player->got6 = 1;
+            _player->startSeq[index] = 1;
         }
         else
         {
-            _player->got1 = (_moveValue == 1);
+            index = 0;
+
+            while (_game->startSeq[index] != 0)
+            {
+                _player->startSeq[index] = 0;
+                index++;
+            }
+        }
+
+        if (_moveValue == _game->startSeq[0])
+        {
+            _player->startSeq[0] = 1;
         }
     }
 }
@@ -135,9 +165,21 @@ void handlePrint(Player _player[], char _arg)
     cout << endl;
 }
 
-int isPlayerCanStart(Player *_player)
+int isPlayerCanStart(Game *_game, Player *_player)
 {
-    return (_player->got1 && _player->got6);
+    int index = 0;
+
+    while (_game->startSeq[index] != 0)
+    {
+        if (_player->startSeq[index] == 0)
+        {
+            return 0;
+        }
+
+        index++;
+    }
+
+    return 1;
 }
 
 int main()
@@ -162,6 +204,18 @@ int main()
         {
             cin >> game.boardSize;
         }
+        else if (command == "INITSEQ")
+        {
+            int initSeqLength;
+            cin >> initSeqLength;
+
+            game.startSeq[0] = 0;
+
+            for (size_t i = 0; i < initSeqLength; i++)
+            {
+                cin >> game.startSeq[i];
+            }
+        }
         else if (command == "MOVE")
         {
             unsigned int moveValue;
@@ -173,9 +227,9 @@ int main()
                 game.player = 0;
             }
 
-            if (!isPlayerCanStart(&player[game.player]))
+            if (!isPlayerCanStart(&game, &player[game.player]))
             {
-                handlePlayerStart(&player[game.player], moveValue);
+                handlePlayerStart(&game, &player[game.player], moveValue);
             }
             else
             {
