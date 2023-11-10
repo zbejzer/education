@@ -172,10 +172,23 @@ void handlePrint(Game *_game, Player _player[], char _arg)
 
 void handleLasso(Player *_playerCurrent, Player *_playerTarget)
 {
-    if ((_playerTarget->pos - _playerCurrent->pos) >= 2)
+    int reverseDirection = (_playerTarget->pos < _playerCurrent->pos);
+
+    if (reverseDirection)
     {
-        _playerTarget->pos--;
-        _playerCurrent->pos++;
+        if ((_playerCurrent->pos - _playerTarget->pos) >= 2)
+        {
+            _playerTarget->pos++;
+            _playerCurrent->pos--;
+        }
+    }
+    else
+    {
+        if ((_playerTarget->pos - _playerCurrent->pos) >= 2)
+        {
+            _playerTarget->pos--;
+            _playerCurrent->pos++;
+        }
     }
 }
 
