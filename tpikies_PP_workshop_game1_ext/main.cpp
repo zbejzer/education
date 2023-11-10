@@ -5,23 +5,36 @@ using namespace std;
 
 const int PLAYER_COUNT = 4;
 const int MAX_START_SEQUENCE = 10;
+const int MAX_MINE_COUNT = 100;
 
+struct Mine;
 struct Player;
 struct Game;
-void initPlayer(Player *_player);
+void initPlayer(Player *_player, int _num);
 void initGame(Game *_game);
 void handleVictory(Game *_game, Player _player[]);
 void handlePlayerStart(Game *_game, Player *_player, int _moveValue);
 void handleMove(Game *_game, Player *_player, int _moveValue);
 void handlePrint(Game *_game, Player _player[], char _arg);
 void handleLasso(Player *_playerCurrent, Player *_playerTarget);
+void handleMines(Mine _mines[], Player *_player);
 int hasPlayerStarted(Game *_game, Player *_player);
 void nextPlayer(Game *_game);
+void addMine(Mine _mines[], unsigned int _position, int _bonusMove);
+int getMineBonusMove(Mine _mines[], unsigned int _position);
+
+struct Mine
+{
+    int bonusMove;
+    unsigned int pos;
+};
 
 struct Player
 {
-    unsigned int pos;
+    int pos;
+    int num;
     unsigned int startSeq[MAX_START_SEQUENCE];
+    unsigned int isInactive;
 };
 
 struct Game
@@ -29,18 +42,18 @@ struct Game
     int end;
     int player;
     unsigned int boardSize;
-    unsigned int bonusMove;
-    int mineSet;
-    unsigned int mineFieldNumber;
     int wallSet;
     unsigned int wallFieldNumber;
     unsigned int wallHeight;
     unsigned int startSeq[MAX_START_SEQUENCE];
+    Mine mines[MAX_MINE_COUNT];
 };
 
-void initPlayer(Player *_player)
+void initPlayer(Player *_player, int _num)
 {
     _player->pos = 0;
+    _player->isInactive = 0;
+    _player->num = _num;
 
     for (size_t i = 0; i < MAX_START_SEQUENCE; i++)
     {
@@ -52,7 +65,6 @@ void initGame(Game *_game)
 {
     _game->end = 0;
     _game->player = -1; // exception for the first game round
-    _game->mineSet = 0;
     _game->wallSet = 0;
 
     for (size_t i = 0; i < MAX_START_SEQUENCE; i++)
@@ -60,12 +72,21 @@ void initGame(Game *_game)
         _game->startSeq[i] = 0;
     }
 
+    // Default values
     _game->startSeq[0] = 1;
     _game->startSeq[1] = 6;
+
+    for (size_t i = 0; i < MAX_MINE_COUNT; i++)
+    {
+        _game->mines[i].pos = 0;
+        _game->mines[i].bonusMove = 0;
+    }
 }
 
 void handleVictory(Game *_game, Player _player[])
 {
+    unsigned int leftPlayers = PLAYER_COUNT;
+
     for (size_t i = 0; i < PLAYER_COUNT; i++)
     {
         if (_player[i].pos >= _game->boardSize)
@@ -73,6 +94,16 @@ void handleVictory(Game *_game, Player _player[])
             cout << "P" << i + 1 << " won" << endl;
             _game->end = 1;
         }
+        if (_player[i].isInactive)
+        {
+            leftPlayers--;
+        }
+    }
+
+    if (leftPlayers == 0)
+    {
+        cout << "DRAW" << endl;
+        _game->end = 1;
     }
 }
 
@@ -129,17 +160,20 @@ void handleMove(Game *_game, Player *_player, int _moveValue)
     {
         _player->pos += _moveValue;
     }
-    if (_game->mineSet && (_player->pos == _game->mineFieldNumber))
-    {
-        _player->pos += _game->bonusMove;
-    }
 }
 
 void handlePrint(Game *_game, Player _player[], char _arg)
 {
     for (size_t i = 0; i < PLAYER_COUNT; i++)
     {
-        cout << _player[i].pos << " ";
+        if (_player[i].isInactive)
+        {
+            cout << "X ";
+        }
+        else
+        {
+            cout << _player[i].pos << " ";
+        }
     }
 
     if (_arg == '1')
@@ -192,6 +226,49 @@ void handleLasso(Player *_playerCurrent, Player *_playerTarget)
     }
 }
 
+void handleMines(Mine _mines[], Player *_player)
+{
+    int bonusMove = getMineBonusMove(_mines, _player->pos);
+    unsigned int visitedFields[MAX_MINE_COUNT];
+
+    if (bonusMove != 0)
+    {
+        for (size_t i = 0; i < MAX_MINE_COUNT; i++)
+        {
+            visitedFields[i] = 0;
+        }
+
+        visitedFields[0] = _player->pos;
+    }
+
+    while ((bonusMove != 0) && (!_player->isInactive))
+    {
+        _player->pos += bonusMove;
+
+        if (_player->pos < 0)
+        {
+            _player->pos = 0;
+        }
+
+        for (size_t i = 0; i < MAX_MINE_COUNT; i++)
+        {
+            if (visitedFields[i] == _player->pos)
+            {
+                _player->isInactive = 1;
+                cout << "P" << _player->num << " was defeated by mines" << endl;
+                break;
+            }
+            else if (visitedFields[i] == 0)
+            {
+                visitedFields[i] = _player->pos;
+                break;
+            }
+        }
+
+        bonusMove = getMineBonusMove(_mines, _player->pos);
+    }
+}
+
 int hasPlayerStarted(Game *_game, Player *_player)
 {
     int index = 0;
@@ -218,6 +295,32 @@ void nextPlayer(Game *_game)
     }
 }
 
+void addMine(Mine _mines[], unsigned int _position, int _bonusMove)
+{
+    unsigned int freeIndex = 0;
+
+    while ((freeIndex < MAX_MINE_COUNT) && (_mines[freeIndex].pos != 0))
+    {
+        freeIndex++;
+    }
+
+    _mines[freeIndex].pos = _position;
+    _mines[freeIndex].bonusMove = _bonusMove;
+}
+
+int getMineBonusMove(Mine _mines[], unsigned int _position)
+{
+    for (size_t i = 0; i < MAX_MINE_COUNT; i++)
+    {
+        if (_mines[i].pos == _position)
+        {
+            return _mines[i].bonusMove;
+        }
+    }
+
+    return 0;
+}
+
 int main()
 {
     string command;
@@ -229,7 +332,7 @@ int main()
 
     for (size_t i = 0; i < PLAYER_COUNT; i++)
     {
-        initPlayer(&player[i]);
+        initPlayer(&player[i], i + 1);
     }
 
     do
@@ -258,7 +361,10 @@ int main()
             unsigned int moveValue;
             cin >> moveValue;
 
-            nextPlayer(&game);
+            do
+            {
+                nextPlayer(&game);
+            } while (player[game.player].isInactive);
 
             if (!hasPlayerStarted(&game, &player[game.player]))
             {
@@ -267,8 +373,8 @@ int main()
             else
             {
                 handleMove(&game, &player[game.player], moveValue);
+                handleMines(game.mines, &player[game.player]);
             }
-
             handleVictory(&game, player);
         }
         else if (command == "ABORT")
@@ -286,10 +392,12 @@ int main()
         }
         else if (command == "MINED")
         {
-            cin >> game.mineFieldNumber;
-            cin >> game.bonusMove;
-            game.mineSet = 1;
-            // if a player stand on mineFieldNumber, then she goes + bonusMove
+            unsigned int mineFieldNumber;
+            int bonusMove;
+            cin >> mineFieldNumber;
+            cin >> bonusMove;
+
+            addMine(game.mines, mineFieldNumber, bonusMove);
         }
         else if (command == "WALLED")
         {
@@ -301,12 +409,17 @@ int main()
         {
             string targetPlayer;
             cin >> targetPlayer;
-
             int targetPlayerIndex = stoi(targetPlayer.substr(1, targetPlayer.size() - 1)) - 1;
 
-            nextPlayer(&game);
+            do
+            {
+                nextPlayer(&game);
+            } while (player[game.player].isInactive);
 
             handleLasso(&player[game.player], &player[targetPlayerIndex]);
+            handleMines(game.mines, &player[game.player]);
+            handleMines(game.mines, &player[targetPlayerIndex]);
+            handleVictory(&game, player);
         }
         else
         {
