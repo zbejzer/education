@@ -1,7 +1,4 @@
 {
-    "files.associations": {
-        "*.cps": "javascript",
-        "iostream": "cpp",
-        "xutility": "cpp"
-    }
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true
 }
