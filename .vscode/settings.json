@@ -5,6 +5,7 @@
     "C_Cpp.default.cStandard": "c11",
     "files.associations": {
         "*.cps": "javascript",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "ostream": "cpp"
     }
 }
