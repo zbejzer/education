@@ -6,6 +6,7 @@
     "files.associations": {
         "*.cps": "javascript",
         "xutility": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "iostream": "cpp"
     }
 }
