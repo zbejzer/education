@@ -13,8 +13,8 @@ void initGame(Game *_game);
 void handleVictory(Game *_game, Player _player[]);
 void handlePlayerStart(Game *_game, Player *_player, int _moveValue);
 void handleMove(Game *_game, Player *_player, int _moveValue);
-void handlePrint(Player *_player, char _arg);
-int isPlayerCanStart(Game *_game, Player *_player);
+void handlePrint(Game *_game, Player *_player, char _arg);
+int hasPlayerStarted(Game *_game, Player *_player);
 
 struct Player
 {
@@ -137,19 +137,26 @@ void handleMove(Game *_game, Player *_player, int _moveValue)
     }
 }
 
-void handlePrint(Player _player[], char _arg)
+void handlePrint(Game *_game, Player _player[], char _arg)
 {
-    unsigned char States = 0;
-
-    States = States | (0b10000000 * _player[0].got6) | (0b00100000 * _player[1].got6) | (0b00001000 * _player[2].got6) |
-             (0b00000010 * _player[3].got6);
-    States = States | (0b01000000 * (_player[0].pos % 2)) | (0b00010000 * (_player[1].pos % 2)) |
-             (0b00000100 * (_player[2].pos % 2)) | (0b00000001 * (_player[3].pos % 2));
-
-    cout << _player[0].pos << " " << _player[1].pos << " " << _player[2].pos << " " << _player[3].pos << " ";
+    for (size_t i = 0; i < PLAYER_COUNT; i++)
+    {
+        cout << _player[i].pos << " ";
+    }
 
     if (_arg == '1')
     {
+        unsigned char States = 0;
+        unsigned char diode = 128; // 0b10000000
+
+        for (size_t i = 0; diode > 0; i++)
+        {
+            States = States | (diode * hasPlayerStarted(_game, &_player[i]));
+            diode = (diode >> 1);
+            States = States | (diode * (_player[i].pos % 2));
+            diode = (diode >> 1);
+        }
+
         for (unsigned int i = 0; i < 8; i++)
         {
             if (States & (1 << (7 - i)))
@@ -165,7 +172,7 @@ void handlePrint(Player _player[], char _arg)
     cout << endl;
 }
 
-int isPlayerCanStart(Game *_game, Player *_player)
+int hasPlayerStarted(Game *_game, Player *_player)
 {
     int index = 0;
 
@@ -210,6 +217,7 @@ int main()
             cin >> initSeqLength;
 
             game.startSeq[0] = 0;
+            game.startSeq[1] = 0;
 
             for (size_t i = 0; i < initSeqLength; i++)
             {
@@ -227,7 +235,7 @@ int main()
                 game.player = 0;
             }
 
-            if (!isPlayerCanStart(&game, &player[game.player]))
+            if (!hasPlayerStarted(&game, &player[game.player]))
             {
                 handlePlayerStart(&game, &player[game.player], moveValue);
             }
@@ -249,7 +257,7 @@ int main()
             char arg;
             cin >> arg;
 
-            handlePrint(player, arg);
+            handlePrint(&game, player, arg);
         }
         else if (command == "MINED")
         {
