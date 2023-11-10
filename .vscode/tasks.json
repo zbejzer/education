@@ -4,7 +4,7 @@
 		{
 			"type": "cppbuild",
 			"label": "C/C++: g++.exe build active file",
-			"command": "C:\\Portable\\mingw64\\bin\\g++.exe",
+			"command": "g++.exe",
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
@@ -22,7 +22,7 @@
 				"kind": "build",
 				"isDefault": true
 			},
-			"detail": "compiler: C:\\Portable\\mingw64\\bin\\g++.exe"
+			"detail": "compiler: g++.exe"
 		}
 	]
 }
