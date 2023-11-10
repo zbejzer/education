@@ -18,8 +18,6 @@ int hasPlayerStarted(Game *_game, Player *_player);
 
 struct Player
 {
-    int got1;
-    int got6;
     unsigned int pos;
     unsigned int startSeq[MAX_START_SEQUENCE];
 };
@@ -41,8 +39,6 @@ struct Game
 void initPlayer(Player *_player)
 {
     _player->pos = 0;
-    _player->got1 = 0;
-    _player->got6 = 0;
 
     for (size_t i = 0; i < MAX_START_SEQUENCE; i++)
     {
