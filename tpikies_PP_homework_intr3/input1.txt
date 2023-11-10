@@ -1,5 +1,0 @@
-0 a
-3 4
-a b c a 
-a c c a
-a b a a
