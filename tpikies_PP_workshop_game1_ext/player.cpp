@@ -1,6 +1,6 @@
 #include "player.h"
 
-#include "constans.h"
+#include "constants.h"
 
 void initPlayer(Player *_player, int _num)
 {

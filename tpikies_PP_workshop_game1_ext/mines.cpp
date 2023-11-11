@@ -1,18 +1,18 @@
 #include "mines.h"
 
-#include "constans.h"
+#include "constants.h"
 
-void addMine(Mine _mines[], unsigned int _position, int _bonusMove)
+unsigned int getFreeMineIndex(Mine _mines[])
 {
-    unsigned int freeIndex = 0;
-
-    while ((freeIndex < MAX_MINE_COUNT) && (_mines[freeIndex].pos != 0))
+    for (int i = 0; i < MAX_MINE_COUNT; i++)
     {
-        freeIndex++;
+        if (_mines[i].pos == 0)
+        {
+            return i;
+        }
     }
 
-    _mines[freeIndex].pos = _position;
-    _mines[freeIndex].bonusMove = _bonusMove;
+    return 0;
 }
 
 int getMineBonusMove(Mine _mines[], unsigned int _position)
@@ -23,7 +23,19 @@ int getMineBonusMove(Mine _mines[], unsigned int _position)
         {
             return _mines[i].bonusMove;
         }
+        else if (_mines[i].pos == 0)
+        {
+            return 0;
+        }
     }
 
     return 0;
+}
+
+void addMine(Mine _mines[], unsigned int _position, int _bonusMove)
+{
+    unsigned int freeIndex = getFreeMineIndex(_mines);
+
+    _mines[freeIndex].pos = _position;
+    _mines[freeIndex].bonusMove = _bonusMove;
 }

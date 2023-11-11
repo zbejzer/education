@@ -1,8 +1,9 @@
 ﻿#include <iostream>
 #include <string>
-#include "constans.h"
-#include "mines.h"
+#include "constants.h"
 #include "player.h"
+#include "mines.h"
+#include "walls.h"
 
 using namespace std;
 
@@ -11,34 +12,25 @@ void initPlayer(Player *_player, int _num);
 void initGame(Game *_game);
 void handleVictory(Game *_game, Player _player[]);
 void handleMove(Game *_game, Player *_player, int _moveValue);
-void handlePrint(Game *_game, Player _player[], char _arg);
+void handlePrint(Player _player[], char _arg);
 void handleLasso(Player *_playerCurrent, Player *_playerTarget);
 void handleMines(Mine _mines[], Player *_player);
 void nextPlayer(Game *_game, Player player[]);
-
-struct Wall
-{
-    int height;
-    unsigned int pos;
-};
 
 struct Game
 {
     int end;
     int player;
     unsigned int boardSize;
-    int wallSet;
-    unsigned int wallFieldNumber;
-    unsigned int wallHeight;
     unsigned int startSeq[MAX_START_SEQUENCE];
     Mine mines[MAX_MINE_COUNT];
+    Wall walls[MAX_WALL_COUNT];
 };
 
 void initGame(Game *_game)
 {
     _game->end = 0;
     _game->player = -1; // preparation for the first game round
-    _game->wallSet = 0;
 
     for (int i = 0; i < MAX_START_SEQUENCE; i++)
     {
@@ -53,6 +45,12 @@ void initGame(Game *_game)
     {
         _game->mines[i].pos = 0;
         _game->mines[i].bonusMove = 0;
+    }
+
+    for (int i = 0; i < MAX_WALL_COUNT; i++)
+    {
+        _game->walls[i].pos = 0;
+        _game->walls[i].height = 0;
     }
 }
 
@@ -82,28 +80,17 @@ void handleVictory(Game *_game, Player _player[])
 
 void handleMove(Game *_game, Player *_player, int _moveValue)
 {
-    if (_game->wallSet)
+    int endMovePlayerPosition = _player->pos + _moveValue;
+
+    while (_player->pos < endMovePlayerPosition && getWallHeight(_game->walls, _player->pos) <= _moveValue)
     {
-        if ((_player->pos <= _game->wallFieldNumber) && (_game->wallFieldNumber <= (_player->pos + _moveValue)))
-        {
-            if (_moveValue >= _game->wallHeight)
-            {
-                _player->pos += _moveValue;
-            }
-            else
-            {
-                _player->pos = _game->wallFieldNumber;
-            }
-        }
-    }
-    else
-    {
-        _player->pos += _moveValue;
+        _player->pos++;
     }
 }
 
-void handlePrint(Game *_game, Player _player[], char _arg)
+void handlePrint(Player _player[], char _arg)
 {
+    // Base players status
     for (int i = 0; i < PLAYER_COUNT; i++)
     {
         if (_player[i].isInactive)
@@ -116,6 +103,7 @@ void handlePrint(Game *_game, Player _player[], char _arg)
         }
     }
 
+    // Extended
     if (_arg == '1')
     {
         unsigned char States = 0;
@@ -184,17 +172,17 @@ void handleMines(Mine _mines[], Player *_player)
                 _player->pos = 0;
             }
 
-            for (int i = 0; i < MAX_MINE_COUNT; i++)
+            for (int checkedField = 0; checkedField < MAX_MINE_COUNT; checkedField++)
             {
-                if (visitedFields[i] == _player->pos)
+                if (visitedFields[checkedField] == _player->pos)
                 {
                     _player->isInactive = 1;
                     cout << "P" << _player->num << " was defeated by mines" << endl;
                     break;
                 }
-                else if (visitedFields[i] == 0)
+                else if (visitedFields[checkedField] == 0)
                 {
-                    visitedFields[i] = _player->pos;
+                    visitedFields[checkedField] = _player->pos;
                     break;
                 }
             }
@@ -221,13 +209,13 @@ int main()
     string command;
 
     Game game;
-    Player player[PLAYER_COUNT];
+    Player players[PLAYER_COUNT];
 
     initGame(&game);
 
     for (int i = 0; i < PLAYER_COUNT; i++)
     {
-        initPlayer(&player[i], i + 1);
+        initPlayer(&players[i], i + 1);
     }
 
     do
@@ -257,7 +245,7 @@ int main()
             {
                 for (int i = 0; i < PLAYER_COUNT; i++)
                 {
-                    player[i].isStarted = 1;
+                    players[i].isStarted = 1;
                 }
             }
         }
@@ -266,19 +254,20 @@ int main()
             unsigned int moveValue;
             cin >> moveValue;
 
-            nextPlayer(&game, player);
+            nextPlayer(&game, players);
 
-            if (!player[game.player].isStarted)
+            if (!players[game.player].isStarted)
             {
-                checkPlayerStartSequence(&player[game.player], game.startSeq, moveValue);
-                player[game.player].isStarted = canPlayerStart(&player[game.player], game.startSeq);
+                checkPlayerStartSequence(&players[game.player], game.startSeq, moveValue);
+                players[game.player].isStarted = canPlayerStart(&players[game.player], game.startSeq);
             }
             else
             {
-                handleMove(&game, &player[game.player], moveValue);
-                handleMines(game.mines, &player[game.player]);
+                handleMove(&game, &players[game.player], moveValue);
+                handleMines(game.mines, &players[game.player]);
             }
-            handleVictory(&game, player);
+
+            handleVictory(&game, players);
         }
         else if (command == "ABORT")
         {
@@ -291,7 +280,7 @@ int main()
             char arg;
             cin >> arg;
 
-            handlePrint(&game, player, arg);
+            handlePrint(players, arg);
         }
         else if (command == "MINED")
         {
@@ -304,9 +293,12 @@ int main()
         }
         else if (command == "WALLED")
         {
-            cin >> game.wallFieldNumber;
-            cin >> game.wallHeight;
-            game.wallSet = 1;
+            unsigned int wallFieldNumber;
+            int wallHeight;
+
+            cin >>wallFieldNumber;
+            cin >> wallHeight;
+            addWall(game.walls, wallFieldNumber, wallHeight);
         }
         else if (command == "LASSO")
         {
@@ -314,12 +306,12 @@ int main()
             cin >> targetPlayer;
             int targetPlayerIndex = stoi(targetPlayer.substr(1, targetPlayer.size() - 1)) - 1;
 
-            nextPlayer(&game, player);
+            nextPlayer(&game, players);
 
-            handleLasso(&player[game.player], &player[targetPlayerIndex]);
-            handleMines(game.mines, &player[game.player]);
-            handleMines(game.mines, &player[targetPlayerIndex]);
-            handleVictory(&game, player);
+            handleLasso(&players[game.player], &players[targetPlayerIndex]);
+            handleMines(game.mines, &players[game.player]);
+            handleMines(game.mines, &players[targetPlayerIndex]);
+            handleVictory(&game, players);
         }
         else
         {
