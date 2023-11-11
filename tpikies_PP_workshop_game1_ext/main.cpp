@@ -1,40 +1,25 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
+#include "constans.h"
+#include "mines.h"
+#include "player.h"
 
 using namespace std;
 
-const int PLAYER_COUNT = 4;
-const int MAX_START_SEQUENCE = 10;
-const int MAX_MINE_COUNT = 100;
-
-struct Mine;
-struct Player;
 struct Game;
 void initPlayer(Player *_player, int _num);
 void initGame(Game *_game);
 void handleVictory(Game *_game, Player _player[]);
-void handlePlayerStart(Game *_game, Player *_player, int _moveValue);
 void handleMove(Game *_game, Player *_player, int _moveValue);
 void handlePrint(Game *_game, Player _player[], char _arg);
 void handleLasso(Player *_playerCurrent, Player *_playerTarget);
 void handleMines(Mine _mines[], Player *_player);
-int hasPlayerStarted(Game *_game, Player *_player);
-void nextPlayer(Game *_game);
-void addMine(Mine _mines[], unsigned int _position, int _bonusMove);
-int getMineBonusMove(Mine _mines[], unsigned int _position);
+void nextPlayer(Game *_game, Player player[]);
 
-struct Mine
+struct Wall
 {
-    int bonusMove;
+    int height;
     unsigned int pos;
-};
-
-struct Player
-{
-    int pos;
-    int num;
-    unsigned int startSeq[MAX_START_SEQUENCE];
-    unsigned int isInactive;
 };
 
 struct Game
@@ -49,25 +34,13 @@ struct Game
     Mine mines[MAX_MINE_COUNT];
 };
 
-void initPlayer(Player *_player, int _num)
-{
-    _player->pos = 0;
-    _player->isInactive = 0;
-    _player->num = _num;
-
-    for (size_t i = 0; i < MAX_START_SEQUENCE; i++)
-    {
-        _player->startSeq[i] = 0;
-    }
-}
-
 void initGame(Game *_game)
 {
     _game->end = 0;
-    _game->player = -1; // exception for the first game round
+    _game->player = -1; // preparation for the first game round
     _game->wallSet = 0;
 
-    for (size_t i = 0; i < MAX_START_SEQUENCE; i++)
+    for (int i = 0; i < MAX_START_SEQUENCE; i++)
     {
         _game->startSeq[i] = 0;
     }
@@ -76,7 +49,7 @@ void initGame(Game *_game)
     _game->startSeq[0] = 1;
     _game->startSeq[1] = 6;
 
-    for (size_t i = 0; i < MAX_MINE_COUNT; i++)
+    for (int i = 0; i < MAX_MINE_COUNT; i++)
     {
         _game->mines[i].pos = 0;
         _game->mines[i].bonusMove = 0;
@@ -87,7 +60,7 @@ void handleVictory(Game *_game, Player _player[])
 {
     unsigned int leftPlayers = PLAYER_COUNT;
 
-    for (size_t i = 0; i < PLAYER_COUNT; i++)
+    for (int i = 0; i < PLAYER_COUNT; i++)
     {
         if (_player[i].pos >= _game->boardSize)
         {
@@ -104,39 +77,6 @@ void handleVictory(Game *_game, Player _player[])
     {
         cout << "DRAW" << endl;
         _game->end = 1;
-    }
-}
-
-void handlePlayerStart(Game *_game, Player *_player, int _moveValue)
-{
-    int index = 0;
-
-    while (_player->startSeq[index] == 1)
-    {
-        index++;
-    }
-
-    if (_game->startSeq[index] != 0)
-    {
-        if (_moveValue == _game->startSeq[index])
-        {
-            _player->startSeq[index] = 1;
-        }
-        else
-        {
-            index = 0;
-
-            while (_game->startSeq[index] != 0)
-            {
-                _player->startSeq[index] = 0;
-                index++;
-            }
-        }
-
-        if (_moveValue == _game->startSeq[0])
-        {
-            _player->startSeq[0] = 1;
-        }
     }
 }
 
@@ -164,7 +104,7 @@ void handleMove(Game *_game, Player *_player, int _moveValue)
 
 void handlePrint(Game *_game, Player _player[], char _arg)
 {
-    for (size_t i = 0; i < PLAYER_COUNT; i++)
+    for (int i = 0; i < PLAYER_COUNT; i++)
     {
         if (_player[i].isInactive)
         {
@@ -181,9 +121,9 @@ void handlePrint(Game *_game, Player _player[], char _arg)
         unsigned char States = 0;
         unsigned char diode = 128; // 0b10000000
 
-        for (size_t i = 0; diode > 0; i++)
+        for (int i = 0; diode > 0; i++)
         {
-            States = States | (diode * hasPlayerStarted(_game, &_player[i]));
+            States = States | (diode * _player[i].isStarted);
             diode = (diode >> 1);
             States = States | (diode * (_player[i].pos % 2));
             diode = (diode >> 1);
@@ -229,96 +169,51 @@ void handleLasso(Player *_playerCurrent, Player *_playerTarget)
 void handleMines(Mine _mines[], Player *_player)
 {
     int bonusMove = getMineBonusMove(_mines, _player->pos);
-    unsigned int visitedFields[MAX_MINE_COUNT];
 
     if (bonusMove != 0)
     {
-        for (size_t i = 0; i < MAX_MINE_COUNT; i++)
-        {
-            visitedFields[i] = 0;
-        }
-
+        unsigned int visitedFields[MAX_MINE_COUNT] = {0};
         visitedFields[0] = _player->pos;
-    }
 
-    while ((bonusMove != 0) && (!_player->isInactive))
-    {
-        _player->pos += bonusMove;
-
-        if (_player->pos < 0)
+        while ((bonusMove != 0) && (!_player->isInactive))
         {
-            _player->pos = 0;
-        }
+            _player->pos += bonusMove;
 
-        for (size_t i = 0; i < MAX_MINE_COUNT; i++)
-        {
-            if (visitedFields[i] == _player->pos)
+            if (_player->pos < 0)
             {
-                _player->isInactive = 1;
-                cout << "P" << _player->num << " was defeated by mines" << endl;
-                break;
+                _player->pos = 0;
             }
-            else if (visitedFields[i] == 0)
+
+            for (int i = 0; i < MAX_MINE_COUNT; i++)
             {
-                visitedFields[i] = _player->pos;
-                break;
+                if (visitedFields[i] == _player->pos)
+                {
+                    _player->isInactive = 1;
+                    cout << "P" << _player->num << " was defeated by mines" << endl;
+                    break;
+                }
+                else if (visitedFields[i] == 0)
+                {
+                    visitedFields[i] = _player->pos;
+                    break;
+                }
             }
-        }
 
-        bonusMove = getMineBonusMove(_mines, _player->pos);
+            bonusMove = getMineBonusMove(_mines, _player->pos);
+        }
     }
 }
 
-int hasPlayerStarted(Game *_game, Player *_player)
+void nextPlayer(Game *_game, Player player[])
 {
-    int index = 0;
-
-    while (_game->startSeq[index] != 0)
+    do
     {
-        if (_player->startSeq[index] == 0)
+        _game->player++;
+        if (_game->player >= PLAYER_COUNT)
         {
-            return 0;
+            _game->player = 0;
         }
-
-        index++;
-    }
-
-    return 1;
-}
-
-void nextPlayer(Game *_game)
-{
-    _game->player++;
-    if (_game->player >= PLAYER_COUNT)
-    {
-        _game->player = 0;
-    }
-}
-
-void addMine(Mine _mines[], unsigned int _position, int _bonusMove)
-{
-    unsigned int freeIndex = 0;
-
-    while ((freeIndex < MAX_MINE_COUNT) && (_mines[freeIndex].pos != 0))
-    {
-        freeIndex++;
-    }
-
-    _mines[freeIndex].pos = _position;
-    _mines[freeIndex].bonusMove = _bonusMove;
-}
-
-int getMineBonusMove(Mine _mines[], unsigned int _position)
-{
-    for (size_t i = 0; i < MAX_MINE_COUNT; i++)
-    {
-        if (_mines[i].pos == _position)
-        {
-            return _mines[i].bonusMove;
-        }
-    }
-
-    return 0;
+    } while (player[_game->player].isInactive);
 }
 
 int main()
@@ -330,7 +225,7 @@ int main()
 
     initGame(&game);
 
-    for (size_t i = 0; i < PLAYER_COUNT; i++)
+    for (int i = 0; i < PLAYER_COUNT; i++)
     {
         initPlayer(&player[i], i + 1);
     }
@@ -348,12 +243,22 @@ int main()
             int initSeqLength;
             cin >> initSeqLength;
 
+            // Overwriting default start sequence
             game.startSeq[0] = 0;
             game.startSeq[1] = 0;
 
-            for (size_t i = 0; i < initSeqLength; i++)
+            for (int i = 0; i < initSeqLength; i++)
             {
                 cin >> game.startSeq[i];
+            }
+
+            // No start requirements 
+            if (initSeqLength == 0)
+            {
+                for (int i = 0; i < PLAYER_COUNT; i++)
+                {
+                    player[i].isStarted = 1;
+                }
             }
         }
         else if (command == "MOVE")
@@ -361,14 +266,12 @@ int main()
             unsigned int moveValue;
             cin >> moveValue;
 
-            do
-            {
-                nextPlayer(&game);
-            } while (player[game.player].isInactive);
+            nextPlayer(&game, player);
 
-            if (!hasPlayerStarted(&game, &player[game.player]))
+            if (!player[game.player].isStarted)
             {
-                handlePlayerStart(&game, &player[game.player], moveValue);
+                checkPlayerStartSequence(&player[game.player], game.startSeq, moveValue);
+                player[game.player].isStarted = canPlayerStart(&player[game.player], game.startSeq);
             }
             else
             {
@@ -411,10 +314,7 @@ int main()
             cin >> targetPlayer;
             int targetPlayerIndex = stoi(targetPlayer.substr(1, targetPlayer.size() - 1)) - 1;
 
-            do
-            {
-                nextPlayer(&game);
-            } while (player[game.player].isInactive);
+            nextPlayer(&game, player);
 
             handleLasso(&player[game.player], &player[targetPlayerIndex]);
             handleMines(game.mines, &player[game.player]);
