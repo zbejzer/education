@@ -39,3 +39,11 @@ int canPlayerStart(Player *_player, unsigned int _gameStartSeq[])
         
     return 0;
 }
+
+void startAllPlayers(Player _players[])
+{
+    for (int i = 0; i < PLAYER_COUNT; i++)
+    {
+        _players[i].isStarted = 1;
+    }
+}
