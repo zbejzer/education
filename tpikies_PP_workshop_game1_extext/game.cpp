@@ -65,50 +65,6 @@ void handleMove(Game *_game, Player *_player, int _moveValue)
     }
 }
 
-void handlePrint(Player _player[], char _arg)
-{
-    // Base players status
-    for (int i = 0; i < PLAYER_COUNT; i++)
-    {
-        if (_player[i].isInactive)
-        {
-            cout << "X ";
-        }
-        else
-        {
-            cout << _player[i].pos << " ";
-        }
-    }
-
-    // Extended
-    if (_arg == '1')
-    {
-        unsigned char States = 0;
-        unsigned char diode = 128; // 0b10000000
-
-        for (int i = 0; diode > 0; i++)
-        {
-            States = States | (diode * _player[i].isStarted);
-            diode = (diode >> 1);
-            States = States | (diode * (_player[i].pos % 2));
-            diode = (diode >> 1);
-        }
-
-        for (unsigned int i = 0; i < 8; i++)
-        {
-            if (States & (1 << (7 - i)))
-            {
-                cout << 1;
-            }
-            else
-            {
-                cout << 0;
-            }
-        }
-    }
-    cout << endl;
-}
-
 void handleLasso(Player *_playerCurrent, Player *_playerTarget)
 {
     int reverseDirection = (_playerTarget->pos < _playerCurrent->pos);

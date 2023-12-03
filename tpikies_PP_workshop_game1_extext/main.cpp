@@ -5,6 +5,7 @@
 #include "mines.h"
 #include "walls.h"
 #include "game.h"
+#include "print.h"
 
 using namespace std;
 
@@ -75,12 +76,16 @@ int main()
             cout << "ABORTED" << endl;
             game.end = 1;
         }
+        else if (command == "ABORT_S")
+        {
+            game.end = 1;
+        }
         else if (command == "PRINT")
         {
             char arg;
             cin >> arg;
 
-            handlePrint(players, arg);
+            handlePrint(players, game.boardSize, arg);
         }
         else if (command == "MINED")
         {
