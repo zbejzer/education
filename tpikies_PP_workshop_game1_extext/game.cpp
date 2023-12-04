@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 #include "game.h"
 
@@ -55,9 +56,9 @@ void handleVictory(Game *_game, Player _player[])
     }
 }
 
-void handleMove(Game *_game, Player *_player, int _moveValue)
+void handleMove(Game *_game, Player *_player, unsigned int _moveValue)
 {
-    int endMovePlayerPosition = _player->pos + _moveValue;
+    const unsigned int endMovePlayerPosition = _player->pos + _moveValue;
 
     while (_player->pos < endMovePlayerPosition && getWallHeight(_game->walls, _player->pos) <= _moveValue)
     {
@@ -67,9 +68,8 @@ void handleMove(Game *_game, Player *_player, int _moveValue)
 
 void handleLasso(Player *_playerCurrent, Player *_playerTarget)
 {
-    int reverseDirection = (_playerTarget->pos < _playerCurrent->pos);
-
-    if (reverseDirection)
+    // reverse direction
+    if (_playerTarget->pos < _playerCurrent->pos)
     {
         if ((_playerCurrent->pos - _playerTarget->pos) >= 2)
         {
@@ -89,38 +89,33 @@ void handleLasso(Player *_playerCurrent, Player *_playerTarget)
 
 void handleMines(Mine _mines[], Player *_player)
 {
-    int bonusMove = getMineBonusMove(_mines, _player->pos);
+    int bonus_move = getMineBonusMove(_mines, _player->pos);
 
-    if (bonusMove != 0)
+    if (bonus_move != 0)
     {
-        unsigned int visitedFields[MAX_MINE_COUNT] = {0};
-        visitedFields[0] = _player->pos;
+        unsigned int visited_fields[MAX_MINE_COUNT] = {0};
+        visited_fields[0] = _player->pos;
 
-        while ((bonusMove != 0) && (!_player->isInactive))
+        while ((bonus_move != 0) && (!_player->isInactive))
         {
-            _player->pos += bonusMove;
+            _player->pos = max(0, bonus_move + (int)_player->pos);
 
-            if (_player->pos < 0)
+            for (int checked_field = 0; checked_field < MAX_MINE_COUNT; checked_field++)
             {
-                _player->pos = 0;
-            }
-
-            for (int checkedField = 0; checkedField < MAX_MINE_COUNT; checkedField++)
-            {
-                if (visitedFields[checkedField] == _player->pos)
+                if (visited_fields[checked_field] == _player->pos)
                 {
                     _player->isInactive = 1;
                     cout << "P" << _player->num << " was defeated by mines" << endl;
                     break;
                 }
-                else if (visitedFields[checkedField] == 0)
+                else if (visited_fields[checked_field] == 0)
                 {
-                    visitedFields[checkedField] = _player->pos;
+                    visited_fields[checked_field] = _player->pos;
                     break;
                 }
             }
 
-            bonusMove = getMineBonusMove(_mines, _player->pos);
+            bonus_move = getMineBonusMove(_mines, _player->pos);
         }
     }
 }

@@ -15,7 +15,7 @@ unsigned int getFreeWallIndex(Wall _walls[])
     return 0;
 }
 
-int getWallHeight(Wall _walls[], unsigned int _position)
+unsigned int getWallHeight(Wall _walls[], unsigned int _position)
 {
     for (int i = 0; i < MAX_WALL_COUNT; i++)
     {
@@ -32,7 +32,7 @@ int getWallHeight(Wall _walls[], unsigned int _position)
     return 0;
 }
 
-void addWall(Wall _walls[], unsigned int _position, int _height)
+void addWall(Wall _walls[], unsigned int _position, unsigned int _height)
 {
     unsigned int freeIndex = getFreeWallIndex(_walls);
 

@@ -1,11 +1,11 @@
-﻿#include <iostream>
-#include <string>
 #include "constants.h"
-#include "player.h"
-#include "mines.h"
-#include "walls.h"
 #include "game.h"
+#include "mines.h"
+#include "player.h"
 #include "print.h"
+#include "walls.h"
+#include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -18,7 +18,7 @@ int main()
 
     initGame(&game);
 
-    for (int i = 0; i < PLAYER_COUNT; i++)
+    for (unsigned int i = 0; i < PLAYER_COUNT; i++)
     {
         initPlayer(&players[i], i + 1);
     }
@@ -45,7 +45,7 @@ int main()
                 cin >> game.startSeq[i];
             }
 
-            // No start requirements 
+            // No start requirements
             if (initSeqLength == 0)
             {
                 startAllPlayers(players);
@@ -101,7 +101,7 @@ int main()
             unsigned int wallFieldNumber;
             int wallHeight;
 
-            cin >>wallFieldNumber;
+            cin >> wallFieldNumber;
             cin >> wallHeight;
             addWall(game.walls, wallFieldNumber, wallHeight);
         }

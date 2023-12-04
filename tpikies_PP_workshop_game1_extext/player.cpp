@@ -2,7 +2,7 @@
 
 #include "constants.h"
 
-void initPlayer(Player *_player, int _num)
+void initPlayer(Player *_player, unsigned int _num)
 {
     _player->pos = 0;
     _player->num = _num;
@@ -11,7 +11,7 @@ void initPlayer(Player *_player, int _num)
     _player->isStarted = 0;
 }
 
-void checkPlayerStartSequence(Player *_player, unsigned int _gameStartSeq[], int _moveValue)
+void checkPlayerStartSequence(Player *_player, unsigned int _gameStartSeq[], unsigned int _moveValue)
 {
     if (_gameStartSeq[_player->passedStartSeq] != 0)
     {
@@ -30,7 +30,7 @@ void checkPlayerStartSequence(Player *_player, unsigned int _gameStartSeq[], int
     }
 }
 
-int canPlayerStart(Player *_player, unsigned int _gameStartSeq[])
+unsigned char canPlayerStart(Player *_player, unsigned int _gameStartSeq[])
 {
     if (_player->passedStartSeq >= MAX_START_SEQUENCE || _gameStartSeq[_player->passedStartSeq] == 0)
     {
