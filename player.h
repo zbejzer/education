@@ -6,7 +6,7 @@
 
 enum PlayerColor
 {
-	black,
+	white,
 	red
 };
 

@@ -14,8 +14,13 @@ int main()
     initScreen(&game_window, &menu_window);
     drawBoard(&game_window);
 
-    // Game game;
-    // initGame(&game);
+    Game game;
+    initGame(&game);
+
+    Player players[2];
+    players[0] = createPlayer(PlayerColor::red);
+    players[1] = createPlayer(PlayerColor::white);
+    drawPlayerPieces(&game_window, players[0]);
 
     /*while (!game.isEnd)
     {
