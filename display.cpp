@@ -70,7 +70,7 @@ void printUpperField(WINDOW **game_window, const int start_y, const int start_x,
     wprintw(*game_window, num_string);
 
     for (size_t y = 0; y < field_height; y++)
-    {1
+    {
         wmove(*game_window, start_y + y, start_x);
         wprintw(*game_window, "===");
     }
