@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.cps": "javascript",
+        "cstdint": "cpp",
+        "cstdio": "cpp"
+    }
+}
