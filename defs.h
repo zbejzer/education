@@ -1,0 +1,16 @@
+#pragma once
+
+// #define ENABLE_FULLSCREEN_MODE
+#define ENABLE_DEBUG_LOG
+// #define ENABLE_VERBOSE_LOG
+
+#define SLOW_TIMER_INTERVAL 0.5
+#define FAST_TIMER_INTERVAL 0.05
+
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
+#define MAX_FPS 250
+
+#define BASE_GAME_UNIT 18
+#define BASE_SPEED_FACTOR 0.05
+#define GRAVITY_FACTOR 10
