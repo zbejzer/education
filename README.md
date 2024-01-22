@@ -1,3 +1,3 @@
-# First stage of project for WAI
+# Second stage of project for WAI
 
-### A very simple website that uses Web Storage API and jQuery
+### A very simple website that uses MVC model implemented in PHP along with MongoDB
