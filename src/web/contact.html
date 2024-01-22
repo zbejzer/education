@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="assets/styles/loading-bar.css">
+    <link rel="stylesheet" href="assets/styles/core.css">
+    <link rel="stylesheet" href="assets/styles/common.css">
+    <link rel="stylesheet" href="assets/styles/contact.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+    <script data-pace-options='{ "ajax": true, "document": true, "eventLag": true }'
+        src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+    <script src="assets/scripts/darkMode.js"></script>
+    <script src="assets/scripts/checkScriptEnabled.js"></script>
+    <script src="assets/scripts/loading.js"></script>
+    <script src="assets/scripts/location.js"></script>
+    <title>Druk 3D</title>
+</head>
+
+<body class="light-mode">
+    <div id="loading-cover"></div>
+    <header>
+        <div id="sub-navbar" class="sub-navbar js-dependant no-location">
+            <div class="sub-navbar-container" id="location">
+                Twoja lokalizacja:
+            </div>
+        </div>
+        <div class="navbar">
+            <a href="index.html">
+                <div class="nav-item">
+                    Strona główna
+                </div>
+            </a>
+            <a href="history.html">
+                <div class="nav-item">
+                    Historia
+                </div>
+            </a>
+            <a href="contact.html">
+                <div class="nav-item active">
+                    Kontakt
+                </div>
+            </a>
+            <div class="flex-expand"></div>
+            <div class="js-dependant">
+                <button id="toggleDarkMode">Tryb ciemny</button>
+            </div>
+        </div>
+    </header>
+    <div>
+        <div class="container">
+            <form class="contact-form" action="odbierz.php" method="post">
+                <div>Imię:</div><input type="text" name="name">
+                <div>E-mail:</div><input type="email" name="email">
+                <div>Treść:</div><input type="text" name="content">
+                <div class="form-send-button">
+                    <div>
+                        <input type="reset" value="Resetuj" class="ui-button">
+                        <input type="submit" value="Wyślij" class="ui-button">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <footer>
+        <div class="footer">
+            <div>
+                Stanisław Borodziuk © 2023
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+:root {
+    --color-primary: #FFB300;
+    --color-primary-subtle: #ffc233;
+
+    --color-navbar-active-text: #212121;
+    --color-navbar-active-bg: #fff;
+    --color-navbar-text: #212121;
+
+    --font-large: 3.6rem;
+    --font-normal: 2.2rem;
+    --font-small: 1.6rem;
+
+    --navbar-height: 10rem;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    margin: 0;
+    color: var(--body-text);
+    background-color: var(--color-background);
+    font-size: var(--font-normal);
+    font-family: 'Roboto', sans-serif;
+
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+.dark-mode {
+    --color-background: #34495E;
+    --body-text: #FAFAFA;
+    --body-bg: #2C3E50;
+}
+
+.light-mode {
+    --color-background: #EEEEEE;
+    --body-text: #212121;
+    --body-bg: #fff;
+}

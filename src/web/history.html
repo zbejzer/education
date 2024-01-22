@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="assets/styles/loading-bar.css">
+    <link rel="stylesheet" href="assets/styles/core.css">
+    <link rel="stylesheet" href="assets/styles/common.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+    <script data-pace-options='{ "ajax": true, "document": true, "eventLag": true }'
+        src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+    <script src="assets/scripts/darkMode.js"></script>
+    <script src="assets/scripts/checkScriptEnabled.js"></script>
+    <script src="assets/scripts/loading.js"></script>
+    <script src="assets/scripts/location.js"></script>
+    <script>
+        $(function () {
+            $("#accordion").accordion();
+        });
+    </script>
+    <title>Druk 3D</title>
+</head>
+
+<body class="light-mode">
+    <div id="loading-cover"></div>
+    <header>
+        <div id="sub-navbar" class="sub-navbar js-dependant no-location">
+            <div class="sub-navbar-container" id="location">
+                Twoja lokalizacja:
+            </div>
+        </div>
+        <div class="navbar">
+            <a href="index.html">
+                <div class="nav-item">
+                    Strona główna
+                </div>
+            </a>
+            <a href="history.html">
+                <div class="nav-item active">
+                    Historia
+                </div>
+            </a>
+            <a href="contact.html">
+                <div class="nav-item">
+                    Kontakt
+                </div>
+            </a>
+            <div class="flex-expand"></div>
+            <div class="js-dependant">
+                <button id="toggleDarkMode">Tryb ciemny</button>
+            </div>
+        </div>
+    </header>
+    <div>
+        <div class="container">
+            <div id="accordion">
+                <h3>Początki druku 3D</h3>
+                <div>
+                    <p>
+                        Historia druku 3D sięga lat 80. XX wieku, kiedy to Chuck Hull, amerykański inżynier, wynalazł
+                        technologię
+                        stereolitografii. W 1984 roku Hull opatentował swój wynalazek, co uważa się za punkt początkowy
+                        rozwoju
+                        druku 3D.
+                        Stereolitografia polega na utwardzaniu ciekłego polimeru za pomocą promieniowania
+                        ultrafioletowego
+                        laserowego, warstwa
+                        po warstwie, aż do stworzenia trójwymiarowego obiektu.
+                    </p>
+                </div>
+                <h3>Technologia FDM</h3>
+                <div>
+                    <p>
+                        Kolejnym kamieniem milowym w historii druku 3D było wprowadzenie technologii Fused Deposition
+                        Modeling
+                        (FDM) przez
+                        Scotta Crumpa w 1988 roku. Ta metoda polega na warstwowym nakładaniu stopionego plastiku, który
+                        twardnieje, tworząc
+                        trójwymiarowy model. FDM stało się popularne ze względu na dostępność i stosunkowo niskie
+                        koszty.
+                    </p>
+                </div>
+                <h3>Dalszy rozwój</h3>
+                <div>
+                    <p>
+                        Wraz z upływem czasu, technologie druku 3D ulegały stałemu rozwojowi. Pojawiły się różne metody,
+                        takie
+                        jak Selective
+                        Laser Sintering (SLS), która wykorzystuje laser do utwardzania materiałów sypkich, czy Electron
+                        Beam
+                        Melting (EBM),
+                        wykorzystujące wiązkę elektronów. Te innowacje umożliwiły produkcję bardziej złożonych i
+                        precyzyjnych
+                        elementów.
+                    </p>
+                </div>
+                <h3>Ostatnie lata</h3>
+                <div>
+                    <p>
+                        W ciągu ostatnich kilku lat druk 3D znalazł zastosowanie w różnych dziedzinach, takich jak
+                        medycyna,
+                        przemysł lotniczy,
+                        czy nawet produkcja żywności. Drukowanie 3D pozwala na szybkie i elastyczne tworzenie
+                        prototypów, a
+                        także produkcję
+                        niestandardowych części. W miarę postępu technologii, można się spodziewać dalszego rozwoju i
+                        zastosowań
+                        tej
+                        fascynującej dziedziny.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="footer">
+            <div>
+                Stanisław Borodziuk © 2023
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
