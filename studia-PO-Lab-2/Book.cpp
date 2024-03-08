@@ -75,8 +75,8 @@ Book& Book::operator=(const Book& book)
 
 Book& Book::operator=(Book&& book) noexcept
 {
-	std::swap(author, book.author);
-	std::swap(title, book.title);
+	author = std::move(book.author);
+	title = std::move(book.title);
 
 	return *this;
 }
