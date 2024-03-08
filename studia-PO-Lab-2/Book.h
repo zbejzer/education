@@ -18,5 +18,5 @@ public:
 	void setTitle(std::string&& _title);
 
 	Book& operator=(const Book& book);
-	Book& operator=(Book&& book);
+	Book& operator=(Book&& book) noexcept;
 };

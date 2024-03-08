@@ -27,9 +27,12 @@ Book::Book(const Book& book)
 }
 
 Book::Book(Book&& book) noexcept
-	: author(std::move(book.author))
-	, title(std::move(book.title))
 {
+	std::swap(author, book.author);
+	std::swap(title, book.title);
+
+	book.author = "";
+	book.title = "";
 }
 
 std::string Book::getAuthor() const
@@ -70,10 +73,10 @@ Book& Book::operator=(const Book& book)
 	return *this;
 }
 
-Book& Book::operator=(Book&& book)
+Book& Book::operator=(Book&& book) noexcept
 {
-	author = std::move(book.author);
-	title = std::move(book.title);
+	std::swap(author, book.author);
+	std::swap(title, book.title);
 
 	return *this;
 }
