@@ -9,7 +9,7 @@ public:
 	Book(const std::string& _author, const std::string& _title);
 	Book(std::string&& _author, std::string&& _title);
 	Book(const Book& book);
-	Book(Book&& book);
+	Book(Book&& book) noexcept;
 	std::string getAuthor() const;
 	std::string getTitle() const;
 	void setAuthor(const std::string& _author);
