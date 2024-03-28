@@ -136,7 +136,6 @@
     <ClCompile Include="Node.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Constants.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="PostfixNotation.h" />

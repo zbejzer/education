@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Constants.h"
-
 #include <iostream>
 
 class Token
 {
+    static constexpr int TOKEN_SIZE = 20;
     char string[TOKEN_SIZE];
 
   public:
@@ -22,4 +21,6 @@ class Token
     bool isMinMax() const;
 
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
+    friend std::istream &operator>>(std::istream &is, Token &token);
 };
+

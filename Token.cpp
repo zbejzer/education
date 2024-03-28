@@ -6,7 +6,7 @@
 
 Token &Token::operator=(const Token &other)
 {
-    std::copy(std::begin(other.string), std::end(other.string), std::begin(this->string));
+    this->setString(other.string);
 
     return *this;
 }
@@ -28,62 +28,32 @@ void Token::setString(const char (&string)[TOKEN_SIZE])
 
 bool Token::isNumber() const
 {
-    if (string[0] >= '0' && string[0] <= '9')
-    {
-        return true;
-    }
-
-    return false;
+    return string[0] >= '0' && string[0] <= '9';
 }
 
 bool Token::isComma() const
 {
-    if (string[0]== ',')
-    {
-        return true;
-    }
-
-    return false;
+    return string[0] == ',';
 }
 
 bool Token::isDot() const
 {
-    if (string[0] == '.')
-    {
-        return true;
-    }
-
-    return false;
+    return string[0] == '.';
 }
 
 bool Token::isLeftParenthesis() const
 {
-    if (string[0] == '(')
-    {
-        return true;
-    }
-
-    return false;
+    return string[0] == '(';
 }
 
 bool Token::isRightParenthesis() const
 {
-    if (string[0] == ')')
-    {
-        return true;
-    }
-
-    return false;
+    return string[0] == ')';
 }
 
 bool Token::isMinMax() const
 {
-    if (strcmp(string, "MAX") == 0 || strcmp(string, "MIN") == 0)
-    {
-        return true;
-    }
-
-    return false;
+    return strcmp(string, "MAX") == 0 || strcmp(string, "MIN") == 0;
 }
 
 std::ostream &operator<<(std::ostream &os, const Token &token)
@@ -91,4 +61,10 @@ std::ostream &operator<<(std::ostream &os, const Token &token)
     os << token.string;
 
     return os;
+}
+
+std::istream &operator>>(std::istream &is, Token &token)
+{
+    is >> token.string;
+    return is;
 }

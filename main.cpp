@@ -1,6 +1,5 @@
 #include <iostream>
 
-#include "Constants.h"
 #include "PostfixNotation.h"
 
 using namespace std;
@@ -8,7 +7,6 @@ using namespace std;
 int main()
 {
     size_t case_count;
-    char string[TOKEN_SIZE] = "";
     Token token;
     cin >> case_count;
 
@@ -17,10 +15,9 @@ int main()
         PostfixNotation postfix_notation;
         do
         {
-            cin >> string;
-            token.setString(string);
+            cin >> token;
             postfix_notation.addAndParseToken(token);
-        } while (string[0] != '.');
+        } while (!token.isDot());
 
         postfix_notation.printCurrentStatus();
 
