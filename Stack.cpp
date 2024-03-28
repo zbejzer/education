@@ -31,7 +31,7 @@ void Stack::print()
     Node *ptr = front;
     while (ptr != nullptr)
     {
-        std::cout << ptr->token.string << " ";
+        std::cout << ptr->token << " ";
         ptr = ptr->next;
     }
 }

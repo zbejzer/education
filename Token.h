@@ -2,10 +2,13 @@
 
 #include "Constants.h"
 
-struct Token
+#include <iostream>
+
+class Token
 {
     char string[TOKEN_SIZE];
 
+  public:
     Token &operator=(const Token &right);
     Token();
     Token(const char (&string)[TOKEN_SIZE]);
@@ -17,4 +20,6 @@ struct Token
     bool isLeftParenthesis() const;
     bool isRightParenthesis() const;
     bool isMinMax() const;
+
+    friend std::ostream &operator<<(std::ostream &os, const Token &token);
 };

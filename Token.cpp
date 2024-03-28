@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <iostream>
 
 Token &Token::operator=(const Token &other)
 {
@@ -83,4 +84,11 @@ bool Token::isMinMax() const
     }
 
     return false;
+}
+
+std::ostream &operator<<(std::ostream &os, const Token &token)
+{
+    os << token.string;
+
+    return os;
 }
