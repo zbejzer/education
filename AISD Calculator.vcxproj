@@ -127,7 +127,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Helpers.cpp" />
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PostfixNotation.cpp" />
@@ -136,7 +135,6 @@
     <ClCompile Include="Node.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Helpers.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="PostfixNotation.h" />
     <ClInclude Include="Stack.h" />

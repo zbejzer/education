@@ -1,7 +1,5 @@
 #include "PostfixNotation.h"
 
-#include "Helpers.h"
-
 void PostfixNotation::addAndParseToken(const Token &token)
 {
     if (token.isNumber())
