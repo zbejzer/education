@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TokenNode.h"
+#include "Node.h"
 
 class Stack
 {

@@ -132,7 +132,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PostfixNotation.cpp" />
     <ClCompile Include="Stack.cpp" />
-    <ClCompile Include="TokenNode.cpp" />
+    <ClCompile Include="Token.cpp" />
+    <ClCompile Include="Node.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -140,7 +141,8 @@
     <ClInclude Include="Queue.h" />
     <ClInclude Include="PostfixNotation.h" />
     <ClInclude Include="Stack.h" />
-    <ClInclude Include="TokenNode.h" />
+    <ClInclude Include="Token.h" />
+    <ClInclude Include="Node.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

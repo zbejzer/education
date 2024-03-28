@@ -1,4 +1,5 @@
 #include "Queue.h"
+
 #include <iostream>
 
 void Queue::enqueue(Token &token)
@@ -32,7 +33,7 @@ void Queue::print()
     Node *ptr = front;
     while (ptr != nullptr)
     {
-        std::cout << ptr->data.data << " ";
+        std::cout << ptr->data.string << " ";
         ptr = ptr->next;
     }
 }
