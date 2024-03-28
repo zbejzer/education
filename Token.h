@@ -11,4 +11,9 @@ struct Token
     Token(const char (&string)[TOKEN_SIZE]);
 
     bool isNumber() const;
+    bool isComma() const;
+    bool isDot() const;
+    bool isLeftParenthesis() const;
+    bool isRightParenthesis() const;
+    bool isMinMax() const;
 };

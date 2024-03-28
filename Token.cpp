@@ -1,6 +1,7 @@
 #include "Token.h"
 
 #include <algorithm>
+#include <cstring>
 
 Token &Token::operator=(const Token &other)
 {
@@ -11,7 +12,7 @@ Token &Token::operator=(const Token &other)
 
 Token::Token()
 {
-    strcpy(string, "");
+    string[0] = '\0';
 }
 
 Token::Token(const char (&string)[TOKEN_SIZE])
@@ -22,6 +23,56 @@ Token::Token(const char (&string)[TOKEN_SIZE])
 bool Token::isNumber() const
 {
     if (string[0] >= '0' && string[0] <= '9')
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool Token::isComma() const
+{
+    if (string[0]== ',')
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool Token::isDot() const
+{
+    if (string[0] == '.')
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool Token::isLeftParenthesis() const
+{
+    if (string[0] == '(')
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool Token::isRightParenthesis() const
+{
+    if (string[0] == ')')
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool Token::isMinMax() const
+{
+    if (strcmp(string, "MAX") == 0 || strcmp(string, "MIN") == 0)
     {
         return true;
     }
