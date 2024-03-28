@@ -19,7 +19,7 @@ void Queue::push(Token &token)
 
 Token Queue::pop()
 {
-    Token return_token = front->data;
+    Token return_token = front->token;
     Node *new_front = front->next;
     delete front;
     front = new_front;
@@ -32,7 +32,7 @@ void Queue::print()
     Node *ptr = front;
     while (ptr != nullptr)
     {
-        std::cout << ptr->data.string << " ";
+        std::cout << ptr->token.string << " ";
         ptr = ptr->next;
     }
 }

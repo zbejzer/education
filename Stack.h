@@ -4,5 +4,13 @@
 
 class Stack
 {
-    Node *root;
+    Node *front;
+
+  public:
+    void push(Token &token);
+    Token pop();
+    void print();
+
+    Stack();
+    ~Stack();
 };

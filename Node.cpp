@@ -6,5 +6,5 @@ Node::Node() : next(nullptr)
 
 Node::Node(Token &token) : next(nullptr)
 {
-    this->data = token;
+    this->token = token;
 }

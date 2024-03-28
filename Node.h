@@ -5,7 +5,7 @@
 struct Node
 {
     Node *next;
-    Token data;
+    Token token;
 
     Node();
     Node(Token &value);
