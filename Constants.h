@@ -1,3 +1,3 @@
 #pragma once
 
-#define TOKEN_SIZE 20
+constexpr int TOKEN_SIZE = 20;
