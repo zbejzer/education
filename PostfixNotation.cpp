@@ -6,7 +6,7 @@ void PostfixNotation::addAndParseToken(Token token)
 {
     if (token.isNumber())
     {
-        output.enqueue(token);
+        output.push(token);
     }
 }
 

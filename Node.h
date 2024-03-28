@@ -4,7 +4,7 @@
 
 struct Node
 {
-    Node *prev, *next;
+    Node *next;
     Token data;
 
     Node();

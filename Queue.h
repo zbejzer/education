@@ -7,8 +7,8 @@ class Queue
     Node *front, *rear;
 
   public:
-    void enqueue(Token &token);
-    Token dequeue();
+    void push(Token &token);
+    Token pop();
     void print();
 
     Queue();

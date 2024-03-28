@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-void Queue::enqueue(Token &token)
+void Queue::push(Token &token)
 {
     if (front == nullptr)
     {
@@ -12,16 +12,15 @@ void Queue::enqueue(Token &token)
     else
     {
         Node *newNode = new Node(token);
-        newNode->prev = rear;
         rear->next = newNode;
         rear = newNode;
     }
 }
 
-Token Queue::dequeue()
+Token Queue::pop()
 {
     Token return_token = front->data;
-    Node *new_front = front->prev;
+    Node *new_front = front->next;
     delete front;
     front = new_front;
 
