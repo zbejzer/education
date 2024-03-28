@@ -7,8 +7,10 @@ class Stack
     Node *front;
 
   public:
-    void push(Token &token);
+    void push(const Token &token);
     Token pop();
+    const Token &top() const;
+    bool empty() const;
     void print();
 
     Stack();
