@@ -17,6 +17,11 @@ Token::Token()
 
 Token::Token(const char (&string)[TOKEN_SIZE])
 {
+    this->setString(string);
+}
+
+void Token::setString(const char (&string)[TOKEN_SIZE])
+{
     std::copy(std::begin(string), std::end(string), std::begin(this->string));
 }
 

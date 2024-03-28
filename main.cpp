@@ -9,6 +9,7 @@ int main()
 {
     size_t case_count;
     char string[TOKEN_SIZE] = "";
+    Token token;
     cin >> case_count;
 
     for (size_t i = 0; i < case_count; i++)
@@ -17,7 +18,8 @@ int main()
         do
         {
             cin >> string;
-            postfix_notation.addAndParseToken(Token(string));
+            token.setString(string);
+            postfix_notation.addAndParseToken(token);
         } while (string[0] != '.');
 
         postfix_notation.printCurrentStatus();

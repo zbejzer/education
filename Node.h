@@ -8,5 +8,5 @@ struct Node
     Token token;
 
     Node();
-    Node(Token &value);
+    Node(const Token &value);
 };

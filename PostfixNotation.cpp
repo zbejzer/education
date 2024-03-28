@@ -2,7 +2,7 @@
 
 #include "Helpers.h"
 
-void PostfixNotation::addAndParseToken(Token token)
+void PostfixNotation::addAndParseToken(const Token &token)
 {
     if (token.isNumber())
     {

@@ -10,6 +10,7 @@ struct Token
     Token();
     Token(const char (&string)[TOKEN_SIZE]);
 
+    void setString(const char (&string)[TOKEN_SIZE]);
     bool isNumber() const;
     bool isComma() const;
     bool isDot() const;

@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-void Queue::push(Token &token)
+void Queue::push(const Token &token)
 {
     if (front == nullptr)
     {

@@ -10,7 +10,7 @@ class PostfixNotation
     Stack operators;
 
   public:
-    void addAndParseToken(Token token);
+    void addAndParseToken(const Token &token);
     void printCurrentStatus();
     void calculate();
 

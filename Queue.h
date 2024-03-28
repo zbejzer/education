@@ -7,7 +7,7 @@ class Queue
     Node *front, *rear;
 
   public:
-    void push(Token &token);
+    void push(const Token &token);
     Token pop();
     void print();
 
