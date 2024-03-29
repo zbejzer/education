@@ -1,12 +1,18 @@
 #pragma once
 
-#include "Token.h"
-
-struct Node
+template <typename T> struct Node
 {
     Node *next;
-    Token token;
+    T value;
 
     Node();
-    Node(const Token &value);
+    Node(const T &value);
 };
+
+template <typename T> Node<T>::Node() : next(nullptr)
+{
+}
+
+template <typename T> Node<T>::Node(const T &value) : value(value), next(nullptr)
+{
+}

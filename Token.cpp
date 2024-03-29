@@ -1,8 +1,6 @@
 #include "Token.h"
 
-#include <algorithm>
 #include <cstring>
-#include <iostream>
 
 Token &Token::operator=(const Token &other)
 {
@@ -21,9 +19,17 @@ Token::Token(const char (&string)[TOKEN_SIZE])
     this->setString(string);
 }
 
+// the only thing that we add to is MIN and MAX, so we can assume
+// the starting point is always 3 chars past the beginning of the string
+// there is also an assumption that the num has no more than 16 digits
+void Token::addToString(const int num)
+{
+    sprintf(this->string + 3 * sizeof(char), "%d", num);
+}
+
 void Token::setString(const char (&string)[TOKEN_SIZE])
 {
-    std::copy(std::begin(string), std::end(string), std::begin(this->string));
+    std::strcpy(this->string, string);
 }
 
 bool Token::isNumber() const
@@ -53,13 +59,38 @@ bool Token::isRightParenthesis() const
 
 bool Token::isMinMax() const
 {
-    return strcmp(string, "MAX") == 0 || strcmp(string, "MIN") == 0;
+    return string[0] == 'M';
+}
+
+bool Token::isFunction() const
+{
+    return string[0] == 'M' || string[0] == 'N' || string[0] == 'I';
+}
+
+unsigned int Token::getPrecedence() const
+{
+    switch (string[0])
+    {
+    case '+':
+    case '-':
+        return 1;
+    case '*':
+    case '/':
+        return 2;
+    case 'I':
+        return 3;
+    case 'N':
+        return 4;
+    case 'M':
+        return 5;
+    default:
+        return 0;
+    }
 }
 
 std::ostream &operator<<(std::ostream &os, const Token &token)
 {
     os << token.string;
-
     return os;
 }
 
