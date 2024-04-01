@@ -83,6 +83,28 @@ void PostfixNotation::printCurrentStatus() const
     std::cout << "\n";
 }
 
+void PostfixNotation::printOutputQueue() const
+{
+    output.print(2);
+    std::cout << "\n";
+}
+
+void PostfixNotation::printCalculationOperandsStack() const
+{
+    calc_operands.print(1);
+    std::cout << "\n";
+}
+
+void PostfixNotation::calculate()
+{
+    while (!isCalculated())
+    {
+        // DEBUG
+        // cout << "Calculating next step\n";
+        calculateNextStep();
+    }
+}
+
 // TODO: Handle division by 0 error
 void PostfixNotation::calculateNextStep()
 {
@@ -94,6 +116,10 @@ void PostfixNotation::calculateNextStep()
     if (!output.empty())
     {
         // now the top of output is a function
+
+        std::cout << output.front() << " ";
+        calc_operands.print();
+        std::cout << "\n";
 
         int result;
 

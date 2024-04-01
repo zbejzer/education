@@ -16,6 +16,7 @@ template <typename T> class Queue
     T &front();
     bool empty() const;
     void print() const;
+    void print(unsigned int whitespace_count) const;
 
     Queue();
     ~Queue();
@@ -78,7 +79,21 @@ template <typename T> void Queue<T>::print() const
     Node<Token> *ptr = front_node;
     while (ptr != nullptr)
     {
-        std::cout << ptr->value << "  ";
+        std::cout << ptr->value << " ";
+        ptr = ptr->next;
+    }
+}
+
+template <typename T> inline void Queue<T>::print(unsigned int whitespace_count) const
+{
+    Node<Token> *ptr = front_node;
+    while (ptr != nullptr)
+    {
+        std::cout << ptr->value;
+        for (unsigned int i = 0; i < whitespace_count; i++)
+        {
+            std::cout << " ";
+        }
         ptr = ptr->next;
     }
 }

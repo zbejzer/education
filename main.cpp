@@ -4,7 +4,6 @@
 
 using namespace std;
 
-// TODO: Adjust cout output to match the desired one
 int main()
 {
     size_t case_count;
@@ -20,14 +19,11 @@ int main()
             postfix_notation.addAndParseToken(token);
         } while (!token.isDot());
 
-        postfix_notation.printCurrentStatus();
-
-        while (!postfix_notation.isCalculated())
-        {
-            cout << "Calculating next step\n";
-            postfix_notation.calculateNextStep();
-            postfix_notation.printCurrentStatus();
-        }
+        // DEBUG
+        // postfix_notation.printCurrentStatus();
+        postfix_notation.printOutputQueue();
+        postfix_notation.calculate();
+        postfix_notation.printCalculationOperandsStack();
     }
 
     return 0;

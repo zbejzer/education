@@ -14,6 +14,7 @@ template <typename T> class Stack
     T &top();
     bool empty() const;
     void print() const;
+    void print(unsigned int whitespace_count) const;
 
     Stack();
     ~Stack();
@@ -60,7 +61,21 @@ template <typename T> void Stack<T>::print() const
     Node<T> *ptr = front_node;
     while (ptr != nullptr)
     {
-        std::cout << ptr->value << "  ";
+        std::cout << ptr->value << " ";
+        ptr = ptr->next;
+    }
+}
+
+template <typename T> inline void Stack<T>::print(unsigned int whitespace_count) const
+{
+    Node<T> *ptr = front_node;
+    while (ptr != nullptr)
+    {
+        std::cout << ptr->value;
+        for (unsigned int i = 0; i < whitespace_count; i++)
+        {
+            std::cout << " ";
+        }
         ptr = ptr->next;
     }
 }

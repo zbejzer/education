@@ -11,10 +11,14 @@ class PostfixNotation
     Stack<int> args_counter;
     Stack<int> calc_operands;
 
+    void calculateNextStep();
+
   public:
     void addAndParseToken(const Token &token);
     void printCurrentStatus() const;
-    void calculateNextStep();
+    void printOutputQueue() const;
+    void printCalculationOperandsStack() const;
+    void calculate();
 
     bool isCalculated();
 };
