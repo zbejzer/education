@@ -62,6 +62,12 @@ bool Token::isMinMax() const
     return string[0] == 'M';
 }
 
+// assert the token is a MIN or MAX
+bool Token::isMin() const
+{
+    return string[1] == 'I';
+}
+
 bool Token::isFunction() const
 {
     return string[0] == 'M' || string[0] == 'N' || string[0] == 'I';
@@ -86,6 +92,23 @@ unsigned int Token::getPrecedence() const
     default:
         return 0;
     }
+}
+
+// assert the token is an int
+int Token::toInt() const
+{
+    return atoi(string);
+}
+
+// assert the token is a MIN or MAX
+unsigned int Token::getMinMaxArgCount() const
+{
+    return atoi(string + 3 * sizeof(char));
+}
+
+char Token::getFirstChar()
+{
+    return string[0];
 }
 
 std::ostream &operator<<(std::ostream &os, const Token &token)

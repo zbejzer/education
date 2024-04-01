@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+// TODO: Change the is* functions to a single function that returns enum
+
 class Token
 {
     static constexpr int TOKEN_SIZE = 20;
@@ -20,8 +22,12 @@ class Token
     bool isLeftParenthesis() const;
     bool isRightParenthesis() const;
     bool isMinMax() const;
+    bool isMin() const;
     bool isFunction() const;
     unsigned int getPrecedence() const;
+    int toInt() const;
+    unsigned int getMinMaxArgCount() const;
+    char getFirstChar();
 
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
     friend std::istream &operator>>(std::istream &is, Token &token);
