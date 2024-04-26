@@ -10,6 +10,8 @@ public:
 
 	static Game* getInstance();
 	static void setInstance(Game* new_instance);
+	static void destroyInstance(Game* instance);
+	static void destroyInstance();
 
 	void nextTurn();
 };

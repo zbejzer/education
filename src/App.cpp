@@ -20,7 +20,23 @@ App* App::getInstance()
 
 void App::setInstance(App* new_instance)
 {
-	App:instance = new_instance;
+	instance = new_instance;
+}
+
+void App::destroyInstance(App* instance)
+{
+	if (instance != nullptr)
+	{
+		delete instance;
+	}
+	else {
+		SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Attempted to destroy null app instance");
+	}
+}
+
+void App::destroyInstance()
+{
+	destroyInstance(App::instance);
 }
 
 void App::initSDL()
@@ -63,7 +79,7 @@ void App::initSDL()
 	};
 
 	SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-	SDL_ShowCursor(SDL_DISABLE);
+	SDL_ShowCursor(SDL_ENABLE);
 }
 
 void App::deinitSDL()
@@ -83,25 +99,29 @@ void App::calculateDeltaTime()
 
 void App::doInput()
 {
+	Game& game = *Game::getInstance();
 	while (SDL_PollEvent(&event))
 	{
 		switch (event.type)
 		{
 		case SDL_KEYDOWN:
+		{
+			// SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Key pressed: %s", SDL_GetKeyName(event.key.keysym.sym));
 			switch (event.key.keysym.sym)
 			{
 			case SDLK_ESCAPE:
-				Game::getInstance()->quit = 1;
+				game.quit = 1;
 				[[fallthrough]];
-			case SDLK_KP_ENTER:
-				Game::getInstance()->nextTurn();
+			case SDLK_RETURN:
+				game.nextTurn();
 				[[fallthrough]];
 			default:
 				break;
 			}
 			break;
+		}
 		case SDL_QUIT:
-			Game::getInstance()->quit = 1;
+			game.quit = 1;
 			break;
 		};
 	};
@@ -109,7 +129,7 @@ void App::doInput()
 
 void App::prepareScene()
 {
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_SetRenderDrawColor(renderer, 33, 33, 33, 255);
 	SDL_RenderClear(renderer);
 }
 

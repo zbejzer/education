@@ -3,7 +3,7 @@
 #include <SDL.h>
 
 #define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 1024
+#define SCREEN_HEIGHT 720
 
 // #define ENABLE_FULLSCREEN_MODE
 #define ENABLE_FPS_LOG
@@ -25,6 +25,8 @@ public:
 
     static App* getInstance();
     static void setInstance(App* new_instance);
+    static void destroyInstance(App* instance);
+    static void destroyInstance();
     static const double inputTimeout;
 
     void initSDL();
