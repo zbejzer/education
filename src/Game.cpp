@@ -1,5 +1,7 @@
 #include "Game.h"
 
+#include <SDL.h>
+
 Game* Game::instance = nullptr;
 
 Game::Game()
@@ -35,4 +37,5 @@ void Game::destroyInstance()
 
 void Game::nextTurn()
 {
+	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Next turn.\n");
 }
