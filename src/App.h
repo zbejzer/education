@@ -27,7 +27,6 @@ public:
     static void setInstance(App* new_instance);
     static void destroyInstance(App* instance);
     static void destroyInstance();
-    static const double inputTimeout;
 
     void initSDL();
     void deinitSDL();

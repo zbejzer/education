@@ -1,7 +1,6 @@
 #include "App.h"
 #include "Game.h"
 
-const double App::inputTimeout = 0.5;
 App* App::instance = nullptr;
 
 App::App()
