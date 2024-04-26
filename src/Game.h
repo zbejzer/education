@@ -1,7 +1,16 @@
 #pragma once
+
+#include <list>
+
+#include "Entity.h"
+
+using namespace std;
+
 class Game
 {
 	static Game* instance;
+	list<Entity*> entities;
+	double board_scale;
 
 public:
 	char quit;
@@ -14,4 +23,8 @@ public:
 	static void destroyInstance();
 
 	void nextTurn();
+	void registerEntity(Entity *entity);
+	const list<Entity*>& getEntities();
+	void setBoardScale(const double& scale);
+	const double& getBoardScale() const;
 };

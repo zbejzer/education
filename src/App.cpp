@@ -1,5 +1,6 @@
 #include "App.h"
 #include "Game.h"
+#include "Entity.h"
 
 App* App::instance = nullptr;
 
@@ -133,13 +134,20 @@ void App::doInput()
 
 void App::prepareScene()
 {
+	Game& game = *Game::getInstance();
+	const list<Entity*>& entities = game.getEntities();
 	SDL_SetRenderDrawColor(renderer, 33, 33, 33, 255);
 	SDL_RenderClear(renderer);
+
+	for (Entity *i : entities)
+	{
+		// TODO: handle drawing of each entity
+	}
 }
 
 void App::presentScene()
 {
-	SDL_RenderPresent(renderer);
+	SDL_RenderPresent(renderer); 
 }
 
 void App::registerTexture(SDL_Texture* texture)
