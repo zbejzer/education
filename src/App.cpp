@@ -83,7 +83,12 @@ void App::initSDL()
 
 void App::deinitSDL()
 {
-	// freeing all surfaces
+	// freeing all textures
+	for (SDL_Texture* i : textures)
+	{
+		SDL_DestroyTexture(i);
+	}
+
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
@@ -135,4 +140,9 @@ void App::prepareScene()
 void App::presentScene()
 {
 	SDL_RenderPresent(renderer);
+}
+
+void App::registerTexture(SDL_Texture* texture)
+{
+	textures.push_back(texture);
 }
