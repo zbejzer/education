@@ -41,13 +41,16 @@ void Board::createBoard()
 
 void Board::destroyBoard(unsigned char** board) const
 {
-	for (unsigned char i = 0; i < size; i++)
+	if (board != nullptr)
 	{
-		delete[] board[i];
-	}
-	delete[] board;
+		for (unsigned char i = 0; i < size; i++)
+		{
+			delete[] board[i];
+		}
+		delete[] board;
 
-	board = nullptr;
+		board = nullptr;
+	}	
 }
 
 void Board::destroyBoard()
@@ -89,40 +92,56 @@ unsigned char** Board::createAdjustedBoard(const unsigned char pawn_colour) cons
 
 void Board::handleQuestion(char* question)
 {
-	if (strcmp(question, "BOARD_SIZE") == 0)
+	if (question[0] == '\0' || question[0] == ' ')
+	{
+		return;
+	}
+	else if (strcmp(question, "BOARD_SIZE") == 0)
 	{
 		printf("%d\n", size);
 	}
 	else if (strcmp(question, "PAWNS_NUMBER") == 0)
 	{
-		printf("%d\n", red + blue);
+		printf("%d\n\n", red + blue);
 	}
 	else if (strcmp(question, "IS_BOARD_CORRECT") == 0)
 	{
-		if ((red == blue + 1) || (red == blue))
+		if (isBoardPossible())
 		{
-			printf("YES\n");
+			printf("YES\n\n");
 		}
 		else
 		{
-			printf("NO\n");
+			printf("NO\n\n");
 		}
 	}
 	else if (strcmp(question, "IS_GAME_OVER") == 0)
 	{
-		switch (isGameOver())
+		if (isBoardPossible())
 		{
-		case PAWN_RED:
-			printf("YES RED\n");
-			break;
-		case PAWN_BLUE:
-			printf("YES BLUE\n");
-			break;
-		default:
-			printf("NO\n");
-			break;
+			switch (isGameOver())
+			{
+			case PAWN_RED:
+				printf("YES RED\n\n");
+				break;
+			case PAWN_BLUE:
+				printf("YES BLUE\n\n");
+				break;
+			default:
+				printf("NO\n\n");
+				break;
+			}
+		}
+		else
+		{
+			printf("NO\n\n");
 		}
 	}
+}
+
+bool Board::isBoardPossible() const
+{
+	return (red == blue + 1) || (red == blue);
 }
 
 void Board::debugPrint(unsigned char** board) const

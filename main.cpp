@@ -33,7 +33,7 @@ int main()
 	char buff[96] = "";
 	cin.getline(buff, 96);
 
-	while (cin.good())
+	while (cin.good() && !cin.eof())
 	{
 		Board board;
 		board.size = static_cast<unsigned char>((strlen(buff) - 1) / 3);
@@ -85,13 +85,11 @@ int main()
 		// board.debugPrint();
 
 		buff[0] = '\0';
-		while (buff[0] != ' ')
+		while (buff[0] != ' ' && cin.good() && !cin.eof())
 		{
 			cin.getline(buff, 96);
 			board.handleQuestion(buff);
 		}
-
-		board.destroyBoard();
 	}
 
 	return 0;

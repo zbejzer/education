@@ -1,7 +1,7 @@
 #include "board.hpp"
 #include "stack.hpp"
 
-unsigned char Board::isGameOver()
+unsigned char Board::isGameOver() const
 {
 	static const char d_row[6] = { -1,  0, 1, -1, 1, 0 };
 	static const char d_col[6] = { -1, -1, 0,  0, 1, 1 };
@@ -58,11 +58,10 @@ unsigned char Board::isGameOver()
 			}
 		}
 
-		cur_pos = to_visit.top();
-
 		while (!to_visit.empty() && cur_pos.col != size - 1)
 		{
 			// to_visit.print();
+			cur_pos = to_visit.top();
 			visited[cur_pos.col][cur_pos.row] = true;
 			to_visit.pop();
 
@@ -76,8 +75,6 @@ unsigned char Board::isGameOver()
 					to_visit.push(Pos(static_cast<unsigned char>(test_col), static_cast<unsigned char>(test_row)));
 				}
 			}
-
-			cur_pos = to_visit.top();
 		}
 
 		for (unsigned char i = 0; i < size; i++)

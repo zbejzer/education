@@ -31,7 +31,8 @@ public:
 	void destroyBoard();
 	unsigned char** createAdjustedBoard(const unsigned char pawn_colour) const;
 	void handleQuestion(char* question);
-	unsigned char isGameOver();
+	bool isBoardPossible() const;
+	unsigned char isGameOver() const;
 	void debugPrint(unsigned char** board) const;
 	void debugPrint() const;
 };
