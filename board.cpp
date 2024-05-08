@@ -1,7 +1,6 @@
 #include "board.hpp"
 
 #include <cstdio>
-#include <cstring>
 #include <ostream>
 
 bool Board::posInRange(short col, short row) const
@@ -90,55 +89,6 @@ unsigned char** Board::createAdjustedBoard(const unsigned char pawn_colour) cons
 	return new_board;
 }
 
-void Board::handleQuestion(char* question)
-{
-	if (question[0] == '\0' || question[0] == ' ')
-	{
-		return;
-	}
-	else if (strcmp(question, "BOARD_SIZE") == 0)
-	{
-		printf("%d\n", size);
-	}
-	else if (strcmp(question, "PAWNS_NUMBER") == 0)
-	{
-		printf("%d\n\n", red + blue);
-	}
-	else if (strcmp(question, "IS_BOARD_CORRECT") == 0)
-	{
-		if (isBoardPossible())
-		{
-			printf("YES\n\n");
-		}
-		else
-		{
-			printf("NO\n\n");
-		}
-	}
-	else if (strcmp(question, "IS_GAME_OVER") == 0)
-	{
-		if (isBoardPossible())
-		{
-			switch (isGameOver())
-			{
-			case PAWN_RED:
-				printf("YES RED\n\n");
-				break;
-			case PAWN_BLUE:
-				printf("YES BLUE\n\n");
-				break;
-			default:
-				printf("NO\n\n");
-				break;
-			}
-		}
-		else
-		{
-			printf("NO\n\n");
-		}
-	}
-}
-
 bool Board::isBoardPossible() const
 {
 	return (red == blue + 1) || (red == blue);
@@ -194,8 +144,7 @@ Pos::Pos(unsigned char col, unsigned char row) : col(col), row(row)
 
 std::ostream& operator<<(std::ostream& os, const Pos& pos)
 {
-	char buf[32];
-	buf[0] = '\0';
+	char buf[32] = "";
 
 	static_cast<void>(sprintf_s(buf, "(%u , %u)", pos.col, pos.row));
 	os << buf;
