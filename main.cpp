@@ -4,6 +4,29 @@
 
 using namespace	std;
 
+// Transforming this input
+//           ---
+//        --<   >--
+//     --< b >-<   >--
+//  --< r >-<   >-<   >--
+// < b >-< b >-<   >-< r >
+//  --<   >-< r >-< b >--
+//     --<   >-< r >--
+//        --<   >--
+//           ---
+//
+// into
+// 
+// /-------\
+// | | | |r|
+// |-+-+-+-|
+// |b| | |b|
+// |-+-+-+-|
+// |r|b|r|r|
+// |-+-+-+-|
+// |b| | | |
+// \-------/
+
 int main()
 {
 	char buff[96] = "";
@@ -12,7 +35,7 @@ int main()
 	while (cin.good())
 	{
 		Board board;
-		board.size = (strlen(buff) - 1) / 3;
+		board.size = static_cast<unsigned char>((strlen(buff) - 1) / 3);
 		board.createBoard();
 		buff[0] = '\0';
 
@@ -58,10 +81,13 @@ int main()
 			buff[0] = '\0';
 		}
 
+		// board.debugPrint();
+
 		buff[0] = '\0';
 		while (buff[0] != ' ')
 		{
 			cin.getline(buff, 96);
+			board.handleQuestion(buff);
 		}
 
 		board.destroyBoard();
