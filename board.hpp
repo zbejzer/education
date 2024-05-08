@@ -6,13 +6,15 @@
 
 class Board
 {
+public:
 	unsigned char** board;
 	unsigned char size;
+	unsigned char red, blue;
 
-public:
 	Board();
+	~Board();
 	void setSize(const unsigned char& size);
 	void createBoard();
 	void destroyBoard();
+	void debugPrint();
 };
-

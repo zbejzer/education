@@ -1,9 +1,21 @@
 #include "board.hpp"
 
+#include <cstdio>
+
 Board::Board()
 	: board(nullptr)
 	, size(0)
+	, red(0)
+	, blue(0)
 {
+}
+
+Board::~Board()
+{
+	if (board != nullptr)
+	{
+		destroyBoard();
+	}
 }
 
 void Board::setSize(const unsigned char& size)
