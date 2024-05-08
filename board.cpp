@@ -42,3 +42,25 @@ void Board::destroyBoard()
 
 	board = nullptr;
 }
+
+void Board::debugPrint()
+{
+	for (size_t row = 0; row < size + 1; row++)
+	{
+		for (size_t col = 0; col < size + 1; col++) {
+			if (row == 0)
+			{
+				printf("%-3d", static_cast<int>(col));
+			}
+			else if (col == 0)
+			{
+				printf("%-3d", static_cast<int>(row));
+			}
+			else
+			{
+				printf("%-3c", board[col - 1][row - 1]);
+			}
+		}
+		printf("\n");
+	}
+}
