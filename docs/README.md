@@ -282,9 +282,9 @@ Then red, as it plays optimally, wins by making the move:
 `CAN_RED_WIN_IN_2_MOVES_WITH_PERFECT_OPPONENT` -> `NO`  
 `CAN_BLUE_WIN_IN_2_MOVES_WITH_PERFECT_OPPONENT` -> `YES`
 
-Aktualny ruch należy do gracza niebieskiego i wykonuje on posunięcie oznaczone `*`. Teraz ma on możliwość zakończenia ruchu na trzy sposoby: 1, 2 lub 3. Czerwony nie może zablokować tych trzech pól jednym pionem. Mógłby temu zapobiec tylko wtedy gdyby sam mógł zakończyć grę po pierwszym ruchu niebieskiego. Niestety nie dysponuje takim ruchem, zatem niebieski wygrywa w dwóch posunięciach.
+Aktualny ruch należy do gracza niebieskiego i wykonuje on posunięcie oznaczone `*`. Teraz ma on możliwość zakończenia ruchu na trzy sposoby: `1`, `2` lub `3`. Czerwony nie może zablokować tych trzech pól jednym pionem. Mógłby temu zapobiec tylko wtedy gdyby sam mógł zakończyć grę po pierwszym ruchu niebieskiego. Niestety nie dysponuje takim ruchem, zatem niebieski wygrywa w dwóch posunięciach.
 
-The current move belongs to the blue player, and they make a move marked with `*`. Now, they have the opportunity to end their turn in three ways: 1, 2, or 3. Red cannot block these three spaces with one pawn. Red could only prevent this if they could end the game after blue's first move. Unfortunately, red doesn't have such a move, so blue wins in two moves.
+The current move belongs to the blue player, and they make a move marked with `*`. Now, they have the opportunity to end their turn in three ways: `1`, `2`, or `3`. Red cannot block these three spaces with one pawn. Red could only prevent this if they could end the game after blue's first move. Unfortunately, red doesn't have such a move, so blue wins in two moves.
 
 ```
                       ---
