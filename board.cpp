@@ -1,6 +1,7 @@
 #include "board.hpp"
 
 #include <cstdio>
+#include <cstring>
 
 Board::Board()
 	: board(nullptr)
@@ -41,6 +42,34 @@ void Board::destroyBoard()
 	delete[] board;
 
 	board = nullptr;
+}
+
+void Board::handleQuestion(char* question)
+{
+	if (strcmp(question, "BOARD_SIZE"))
+	{
+		printf("%d\n", size);
+	}
+	else if (strcmp(question, "PAWNS_NUMBER"))
+	{
+		printf("%d\n", red + blue);
+	}
+	else if (strcmp(question, "IS_BOARD_CORRECT"))
+	{
+		if (isBoardCorrect())
+		{
+			printf("YES\n");
+		}
+		else
+		{
+			printf("NO\n");
+		}
+	}
+}
+
+bool Board::isBoardCorrect()
+{
+	return (red == blue + 1) || (red == blue);
 }
 
 void Board::debugPrint()

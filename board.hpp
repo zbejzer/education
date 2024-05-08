@@ -16,5 +16,7 @@ public:
 	void setSize(const unsigned char& size);
 	void createBoard();
 	void destroyBoard();
+	void handleQuestion(char* question);
+	bool isBoardCorrect();
 	void debugPrint();
 };
