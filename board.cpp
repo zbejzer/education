@@ -39,7 +39,7 @@ void Board::createBoard()
 	}
 }
 
-void Board::destroyBoard(unsigned char** board)
+void Board::destroyBoard(unsigned char** board) const
 {
 	for (unsigned char i = 0; i < size; i++)
 	{
@@ -55,7 +55,7 @@ void Board::destroyBoard()
 	destroyBoard(this->board);
 }
 
-unsigned char** Board::createAdjustedBoard(const unsigned char pawn_color) const
+unsigned char** Board::createAdjustedBoard(const unsigned char pawn_colour) const
 {
 	unsigned char** new_board = new unsigned char* [size];
 	for (unsigned char i = 0; i < size; i++)
@@ -63,7 +63,7 @@ unsigned char** Board::createAdjustedBoard(const unsigned char pawn_color) const
 		new_board[i] = new unsigned char[size];
 	}
 
-	if (pawn_color == PAWN_RED)
+	if (pawn_colour == PAWN_RED)
 	{
 		for (unsigned char row = 0; row < size; row++)
 		{
@@ -125,11 +125,11 @@ void Board::handleQuestion(char* question)
 	}
 }
 
-void Board::debugPrint(unsigned char** board)
+void Board::debugPrint(unsigned char** board) const
 {
-	for (size_t row = 0; row < size + 1; row++)
+	for (unsigned char row = 0; row < size + 1; row++)
 	{
-		for (size_t col = 0; col < size + 1; col++) {
+		for (unsigned char col = 0; col < size + 1; col++) {
 			if (row == 0 && col > 0)
 			{
 				printf("%-3d", static_cast<int>(col - 1));
@@ -160,7 +160,7 @@ void Board::debugPrint(unsigned char** board)
 	}
 }
 
-void Board::debugPrint()
+void Board::debugPrint() const
 {
 	debugPrint(this->board);
 }

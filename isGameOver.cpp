@@ -52,7 +52,7 @@ unsigned char Board::isGameOver()
 
 		for (unsigned char row = 0; row < size; row++)
 		{
-			if (!visited[0][row] && test_board[0][row] == target_pawn[pawn_i])
+			if (test_board[0][row] == target_pawn[pawn_i])
 			{
 				to_visit.push(Pos(0, row));
 			}

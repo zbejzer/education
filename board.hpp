@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include <ostream>
 
 #define PAWN_EMPTY 0
 #define PAWN_RED 1
@@ -27,11 +27,11 @@ public:
 	~Board();
 	void setSize(const unsigned char size);
 	void createBoard();
-	void destroyBoard(unsigned char** board);
+	void destroyBoard(unsigned char** board) const;
 	void destroyBoard();
-	unsigned char** createAdjustedBoard(const unsigned char pawn_color) const;
+	unsigned char** createAdjustedBoard(const unsigned char pawn_colour) const;
 	void handleQuestion(char* question);
 	unsigned char isGameOver();
-	void debugPrint(unsigned char** board);
-	void debugPrint();
+	void debugPrint(unsigned char** board) const;
+	void debugPrint() const;
 };
