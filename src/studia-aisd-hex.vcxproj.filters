@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Tests">
-      <UniqueIdentifier>{496d28e5-3db6-4ab3-8495-700573cfd4f4}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -41,13 +38,5 @@
     <ClInclude Include="node.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="tests\6.in.txt">
-      <Filter>Tests</Filter>
-    </Text>
-    <Text Include="tests\6.out.txt">
-      <Filter>Tests</Filter>
-    </Text>
   </ItemGroup>
 </Project>
