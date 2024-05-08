@@ -320,9 +320,9 @@ The game is over, red has won, so there's no need to analyze further moves. Ther
        ---
 ```
 
-`CAN_RED_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT`
-`CAN_BLUE_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT`
-`CAN_RED_WIN_IN_2_MOVES_WITH_NAIVE_OPPONENT`
+`CAN_RED_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT`  
+`CAN_BLUE_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT`  
+`CAN_RED_WIN_IN_2_MOVES_WITH_NAIVE_OPPONENT`  
 `CAN_BLUE_WIN_IN_2_MOVES_WITH_NAIVE_OPPONENT`
 
 Czerwony nie może wygrać w drugim posunięciu bo zawsze wygrywa w pierwszym.
