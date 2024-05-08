@@ -18,7 +18,7 @@ void Board::handleQuestion(char* question) const
 	}
 	else if (strcmp(question, "IS_BOARD_CORRECT") == 0)
 	{
-		if (isBoardPossible())
+		if (isBoardCorrect())
 		{
 			printf("YES\n\n");
 		}
@@ -29,7 +29,7 @@ void Board::handleQuestion(char* question) const
 	}
 	else if (strcmp(question, "IS_GAME_OVER") == 0)
 	{
-		if (isBoardPossible())
+		if (isBoardCorrect())
 		{
 			switch (isGameOver())
 			{

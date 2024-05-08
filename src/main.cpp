@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "board.hpp"
+#include "utility.hpp"
 
 using namespace	std;
 
@@ -37,7 +38,7 @@ int main()
 	{
 		Board board;
 		board.size = static_cast<unsigned char>((strlen(buff) - 1) / 3);
-		board.createBoard();
+		board.board = create2DArray<unsigned char>(board.size);
 		buff[0] = '\0';
 
 		for (unsigned char line = 0; line < board.size * 2; line++)

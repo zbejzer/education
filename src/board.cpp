@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <ostream>
 
+#include "utility.hpp"
+
 bool Board::posInRange(short col, short row) const
 {
 	return col >= 0 && row >= 0 && col < size && row < size;
@@ -18,10 +20,7 @@ Board::Board()
 
 Board::~Board()
 {
-	if (board != nullptr)
-	{
-		destroyBoard();
-	}
+	destroy2DArray<unsigned char>(board, size);
 }
 
 void Board::setSize(const unsigned char size)
@@ -29,41 +28,9 @@ void Board::setSize(const unsigned char size)
 	this->size = size;
 }
 
-void Board::createBoard()
-{
-	board = new unsigned char* [size];
-	for (unsigned char i = 0; i < size; i++)
-	{
-		board[i] = new unsigned char[size];
-	}
-}
-
-void Board::destroyBoard(unsigned char** board) const
-{
-	if (board != nullptr)
-	{
-		for (unsigned char i = 0; i < size; i++)
-		{
-			delete[] board[i];
-		}
-		delete[] board;
-
-		board = nullptr;
-	}	
-}
-
-void Board::destroyBoard()
-{
-	destroyBoard(this->board);
-}
-
 unsigned char** Board::createAdjustedBoard(const unsigned char pawn_colour) const
 {
-	unsigned char** new_board = new unsigned char* [size];
-	for (unsigned char i = 0; i < size; i++)
-	{
-		new_board[i] = new unsigned char[size];
-	}
+	unsigned char** new_board = create2DArray<unsigned char>(size);
 
 	if (pawn_colour == PAWN_RED)
 	{
@@ -89,7 +56,7 @@ unsigned char** Board::createAdjustedBoard(const unsigned char pawn_colour) cons
 	return new_board;
 }
 
-bool Board::isBoardPossible() const
+bool Board::isBoardCorrect() const
 {
 	return (red == blue + 1) || (red == blue);
 }

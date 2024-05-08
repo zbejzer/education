@@ -26,13 +26,12 @@ public:
 	Board();
 	~Board();
 	void setSize(const unsigned char size);
-	void createBoard();
-	void destroyBoard(unsigned char** board) const;
-	void destroyBoard();
 	unsigned char** createAdjustedBoard(const unsigned char pawn_colour) const;
 	void handleQuestion(char* question) const;
-	bool isBoardPossible() const;
+	bool isBoardCorrect() const;
+	bool isGameOver(const unsigned char pawn_colour) const;
 	unsigned char isGameOver() const;
+	bool isBoardPossible() const;
 	void debugPrint(unsigned char** board) const;
 	void debugPrint() const;
 };
