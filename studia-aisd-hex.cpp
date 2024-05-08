@@ -1,4 +1,4 @@
-#include <cstdio>
+#include <iostream>
 
 #include "board.hpp"
 
@@ -6,22 +6,66 @@ using namespace	std;
 
 int main()
 {
-    char buf = 0;
+	char buff[96] = "";
+	cin.getline(buff, 96);
 
-	while (buf != EOF)
+	while (cin.good())
 	{
-		unsigned char size = 0;
 		Board board;
-		while (buf != '\n')
-		{
-			buf = static_cast<char>(getchar());
-			size++;
-		}
-		
-		board.setSize((size - 2) / 3);
+		board.size = (strlen(buff) - 1) / 3;
 		board.createBoard();
+		buff[0] = '\0';
+
+		for (unsigned char line = 0; line < board.size * 2; line++)
+		{
+			unsigned char offset = 0;
+			while (buff[0] != '\n')
+			{
+				cin.get(buff[0]);
+
+				if (buff[0] == '<') {
+					unsigned char row, col;
+					static_cast<void>(cin.get());
+					cin.get(buff[0]);
+
+					if (line < board.size)
+					{
+						row = line - offset;
+						col = offset;
+					}
+					else
+					{
+						row = board.size - offset - 1;
+						col = line - board.size + offset + 1;
+					}
+
+					if (buff[0] == 'r') {
+						board.board[col][row] = PAWN_RED;
+						board.red++;
+					}
+					else if (buff[0] == 'b')
+					{
+						board.board[col][row] = PAWN_BLUE;
+						board.blue++;
+					}
+					else
+					{
+						board.board[col][row] = PAWN_EMPTY;
+					}
+					offset++;
+				}
+			}
+			buff[0] = '\0';
+		}
+
+		buff[0] = '\0';
+		while (buff[0] != ' ')
+		{
+			cin.getline(buff, 96);
+		}
+
 		board.destroyBoard();
 	}
 
-    return 0;
+	return 0;
 }
