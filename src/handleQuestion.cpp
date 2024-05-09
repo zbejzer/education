@@ -49,4 +49,15 @@ void Board::handleQuestion(char* question) const
 			printf("NO\n\n");
 		}
 	}
+	else if (strcmp(question, "IS_BOARD_POSSIBLE") == 0)
+	{
+		if (isBoardPossible())
+		{
+			printf("YES\n\n");
+		}
+		else
+		{
+			printf("NO\n\n");
+		}
+	}
 }

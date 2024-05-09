@@ -31,6 +31,7 @@ public:
 	bool isBoardCorrect() const;
 	bool isGameOver(const unsigned char pawn_colour) const;
 	unsigned char isGameOver() const;
+	bool isLossPossible(const unsigned char pawn_colour) const;
 	bool isBoardPossible() const;
 	void debugPrint(unsigned char** board) const;
 	void debugPrint() const;
