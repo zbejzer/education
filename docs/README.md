@@ -101,7 +101,7 @@ Zapytanie może mieć następującą postać/A query can take the following form
 Ciąg odpowiedzi, przynajmniej jedna na każdy przypadek testowy, rozdzielonych białym znakiem. Możliwe odpowiedzi dla każdego z przypadków testowych są następujące:
 
 - `BOARD_SIZE` - liczba z przedziału <1;11> określająca rozmiar planszy. [(przykładowe wyjście/sample output - test 1)](../test/0.out.txt)
-- PAWNS_NUMBER - liczba z przedziału <0;121> określająca liczbę pionów obydwu graczy znajdującą się na planszy. [(przykładowe wyjście/sample output - test 2)](../test/2.out.txt)
+- `PAWNS_NUMBER` - liczba z przedziału <0;121> określająca liczbę pionów obydwu graczy znajdującą się na planszy. [(przykładowe wyjście/sample output - test 2)](../test/2.out.txt)
 - `IS_BOARD_CORRECT` - odpowiedź w postaci `YES`/`NO` oznaczająca czy stan planszy jest poprawny, innymi słowy czy liczba pionów jednego z graczy jest odpowiednia w stosunku liczby pionów drugiego gracza. [(przykładowe wyjście/sample output - test 3)](../test/4.out.txt)
 - `IS_GAME_OVER` - odpowiedź w postaci `YES RED`/`YES BLUE`/`NO` oznaczająca, czy (i jeśli tak, to który) z graczy zakończył rozgrywkę, czy połączył dwa należące do niego boki planszy nieprzerwaną ścieżką swojego koloru. [(przykładowe wyjście/sample output - test 4)](../test/6.out.txt)
 - `IS_BOARD_POSSIBLE` odpowiedź w postaci `YES`/`NO` oznaczająca, czy stan planszy jest możliwy. Oznacza to, że plansza jest poprawna i że osiągnięcie takiego stanu nie oznaczało przeoczenia wcześniejszej wygranej jednego z graczy. [(przykładowe wyjście/sample output - test 5)](../test/11.out.txt)
@@ -122,7 +122,7 @@ Dla ostatnich dwóch przypadków można zastosować algorytm [Mini-Max](https://
 A sequence of responses, at least one for each test case, separated by whitespace. Possible responses for each test case are as follows:
 
 - `BOARD_SIZE` - a number from the range <1;11> indicating the size of the board. [(sample output - test 1)](../test/0.out.txt)
-- PAWNS_NUMBER - a number from the range <0;121> indicating the number of pawns of both players on the board. [(sample output - test 2)](../test/2.out.txt)
+- `PAWNS_NUMBER` - a number from the range <0;121> indicating the number of pawns of both players on the board. [(sample output - test 2)](../test/2.out.txt)
 - `IS_BOARD_CORRECT` - a `YES`/`NO` response indicating whether the state of the board is correct, in other words, whether the number of pawns of one player is appropriate relative to the number of pawns of the other player. [(sample output - test 3)](../test/4.out.txt)
 - `IS_GAME_OVER` - a `YES RED`/`YES BLUE`/`NO` response indicating whether (and if so, which) player has ended the game, i.e., whether they have connected two edges of the board with an uninterrupted path of their color. [(sample output - test 4)](../test/6.out.txt)
 - `IS_BOARD_POSSIBLE` - a `YES`/`NO` response indicating whether the state of the board is possible. This means that the board is correct and that achieving such a state did not result in overlooking an earlier win by one of the players. [(sample output - test 5)](testsEX/11.out.txt)
