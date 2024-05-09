@@ -33,6 +33,8 @@ public:
 	unsigned char isGameOver() const;
 	bool isLossPossible(const unsigned char pawn_colour) const;
 	bool isBoardPossible() const;
+	bool canWinWithNaiveOpponent(const unsigned char pawn_colour, const unsigned char moves) const;
+	bool canWinWithPerfectOpponent(const unsigned char pawn_colour, const unsigned char moves) const;
 	void debugPrint(unsigned char** board) const;
 	void debugPrint() const;
 };

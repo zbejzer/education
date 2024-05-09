@@ -30,6 +30,12 @@
     <ClCompile Include="isBoardPossible.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="canWinWithNaiveOpponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="canWinWithPerfectOpponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="board.hpp">
