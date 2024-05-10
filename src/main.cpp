@@ -6,7 +6,9 @@
 
 using namespace	std;
 
+// 
 // Transforming this input
+// 
 //           ---
 //        --<   >--
 //     --< b >-<   >--
@@ -28,6 +30,7 @@ using namespace	std;
 // |-+-+-+-|
 // |b| | | |
 // \-------/
+//
 
 int main()
 {
@@ -92,6 +95,8 @@ int main()
 			board.handleQuestion(buff);
 		}
 	}
+
+	printf("\n");
 
 	return 0;
 }

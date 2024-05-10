@@ -4,8 +4,13 @@
 
 void Board::handleQuestion(char* question) const
 {
-	if (question[0] == '\0' || question[0] == ' ')
+	if (question[0] == '\0')
 	{
+		return;
+	}
+	else if (question[0] == ' ')
+	{
+		printf("\n");
 		return;
 	}
 	else if (strcmp(question, "BOARD_SIZE") == 0)
@@ -14,17 +19,17 @@ void Board::handleQuestion(char* question) const
 	}
 	else if (strcmp(question, "PAWNS_NUMBER") == 0)
 	{
-		printf("%d\n\n", red + blue);
+		printf("%d\n", getPawnsCount());
 	}
 	else if (strcmp(question, "IS_BOARD_CORRECT") == 0)
 	{
 		if (isBoardCorrect())
 		{
-			printf("YES\n\n");
+			printf("YES\n");
 		}
 		else
 		{
-			printf("NO\n\n");
+			printf("NO\n");
 		}
 	}
 	else if (strcmp(question, "IS_GAME_OVER") == 0)
@@ -34,30 +39,30 @@ void Board::handleQuestion(char* question) const
 			switch (isGameOver())
 			{
 			case PAWN_RED:
-				printf("YES RED\n\n");
+				printf("YES RED\n");
 				break;
 			case PAWN_BLUE:
-				printf("YES BLUE\n\n");
+				printf("YES BLUE\n");
 				break;
 			default:
-				printf("NO\n\n");
+				printf("NO\n");
 				break;
 			}
 		}
 		else
 		{
-			printf("NO\n\n");
+			printf("NO\n");
 		}
 	}
 	else if (strcmp(question, "IS_BOARD_POSSIBLE") == 0)
 	{
 		if (isBoardPossible())
 		{
-			printf("YES\n\n");
+			printf("YES\n");
 		}
 		else
 		{
-			printf("NO\n\n");
+			printf("NO\n");
 		}
 	}
 	else if (strncmp(question, "CAN_", 4) == 0)
@@ -91,22 +96,22 @@ void Board::handleQuestion(char* question) const
 		{
 			if (canWinWithNaiveOpponent(colour, n_moves))
 			{
-				printf("YES\n\n");
+				printf("YES\n");
 			}
 			else
 			{
-				printf("NO\n\n");
+				printf("NO\n");
 			}
 		}
 		else
 		{
 			if (canWinWithPerfectOpponent(colour, n_moves))
 			{
-				printf("YES\n\n");
+				printf("YES\n");
 			}
 			else
 			{
-				printf("NO\n\n");
+				printf("NO\n");
 			}
 		}
 	}

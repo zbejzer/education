@@ -1,6 +1,6 @@
 #include "board.hpp"
 
-bool Board::isLossPossible(const unsigned char pawn_colour) const
+bool Board::isLossInPreviousTurnPossible(const unsigned char pawn_colour) const
 {
 	for (unsigned char col = 0; col < size; col++)
 	{
@@ -28,9 +28,9 @@ bool Board::isBoardPossible() const
 	{
 		if (isGameOver(PAWN_RED))
 		{
-			if (red == blue + 1)
+			if (!isRedTurnNow())
 			{
-				return isLossPossible(PAWN_RED);
+				return isLossInPreviousTurnPossible(PAWN_RED);
 			}
 			else 
 			{
@@ -39,9 +39,9 @@ bool Board::isBoardPossible() const
 		}
 		else if (isGameOver(PAWN_BLUE))
 		{
-			if (red == blue)
+			if (isRedTurnNow())
 			{
-				return isLossPossible(PAWN_BLUE);
+				return isLossInPreviousTurnPossible(PAWN_BLUE);
 			}
 			else
 			{

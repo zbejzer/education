@@ -6,8 +6,13 @@ bool Board::isGameOver(const unsigned char pawn_colour) const
 {
 	static const char d_row[6] = { -1,  0, 1, -1, 1, 0 };
 	static const char d_col[6] = { -1, -1, 0,  0, 1, 1 };
-
 	bool exists_1 = false, exists_2 = false;
+
+	if (getPawnsCount(pawn_colour) < size)
+	{
+		return false;
+	}
+
 	unsigned char** test_board = createAdjustedBoard(pawn_colour);
 
 	// debugPrint(test_board);

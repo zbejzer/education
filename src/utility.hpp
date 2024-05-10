@@ -1,8 +1,23 @@
 #pragma once
 
+template <typename T> T** createCopy2DArray(T** const& arr, const size_t& size)
+{
+	T** new_arr = new T * [size];
+	for (size_t i = 0; i < size; i++)
+	{
+		new_arr[i] = new T[size];
+		for (size_t j = 0; j < size; j++)
+		{
+			new_arr[i][j] = arr[i][j];
+		}
+	}
+
+	return new_arr;
+}
+
 template <typename T> T** create2DArray(const size_t& size)
 {
-	T** arr = new T*[size];
+	T** arr = new T * [size];
 	for (size_t i = 0; i < size; i++)
 	{
 		arr[i] = new T[size];

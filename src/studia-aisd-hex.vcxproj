@@ -134,6 +134,7 @@
     <ClCompile Include="board.cpp" />
     <ClCompile Include="canWinWithNaiveOpponent.cpp" />
     <ClCompile Include="canWinWithPerfectOpponent.cpp" />
+    <ClCompile Include="generatePossibleTurns.cpp" />
     <ClCompile Include="handleQuestion.cpp" />
     <ClCompile Include="isBoardPossible.cpp" />
     <ClCompile Include="isGameOver.cpp" />

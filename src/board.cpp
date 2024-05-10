@@ -18,6 +18,14 @@ Board::Board()
 {
 }
 
+Board::Board(const Board& other)
+	: size(other.size)
+	, red(other.red)
+	, blue(other.blue)
+{
+	board = createCopy2DArray<unsigned char>(other.board, size);
+}
+
 Board::~Board()
 {
 	destroy2DArray<unsigned char>(board, size);
@@ -26,6 +34,39 @@ Board::~Board()
 void Board::setSize(const unsigned char size)
 {
 	this->size = size;
+}
+
+unsigned char Board::getPawnsCount() const
+{
+	return red + blue;
+}
+
+unsigned char Board::getPawnsCount(const unsigned char pawn_colour) const
+{
+	if (pawn_colour == PAWN_RED)
+	{
+		return red;
+	}
+	else if (pawn_colour == PAWN_BLUE)
+	{
+		return blue;
+	}
+
+	return size*size - (blue + red);
+}
+
+void Board::addPawn(const unsigned char pawn_colour, const unsigned char col, const unsigned char row)
+{
+	if (pawn_colour == PAWN_RED)
+	{
+		red++;
+	}
+	else if (pawn_colour == PAWN_BLUE)
+	{
+		blue++;
+	}
+
+	board[col][row] = pawn_colour;
 }
 
 unsigned char** Board::createAdjustedBoard(const unsigned char pawn_colour) const
@@ -56,12 +97,17 @@ unsigned char** Board::createAdjustedBoard(const unsigned char pawn_colour) cons
 	return new_board;
 }
 
+unsigned char Board::isRedTurnNow() const
+{
+	return red == blue;
+}
+
 bool Board::isBoardCorrect() const
 {
 	return (red == blue + 1) || (red == blue);
 }
 
-void Board::debugPrint(unsigned char** board) const
+void Board::debugPrint() const
 {
 	for (unsigned char row = 0; row < size + 1; row++)
 	{
@@ -94,11 +140,22 @@ void Board::debugPrint(unsigned char** board) const
 		}
 		printf("\n");
 	}
+	for (unsigned char col = 0; col < size + 1; col++)
+	{
+		printf("===");
+	}
+	printf("\n");
 }
 
-void Board::debugPrint() const
+Board& Board::operator=(Board other)
 {
-	debugPrint(this->board);
+	using std::swap;
+	swap(red, other.red);
+	swap(blue, other.blue);
+	swap(size, other.size);
+	swap(board, other.board);
+
+	return *this;
 }
 
 Pos::Pos() : col(0), row(0)
