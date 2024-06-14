@@ -1,3 +1,6 @@
 # Tests
 [Tt]est/*.res*
 [Tt]ests/*.res*
+
+# Visual Studio 2015/2017 cache/options directory
+.vs/
