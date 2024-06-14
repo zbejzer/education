@@ -27,6 +27,10 @@ for INPUT_FILE in "$DIRECTORY"/*.in.txt; do
     if [ -f "$INPUT_FILE" ]; then
         OUTPUT_FILE="${INPUT_FILE/.in.txt/.res.txt}"
         echo "Processing file: $(basename ${INPUT_FILE})"
+        START_TEST=$(date +%s.%N)
         "$PROGRAM" <"$INPUT_FILE" >"$OUTPUT_FILE"
+        END_TEST=$(date +%s.%N)
+        EXECUTION_TIME=$(bc -l <<<"$END_TEST - $START_TEST")
+        echo "Test took: $EXECUTION_TIME seconds"
     fi
 done
