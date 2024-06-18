@@ -1,6 +1,8 @@
 #include "board.hpp"
 
-bool Board::canWinWithPerfectOpponent(const unsigned char pawn_colour, const unsigned char moves) const
+#include "pawns.hpp"
+
+bool Board::canWinWithPerfectOpponent(const PawnColour pawn_colour, const unsigned char moves) const
 {
 	/*unsigned char total_moves_to_make = moves * 2;
 	unsigned char requested_pawn_count = 0;

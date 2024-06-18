@@ -1,10 +1,11 @@
+#include <cstdio>
 #include <cstring>
-#include <iostream>
 
 #include "board.hpp"
-#include "utility.hpp"
+#include "handle_question.hpp"
+#include "pawns.hpp"
 
-using namespace	std;
+constexpr int question_buff_size = 96;
 
 // 
 // Transforming this input
@@ -19,7 +20,7 @@ using namespace	std;
 //        --<   >--
 //           ---
 //
-// into
+// into array like that
 // 
 // /-------\
 // | | | |r|
@@ -34,14 +35,13 @@ using namespace	std;
 
 int main()
 {
-	char buff[96] = "";
-	cin.getline(buff, 96);
+	char buff[question_buff_size] = "";
+	fgets(buff, question_buff_size, stdin);
 
-	while (cin.good() && !cin.eof())
+	while (!feof(stdin) && !ferror(stdin))
 	{
 		Board board;
-		board.size = static_cast<unsigned char>((strlen(buff) - 1) / 3);
-		board.board = create2DArray<unsigned char>(board.size);
+		board.size = static_cast<unsigned char>((strlen(buff) - 2) / 3);
 		buff[0] = '\0';
 
 		for (unsigned char line = 0; line < board.size * 2; line++)
@@ -49,12 +49,12 @@ int main()
 			unsigned char offset = 0;
 			while (buff[0] != '\n')
 			{
-				cin.get(buff[0]);
+				buff[0] = fgetc(stdin);
 
 				if (buff[0] == '<') {
 					unsigned char row, col;
-					static_cast<void>(cin.get());
-					cin.get(buff[0]);
+					static_cast<void>(fgetc(stdin));
+					buff[0] = fgetc(stdin);
 
 					if (line < board.size)
 					{
@@ -67,18 +67,17 @@ int main()
 						col = line - board.size + offset + 1;
 					}
 
-					if (buff[0] == 'r') {
-						board.board[col][row] = PAWN_RED;
-						board.red++;
+					if (buff[0] == 'r')
+					{
+						board.addPawn(PawnColour::Red, col, row);
 					}
 					else if (buff[0] == 'b')
 					{
-						board.board[col][row] = PAWN_BLUE;
-						board.blue++;
+						board.addPawn(PawnColour::Blue, col, row);
 					}
 					else
 					{
-						board.board[col][row] = PAWN_EMPTY;
+						board.addPawn(PawnColour::Empty, col, row);
 					}
 					offset++;
 				}
@@ -86,17 +85,17 @@ int main()
 			buff[0] = '\0';
 		}
 
-		// board.debugPrint();
+		board.updateBlueBoard();
+		//board.debugPrint();
 
 		buff[0] = '\0';
-		while (buff[0] != ' ' && cin.good() && !cin.eof())
+		while (fgets(buff, question_buff_size, stdin) != nullptr && buff[0] != ' ' && !feof(stdin) && !ferror(stdin))
 		{
-			cin.getline(buff, 96);
-			board.handleQuestion(buff);
+			buff[strlen(buff) - 1] = '\0';	// Remove included \n character
+			handleQuestion(buff, board);
 		}
+		fputc('\n', stdout);
 	}
-
-	printf("\n");
 
 	return 0;
 }

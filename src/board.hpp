@@ -2,31 +2,28 @@
 
 #include <ostream>
 
+#include "array_1D.hpp"
+#include "array_2D.hpp"
+#include "pawns.hpp"
 #include "stack.hpp"
-
-#define PAWN_EMPTY 0
-#define PAWN_RED 1
-#define PAWN_BLUE 2
-const unsigned char PAWNS_ORDER[] = { PAWN_RED, PAWN_BLUE };
-
-struct Pos
-{
-	unsigned char col, row;
-	Pos();
-	Pos(unsigned char, unsigned char);
-
-	friend std::ostream& operator<<(std::ostream& os, const Pos& pos);
-};
 
 class Board
 {
+	static Array2D<PawnColour> board_red;
+	static Array2D<PawnColour> board_blue;
+	Array2D<PawnColour> *current_board;
+	static Array2D<bool> visited_fields;
+
 	bool posInRange(short col, short row) const;
-	unsigned char** createAdjustedBoard(const unsigned char pawn_colour) const;
 	unsigned char isRedTurnNow() const;
-	void generateBestPossibleTurns(const unsigned char pawn_colour, Stack<Board>& possible_turns) const;
-	void generateAllPossibleTurns(const unsigned char pawn_colour, const bool should_win, Stack<Board>& possible_turns) const;
+	bool addPawnAndCheckForWin(const PawnColour target_pawn_colour, const unsigned char moves, const unsigned char start_col, const unsigned char start_row);
+	void generateBestPossibleTurns(const PawnColour pawn_colour, Stack<Board>& possible_turns) const;
+	void generateAllPossibleTurns(const PawnColour pawn_colour, const bool should_win, Stack<Board>& possible_turns) const;
+	bool gameOverDfs(PawnColour target, const unsigned char col, const unsigned char row) const;
+	bool isGameOverFast(const PawnColour target_pawn_colour);
+	bool isGameOver(const PawnColour pawn_colour);
 public:
-	unsigned char** board;
+	static constexpr int MAX_BOARD_SIZE = 11;
 	unsigned char size;
 	unsigned char red, blue;
 
@@ -35,16 +32,16 @@ public:
 	~Board();
 	void setSize(const unsigned char size);
 	unsigned char getPawnsCount() const;
-	unsigned char getPawnsCount(const unsigned char pawn_colour) const;
-	void addPawn(const unsigned char pawn_colour, const unsigned char col, const unsigned char row);
-	void handleQuestion(char* question) const;
+	unsigned char getPawnsCount(const PawnColour pawn_colour) const;
+	void addPawn(const PawnColour pawn_colour, const unsigned char col, const unsigned char row);
+	void updateBlueBoard();
+	//void handleQuestion(char* question) const;
 	bool isBoardCorrect() const;
-	bool isGameOver(const unsigned char pawn_colour) const;
-	unsigned char isGameOver() const;
-	bool isLossInPreviousTurnPossible(const unsigned char pawn_colour) const;
-	bool isBoardPossible() const;
-	bool canWinWithNaiveOpponent(const unsigned char pawn_colour, const unsigned char moves) const;
-	bool canWinWithPerfectOpponent(const unsigned char pawn_colour, const unsigned char moves) const;
+	PawnColour isGameOver();
+	bool isLossInPreviousTurnPossible(const PawnColour pawn_colour);
+	bool isBoardPossible();
+	bool canWinWithNaiveOpponent(const PawnColour pawn_colour, const unsigned char moves);
+	bool canWinWithPerfectOpponent(const PawnColour pawn_colour, const unsigned char moves) const;
 	void debugPrint() const;
 
 	Board& operator=(Board other);

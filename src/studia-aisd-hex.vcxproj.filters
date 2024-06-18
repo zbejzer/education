@@ -21,22 +21,22 @@
     <ClCompile Include="board.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="isGameOver.cpp">
+    <ClCompile Include="board_game_over.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="handleQuestion.cpp">
+    <ClCompile Include="board_possible.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="isBoardPossible.cpp">
+    <ClCompile Include="board_win_naive_opponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="canWinWithNaiveOpponent.cpp">
+    <ClCompile Include="board_win_perfect_opponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="canWinWithPerfectOpponent.cpp">
+    <ClCompile Include="board_generate_possible_turns.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="generatePossibleTurns.cpp">
+    <ClCompile Include="handle_question.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,7 +50,16 @@
     <ClInclude Include="node.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utility.hpp">
+    <ClInclude Include="array_2D.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pawns.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="handle_question.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="array_1D.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

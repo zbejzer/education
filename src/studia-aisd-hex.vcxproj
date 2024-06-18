@@ -76,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp14</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
     <Link>
@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp14</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
     <Link>
@@ -108,6 +108,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,6 +124,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,19 +136,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="board.cpp" />
-    <ClCompile Include="canWinWithNaiveOpponent.cpp" />
-    <ClCompile Include="canWinWithPerfectOpponent.cpp" />
-    <ClCompile Include="generatePossibleTurns.cpp" />
-    <ClCompile Include="handleQuestion.cpp" />
-    <ClCompile Include="isBoardPossible.cpp" />
-    <ClCompile Include="isGameOver.cpp" />
+    <ClCompile Include="board_win_naive_opponent.cpp" />
+    <ClCompile Include="board_win_perfect_opponent.cpp" />
+    <ClCompile Include="board_generate_possible_turns.cpp" />
+    <ClCompile Include="handle_question.cpp" />
+    <ClCompile Include="board_possible.cpp" />
+    <ClCompile Include="board_game_over.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="array_1D.hpp" />
     <ClInclude Include="board.hpp" />
+    <ClInclude Include="handle_question.hpp" />
     <ClInclude Include="node.hpp" />
+    <ClInclude Include="pawns.hpp" />
     <ClInclude Include="stack.hpp" />
-    <ClInclude Include="utility.hpp" />
+    <ClInclude Include="array_2D.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

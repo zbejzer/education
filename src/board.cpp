@@ -1,9 +1,15 @@
-#include "board.hpp"
-
 #include <cstdio>
+#include <cstdlib>
 #include <ostream>
 
-#include "utility.hpp"
+#include "board.hpp"
+
+#include "pawns.hpp"
+#include "array_2D.hpp"
+
+Array2D<PawnColour> Board::board_red(Board::MAX_BOARD_SIZE);
+Array2D<PawnColour> Board::board_blue(Board::MAX_BOARD_SIZE);
+Array2D<bool> Board::visited_fields(Board::MAX_BOARD_SIZE);
 
 bool Board::posInRange(short col, short row) const
 {
@@ -11,10 +17,10 @@ bool Board::posInRange(short col, short row) const
 }
 
 Board::Board()
-	: board(nullptr)
-	, size(0)
+	: size(0)
 	, red(0)
 	, blue(0)
+	, current_board(&Board::board_red)
 {
 }
 
@@ -23,12 +29,10 @@ Board::Board(const Board& other)
 	, red(other.red)
 	, blue(other.blue)
 {
-	board = createCopy2DArray<unsigned char>(other.board, size);
 }
 
 Board::~Board()
 {
-	destroy2DArray<unsigned char>(board, size);
 }
 
 void Board::setSize(const unsigned char size)
@@ -41,60 +45,43 @@ unsigned char Board::getPawnsCount() const
 	return red + blue;
 }
 
-unsigned char Board::getPawnsCount(const unsigned char pawn_colour) const
+unsigned char Board::getPawnsCount(const PawnColour pawn_colour) const
 {
-	if (pawn_colour == PAWN_RED)
+	if (pawn_colour == PawnColour::Red)
 	{
 		return red;
 	}
-	else if (pawn_colour == PAWN_BLUE)
+	else if (pawn_colour == PawnColour::Blue)
 	{
 		return blue;
 	}
 
-	return size*size - (blue + red);
+	return size * size - (blue + red);
 }
 
-void Board::addPawn(const unsigned char pawn_colour, const unsigned char col, const unsigned char row)
+void Board::addPawn(const PawnColour pawn_colour, const unsigned char col, const unsigned char row)
 {
-	if (pawn_colour == PAWN_RED)
+	if (pawn_colour == PawnColour::Red)
 	{
 		red++;
 	}
-	else if (pawn_colour == PAWN_BLUE)
+	else if (pawn_colour == PawnColour::Blue)
 	{
 		blue++;
 	}
 
-	board[col][row] = pawn_colour;
+	board_red(col, row) = pawn_colour;
 }
 
-unsigned char** Board::createAdjustedBoard(const unsigned char pawn_colour) const
+void Board::updateBlueBoard()
 {
-	unsigned char** new_board = create2DArray<unsigned char>(size);
-
-	if (pawn_colour == PAWN_RED)
+	for (unsigned char row = 0; row < size; row++)
 	{
-		for (unsigned char row = 0; row < size; row++)
+		for (unsigned char col = 0; col < size; col++)
 		{
-			for (unsigned char col = 0; col < size; col++)
-			{
-				new_board[col][row] = board[col][row];
-			}
+			board_blue(col, row) = board_red(row, col);
 		}
 	}
-	else
-	{
-		for (unsigned char row = 0; row < size; row++)
-		{
-			for (unsigned char col = 0; col < size; col++)
-			{
-				new_board[col][row] = board[row][col];
-			}
-		}
-	}
-
-	return new_board;
 }
 
 unsigned char Board::isRedTurnNow() const
@@ -123,11 +110,11 @@ void Board::debugPrint() const
 			else if (col > 0 && row > 0)
 			{
 				char pawn = ' ';
-				if (board[col - 1][row - 1] == PAWN_RED)
+				if ((*current_board)(col - 1, row - 1) == PawnColour::Red)
 				{
 					pawn = 'R';
 				}
-				else if (board[col - 1][row - 1] == PAWN_BLUE)
+				else if ((*current_board)(col - 1, row - 1) == PawnColour::Blue)
 				{
 					pawn = 'B';
 				}
@@ -153,24 +140,10 @@ Board& Board::operator=(Board other)
 	swap(red, other.red);
 	swap(blue, other.blue);
 	swap(size, other.size);
-	swap(board, other.board);
+	swap(board_red, other.board_red);
+	swap(board_blue, other.board_blue);
+	swap(current_board, other.current_board);
+	swap(visited_fields, other.visited_fields);
 
 	return *this;
-}
-
-Pos::Pos() : col(0), row(0)
-{
-}
-
-Pos::Pos(unsigned char col, unsigned char row) : col(col), row(row)
-{
-}
-
-std::ostream& operator<<(std::ostream& os, const Pos& pos)
-{
-	char buf[32] = "";
-
-	static_cast<void>(sprintf_s(buf, "(%u , %u)", pos.col, pos.row));
-	os << buf;
-	return os;
 }
