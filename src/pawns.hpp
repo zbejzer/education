@@ -2,7 +2,7 @@
 
 enum class PawnColour : char
 {
-	Empty = 0,
-	Red,
-	Blue
+    Empty = 0,
+    Red,
+    Blue
 };

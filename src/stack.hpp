@@ -58,7 +58,7 @@ template <typename T> bool Stack<T>::empty() const
 
 template <typename T> void Stack<T>::print() const
 {
-    Node<T>* ptr = front_node;
+    Node<T> *ptr = front_node;
     while (ptr != nullptr)
     {
         std::cout << ptr->value << " ";
