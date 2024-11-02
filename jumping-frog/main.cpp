@@ -1,3 +1,5 @@
+#include "hello.hpp"
+
 #include <ncurses/ncurses.h>
 
 int main()
@@ -8,7 +10,7 @@ int main()
 
     mvaddch(0, 0, '+');
     mvaddch(LINES - 1, 0, '-');
-    mvaddstr(10, 30, "press any key to quit");
+    say_hello();
     refresh();
 
     getch();

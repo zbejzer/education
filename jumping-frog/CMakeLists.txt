@@ -8,14 +8,21 @@ SET(CURSES_USE_NCURSES TRUE)
 add_compile_definitions(NCURSES_STATIC)
 
 find_package(Curses REQUIRED)
-include_directories(${CURSES_INCLUDE_DIR})
 
-add_executable(jumping-frog main.cpp)
+add_executable(jumping-frog)
+
+target_include_directories(jumping-frog PUBLIC ${CURSES_INCLUDE_DIR})
+target_link_libraries(jumping-frog PUBLIC ${CURSES_LIBRARIES})
+
+target_sources(jumping-frog
+  PRIVATE
+    main.cpp
+    hello.cpp
+    hello.hpp
+)
 
 if(MSVC)
   target_compile_options(jumping-frog PRIVATE /W4 /WX)
 else()
   target_compile_options(jumping-frog PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
-
-target_link_libraries(jumping-frog ${CURSES_LIBRARIES})
