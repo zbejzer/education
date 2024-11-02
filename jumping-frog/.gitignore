@@ -1,0 +1,47 @@
+# ==================
+# Visual Studio Code
+# ==================
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+# ==================================
+# CMake Tools for Visual Studio Code
+# ==================================
+
+.vscode-test/
+build/
+dist/
+node_modules/
+out/
+test/fakebin/
+test/**/log.txt
+test/**/bin
+vscode-extensions-localization-export/
+vscode-translations-import/
+jobs/loc/LCL
+OneLocBuild
+.ci-build
+.DS_Store
+debug.log
+npm-debug.log
+package-lock.json
+test.txt
+*.backup
+*.db*
+*.log
+*.vsix
+**/.vscode/CMakeTools
+**/nls.*.json
+**/*.nls.json
+**/*.nls.*.json
