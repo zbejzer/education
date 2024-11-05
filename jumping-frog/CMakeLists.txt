@@ -17,8 +17,12 @@ target_link_libraries(jumping-frog PUBLIC ${CURSES_LIBRARIES})
 target_sources(jumping-frog
   PRIVATE
     main.cpp
-    hello.cpp
-    hello.hpp
+    app.cpp
+    app.hpp
+    game.cpp
+    game.hpp
+    player.cpp
+    player.hpp
 )
 
 if(MSVC)
