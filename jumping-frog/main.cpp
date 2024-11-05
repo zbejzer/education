@@ -26,6 +26,7 @@ int main()
         while (app.time_accumulator > app::TICK_DURATION)
         {
             app::doAction();
+            app.time_accumulator -= app::TICK_DURATION;
         }
 
         mvaddstr(10, 30, std::to_string(1.0 / app.delta_time).c_str());
