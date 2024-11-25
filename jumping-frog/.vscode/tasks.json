@@ -15,6 +15,14 @@
 			},
 			"problemMatcher": [],
 			"detail": "CMake build task"
+		},
+		{
+			"type": "cmake",
+			"label": "CMake: configure",
+			"command": "configure",
+			"preset": "${command:cmake.activeConfigurePresetName}",
+			"problemMatcher": [],
+			"detail": "CMake configure task"
 		}
 	]
 }

@@ -2,6 +2,22 @@
     "version": 8,
     "configurePresets": [
         {
+            "name": "Release GCC x86_64-w64-mingw32 (ucrt64)",
+            "displayName": "Release GCC x86_64-w64-mingw32 (ucrt64)",
+            "description": "Using compilers: C = gcc, CXX = g++",
+            "generator": "MinGW Makefiles",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "environment":{
+                "MSYSTEM": "UCRT64"
+            },
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
             "name": "Debug GCC x86_64-w64-mingw32 (ucrt64)",
             "displayName": "Debug GCC x86_64-w64-mingw32 (ucrt64)",
             "description": "Using compilers: C = gcc, CXX = g++",
