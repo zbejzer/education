@@ -21,8 +21,10 @@ target_sources(jumping-frog
     app.hpp
     game.cpp
     game.hpp
-    player.cpp
-    player.hpp
+    entity.cpp
+    entity.hpp
+    config.cpp
+    config.hpp
 )
 
 if(MSVC)

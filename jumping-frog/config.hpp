@@ -1,0 +1,32 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+namespace config
+{
+
+struct Config
+{
+    unsigned int window_width, window_game_height, window_ui_height;
+    unsigned int game_min_y, game_max_y, game_min_x, game_max_x;
+
+    unsigned int player_width, player_height;
+    int player_color;
+    char *player_sprite;
+    float player_speed;
+
+    unsigned int car_width, car_height;
+    int car_color;
+    char *car_sprite;
+    float car_speed_1;
+    float car_speed_2;
+
+    unsigned int time_limit;
+    unsigned int cars_count;
+};
+
+void initConfig(Config &_config);
+void deinitConfig(Config &_config);
+
+}
+
+#endif
