@@ -2,7 +2,7 @@
 
 **Simple console video game using ncurses library.**
 
-Full instruction with requirements and goals for this project can be found [here](<\docs\instruction-EN (early version 0.92).pdf>).
+Full instruction with requirements and goals for this project can be found [here](<\docs\instruction-EN (early version 0.94).pdf>).
 
 ## Building
 
