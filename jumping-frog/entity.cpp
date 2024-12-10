@@ -16,7 +16,7 @@ void initPlayer(Entity &_player, config::Config &_config)
     _player.speed = _config.player_speed;
     _player.color = _config.player_color;
     _player.sprite = new char[_player.width * _player.height + 1];
-    
+
     for (int i = 0; i < _player.height; i++)
     {
         for (int j = 0; j < _player.width; j++)
@@ -40,7 +40,6 @@ void printEntity(Entity &_entity, WINDOW *_window)
             mvwaddch(_window, y + _entity.pos_y, x + _entity.pos_x, _entity.sprite[y * _entity.width + x]);
         }
     }
-    
 }
 
 } // namespace entity

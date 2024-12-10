@@ -25,6 +25,8 @@ target_sources(jumping-frog
     entity.hpp
     config.cpp
     config.hpp
+    input.cpp
+    input.hpp
 )
 
 if(MSVC)

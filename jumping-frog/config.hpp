@@ -6,6 +6,8 @@ namespace config
 
 struct Config
 {
+    unsigned int fps_limit;
+
     unsigned int window_width, window_game_height, window_ui_height;
     unsigned int game_min_y, game_max_y, game_min_x, game_max_x;
 
@@ -27,6 +29,6 @@ struct Config
 void initConfig(Config &_config);
 void deinitConfig(Config &_config);
 
-}
+} // namespace config
 
 #endif
