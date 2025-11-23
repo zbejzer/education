@@ -2,7 +2,7 @@
   "editor.tabSize": 4,
   "editor.detectIndentation": false,
   "editor.formatOnSave": true,
-  "cmake.useCMakePresets": "always",
-  "cmake.options.statusBarVisibility": "visible",
+  "cmake.useCMakePresets": "never",
+  "cmake.options.statusBarVisibility": "hidden",
   "C_Cpp.clang_format_sortIncludes": true
 }
