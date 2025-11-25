@@ -6,6 +6,8 @@ add_executable(warehouse)
 target_sources(warehouse
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src/warehouse.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/product.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/command_parser.c
 )
 
 target_include_directories(warehouse
