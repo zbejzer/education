@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
             ParseCommand(line_buffer);
             line_buffer = realloc(line_buffer, sizeof(char));
             line_buffer[0] = '\0';
+            line_length = 1;
         }
         else
         {
