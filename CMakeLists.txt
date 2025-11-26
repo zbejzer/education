@@ -15,6 +15,8 @@ target_include_directories(warehouse
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+set_property(TARGET warehouse PROPERTY C_STANDARD 11)
+
 if(MSVC)
     target_compile_options(warehouse PRIVATE /W4)
 else()
