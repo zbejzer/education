@@ -6,11 +6,11 @@
 
 Product *ProductGetById(char id[PRODUCT_ID_SIZE])
 {
-    for (int i = 0; i < product_count; i++)
+    for (int i = 0; i < kProductCount; i++)
     {
-        if (strcmp(products[i].id, id) == 0)
+        if (strcmp(kProducts[i].id, id) == 0)
         {
-            return &(products[i]);
+            return &(kProducts[i]);
         }
     }
 

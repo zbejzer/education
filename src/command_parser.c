@@ -72,9 +72,9 @@ void WarehouseInit(const char *filename)
             fscanf(file, " %" STR_PRODUCT_NAME_SIZE "[^\n]", new_product.name);
             new_product.stock = 0;
 
-            product_count++;
-            products = realloc(products, product_count * sizeof(Product));
-            memcpy(&(products[product_count - 1]), &new_product, sizeof(Product));
+            kProductCount++;
+            kProducts = realloc(kProducts, kProductCount * sizeof(Product));
+            memcpy(&(kProducts[kProductCount - 1]), &new_product, sizeof(Product));
         }
 
         fclose(file);
@@ -116,7 +116,7 @@ void WarehousePrint(const char *base_filename)
     FILE *file = NULL;
     char full_filename[FILENAME_MAX];
 
-    if (pdf_mode)
+    if (kPdfMode)
     {
         sprintf(full_filename, "%s.tex", base_filename);
     }
@@ -128,7 +128,7 @@ void WarehousePrint(const char *base_filename)
 
     if (file != NULL)
     {
-        if (pdf_mode)
+        if (kPdfMode)
         {
             RenderPdf(file);
         }
@@ -142,11 +142,11 @@ void WarehousePrint(const char *base_filename)
 
 void WarehouseSave()
 {
-    FILE *save_file = fopen(kSave_file_name, "w");
+    FILE *save_file = fopen(kSaveFileName, "w");
 
-    for (int i = 0; i < product_count; i++)
+    for (int i = 0; i < kProductCount; i++)
     {
-        fprintf(save_file, "%s;\t%s;\t%d\n", products[i].id, products[i].name, products[i].stock);
+        fprintf(save_file, "%s;\t%s;\t%d\n", kProducts[i].id, kProducts[i].name, kProducts[i].stock);
     }
 
     fclose(save_file);

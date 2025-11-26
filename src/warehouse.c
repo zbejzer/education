@@ -6,10 +6,10 @@
 #include "command_parser.h"
 #include "product.h"
 
-int product_count;
-Product *products;
-bool pdf_mode;
-const char kSave_file_name[] = "store.txt";
+int kProductCount;
+Product *kProducts;
+bool kPdfMode;
+const char kSaveFileName[] = "store.txt";
 
 int main(int argc, char *argv[])
 {
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     char *line_buffer = malloc(sizeof(char));
     line_buffer[0] = '\0';
 
-    pdf_mode = (strcmp(argv[1], "pdf") == 0);
+    kPdfMode = (strcmp(argv[1], "pdf") == 0);
 
     while ((ch_buffer = getchar()) != EOF)
     {
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
     ParseCommand(line_buffer);
     free(line_buffer);
-    free(products);
+    free(kProducts);
 
     return 0;
 }

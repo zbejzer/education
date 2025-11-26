@@ -5,9 +5,9 @@
 
 #include "product.h"
 
-extern int product_count;
-extern Product *products;
-extern bool pdf_mode;
-extern const char kSave_file_name[];
+extern int kProductCount;
+extern Product *kProducts;
+extern bool kPdfMode;
+extern const char kSaveFileName[];
 
 #endif

@@ -6,9 +6,9 @@
 
 void RenderTxt(FILE *file)
 {
-    for (int i = 0; i < product_count; i++)
+    for (int i = 0; i < kProductCount; i++)
     {
-        fprintf(file, "%s %s %d\n", products[i].id, products[i].name, products[i].stock);
+        fprintf(file, "%s %s %d\n", kProducts[i].id, kProducts[i].name, kProducts[i].stock);
     }
 }
 
@@ -30,9 +30,9 @@ void RenderPdf(FILE *file)
                   "\\hline\n"
                   "ID & Nazwa & Ilość \\\\ \\hline\n");
 
-    for (int i = 0; i < product_count; i++)
+    for (int i = 0; i < kProductCount; i++)
     {
-        fprintf(file, "%s & %s & %d \\\\\n", products[i].id, products[i].name, products[i].stock);
+        fprintf(file, "%s & %s & %d \\\\\n", kProducts[i].id, kProducts[i].name, kProducts[i].stock);
     }
 
     fprintf(file, "\\hline\n"
