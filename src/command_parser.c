@@ -62,7 +62,11 @@ void HandleCommand(char *command, char *args)
     }
     else if (strcmp(command, "print") == 0)
     {
-        file = fopen(args, "w");
+        char *full_file_name = malloc(strlen(args) + strlen(".txt") + 1);
+        strcpy(full_file_name, args);
+        full_file_name = strcat(full_file_name, ".txt");
+
+        file = fopen(full_file_name, "w");
         if (file != NULL)
         {
             WarehousePrint(file);
@@ -121,11 +125,27 @@ void WarehouseUpdate(FILE *input_file)
     }
 }
 
-void WarehousePrint(FILE *output_file)
+void WarehousePrintTxt(FILE *output_file)
 {
     for (int i = 0; i < product_count; i++)
     {
-        printf("%s\t%s\t%d\n", products[i].id, products[i].name, products[i].stock);
+        fprintf(output_file, "%s %s %d\n", products[i].id, products[i].name, products[i].stock);
+    }
+}
+
+void WarehousePrintPdf(FILE *output_file)
+{
+}
+
+void WarehousePrint(FILE *output_file)
+{
+    if (pdf_mode)
+    {
+        WarehousePrintPdf(output_file);
+    }
+    else
+    {
+        WarehousePrintTxt(output_file);
     }
 }
 
