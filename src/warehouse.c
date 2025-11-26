@@ -8,6 +8,7 @@
 
 int product_count;
 Product *products;
+bool pdf_mode;
 
 int main(int argc, char *argv[])
 {
@@ -15,6 +16,8 @@ int main(int argc, char *argv[])
     size_t line_length = 1;
     char *line_buffer = malloc(sizeof(char));
     line_buffer[0] = '\0';
+
+    pdf_mode = (strcmp(argv[1], "pdf") == 0);
 
     while ((ch_buffer = getchar()) != EOF)
     {
