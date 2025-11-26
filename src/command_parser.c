@@ -92,8 +92,9 @@ void WarehousePrint(const char *base_filename)
     }
     else
     {
-        sprintf(full_filename, "%s.tex", base_filename);
+        sprintf(full_filename, "%s.txt", base_filename);
     }
+
     file = fopen(full_filename, "w");
 
     if (file != NULL)
