@@ -27,6 +27,7 @@ void ParseCommand(char *prompt)
     }
     else
     {
+        command_length = strlen(prompt);
         command = malloc((command_length + 1) * sizeof(char));
         strcpy(command, prompt);
     }
