@@ -40,102 +40,103 @@ void ParseCommand(char *prompt)
 
 void HandleCommand(char *command, char *args)
 {
-    FILE *file = NULL;
-
     if (strcmp(command, "init") == 0)
     {
-        file = fopen(args, "r");
-        if (file != NULL)
-        {
-            WarehouseInit(file);
-            fclose(file);
-        }
+        WarehouseInit(args);
         WarehouseSave();
     }
     else if (strcmp(command, "update") == 0)
     {
-        file = fopen(args, "r");
-        if (file != NULL)
-        {
-            WarehouseUpdate(file);
-            fclose(file);
-        }
+        WarehouseUpdate(args);
         WarehouseSave();
     }
     else if (strcmp(command, "print") == 0)
     {
-        char *full_file_name = malloc(strlen(args) + strlen(".txt") + 1);
-        strcpy(full_file_name, args);
-        full_file_name = strcat(full_file_name, ".txt");
-
-        file = fopen(full_file_name, "w");
-        if (file != NULL)
-        {
-            WarehousePrint(file);
-            fclose(file);
-        }
+        WarehousePrint(args);
     }
 }
 
-void WarehouseInit(FILE *input_file)
+void WarehouseInit(const char *filename)
 {
     int lines_count = 0;
-
-    fscanf(input_file, "%d", &lines_count);
-
-    for (int i = 0; i < lines_count; i++)
+    FILE *file = fopen(filename, "r");
+    if (file != NULL)
     {
-        Product new_product;
+        fscanf(file, "%d", &lines_count);
 
-        fscanf(input_file, "%s", new_product.id);
-        fscanf(input_file, " %" STR_PRODUCT_NAME_SIZE "[^\n]", new_product.name);
-        new_product.stock = 0;
+        for (int i = 0; i < lines_count; i++)
+        {
+            Product new_product;
 
-        product_count++;
-        products = realloc(products, product_count * sizeof(Product));
-        memcpy(&(products[product_count - 1]), &new_product, sizeof(Product));
+            fscanf(file, "%s", new_product.id);
+            fscanf(file, " %" STR_PRODUCT_NAME_SIZE "[^\n]", new_product.name);
+            new_product.stock = 0;
+
+            product_count++;
+            products = realloc(products, product_count * sizeof(Product));
+            memcpy(&(products[product_count - 1]), &new_product, sizeof(Product));
+        }
+
+        fclose(file);
     }
 }
 
-void WarehouseUpdate(FILE *input_file)
+void WarehouseUpdate(const char *filename)
 {
     int lines_count = 0;
-
-    fscanf(input_file, "%d", &lines_count);
-
-    for (int i = 0; i < lines_count; i++)
+    FILE *file = fopen(filename, "r");
+    if (file != NULL)
     {
-        Product *product_to_update = NULL;
-        char id_buffer[PRODUCT_ID_SIZE] = "";
-        char operation[2] = "";
-        int stock_change = 0;
+        fscanf(file, "%d", &lines_count);
 
-        fscanf(input_file, "%s", id_buffer);
-        fscanf(input_file, " %1s", operation);
-        fscanf(input_file, " %d", &stock_change);
-
-        product_to_update = ProductGetById(id_buffer);
-
-        if (strcmp(operation, "+") == 0)
+        for (int i = 0; i < lines_count; i++)
         {
-            product_to_update->stock += stock_change;
-        }
-        else if (strcmp(operation, "-") == 0)
-        {
-            product_to_update->stock -= stock_change;
+            Product *product_to_update = NULL;
+            char product_id[PRODUCT_ID_SIZE] = "";
+            char operation[2] = "";
+            int stock_change = 0;
+
+            fscanf(file, "%s %1s %d", product_id, operation, &stock_change);
+            product_to_update = ProductGetById(product_id);
+
+            if (strcmp(operation, "+") == 0)
+            {
+                product_to_update->stock += stock_change;
+            }
+            else if (strcmp(operation, "-") == 0)
+            {
+                product_to_update->stock -= stock_change;
+            }
         }
     }
 }
 
-void WarehousePrint(FILE *output_file)
+void WarehousePrint(const char *base_filename)
 {
+    FILE *file = NULL;
+    char full_filename[FILENAME_MAX];
+
     if (pdf_mode)
     {
-        RenderPdf(output_file);
+        sprintf(full_filename, "%s.tex", base_filename);
     }
     else
     {
-        RenderTxt(output_file);
+        sprintf(full_filename, "%s.tex", base_filename);
+    }
+    file = fopen(full_filename, "w");
+
+    if (file != NULL)
+    {
+        if (pdf_mode)
+        {
+            RenderPdf(file);
+        }
+        else
+        {
+            RenderTxt(file);
+        }
+        fclose(file);
     }
 }
 
