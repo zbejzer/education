@@ -2,7 +2,10 @@
 #define WAREHOUSE_COMMAND_PARSER_H_
 
 void ParseCommand(char *prompt);
-void WarehouseInit();
-void WarehouseUpdate();
+void HandleCommand(char *command, char *args);
+void WarehouseInit(FILE *input_file);
+void WarehouseUpdate(FILE *input_file);
+void WarehousePrint(FILE *output_file);
+void WarehouseSave();
 
 #endif
