@@ -36,5 +36,10 @@ int main(int argc, char *argv[])
     ParseCommand(line_buffer);
     free(line_buffer);
 
+    for (int i = 0; i < product_count; i++)
+    {
+        ProductDelete(products[i]);
+    }
+
     return 0;
 }
