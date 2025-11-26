@@ -93,12 +93,43 @@ void WarehouseInit(FILE *input_file)
 
 void WarehouseUpdate(FILE *input_file)
 {
+    int lines_count = 0;
+
+    fscanf(input_file, "%d", &lines_count);
+
+    for (int i = 0; i < lines_count; i++)
+    {
+        Product *product_to_update = NULL;
+        char id_buffer[PRODUCT_ID_SIZE] = "";
+        char operation[2] = "";
+        int stock_change = 0;
+
+        fscanf(input_file, "%s", id_buffer);
+        fscanf(input_file, " %1s", operation);
+        fscanf(input_file, " %d", &stock_change);
+
+        product_to_update = ProductGetById(id_buffer);
+
+        if (strcmp(operation, "+") == 0)
+        {
+            product_to_update->stock += stock_change;
+        }
+        else if (strcmp(operation, "-") == 0)
+        {
+            product_to_update->stock -= stock_change;
+        }
+    }
 }
 
 void WarehousePrint(FILE *output_file)
 {
+    for (int i = 0; i < product_count; i++)
+    {
+        printf("%s\t%s\t%d\n", products[i].id, products[i].name, products[i].stock);
+    }
 }
 
 void WarehouseSave()
 {
+    WarehousePrint(NULL);
 }
