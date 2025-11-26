@@ -3,42 +3,12 @@
 #include <string.h>
 
 #include "command_parser.h"
-#include "common.h"
+#include "config.h"
 #include "product.h"
 #include "render.h"
+#include "shared.h"
 
-void ParseCommand(char *prompt)
-{
-    char *space_position = NULL;
-    char *command = NULL;
-    char *args = NULL;
-    size_t command_length = 0;
-    size_t args_length = 0;
-
-    if ((space_position = strchr(prompt, ' ')) != NULL)
-    {
-        command_length = space_position - prompt;
-        command = malloc((command_length + 1) * sizeof(char));
-        strncpy(command, prompt, command_length);
-        command[command_length] = '\0';
-        args_length = (strlen(space_position + 1));
-        args = malloc((args_length + 1) * sizeof(char));
-        strcpy(args, space_position + 1);
-    }
-    else
-    {
-        command_length = strlen(prompt);
-        command = malloc((command_length + 1) * sizeof(char));
-        strcpy(command, prompt);
-    }
-
-    HandleCommand(command, args);
-
-    free(command);
-    free(args);
-}
-
-void HandleCommand(char *command, char *args)
+void HandleCommand(const char *command, const char *args)
 {
     if (strcmp(command, "init") == 0)
     {
@@ -69,7 +39,7 @@ void WarehouseInit(const char *filename)
             Product new_product;
 
             fscanf(file, "%s", new_product.id);
-            fscanf(file, " %" STR_PRODUCT_NAME_SIZE "[^\n]", new_product.name);
+            fscanf(file, " %" XSTR(PRODUCT_NAME_SIZE) "[^\n]", new_product.name);
             new_product.stock = 0;
 
             kProductCount++;
@@ -142,12 +112,12 @@ void WarehousePrint(const char *base_filename)
 
 void WarehouseSave()
 {
-    FILE *save_file = fopen(kSaveFileName, "w");
+    FILE *file = fopen(SAVE_FILENAME, "w");
 
     for (int i = 0; i < kProductCount; i++)
     {
-        fprintf(save_file, "%s;\t%s;\t%d\n", kProducts[i].id, kProducts[i].name, kProducts[i].stock);
+        fprintf(file, "%s;\t%s;\t%d\n", kProducts[i].id, kProducts[i].name, kProducts[i].stock);
     }
 
-    fclose(save_file);
+    fclose(file);
 }

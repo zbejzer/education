@@ -12,6 +12,6 @@ typedef struct Product
     int stock;
 } Product;
 
-Product *ProductGetById(char id[PRODUCT_ID_SIZE]);
+Product *ProductGetById(const char *id);
 
 #endif

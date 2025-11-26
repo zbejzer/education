@@ -1,10 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "common.h"
 #include "product.h"
+#include "shared.h"
 
-Product *ProductGetById(char id[PRODUCT_ID_SIZE])
+Product *ProductGetById(const char *id)
 {
     for (int i = 0; i < kProductCount; i++)
     {

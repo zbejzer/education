@@ -1,5 +1,5 @@
-#ifndef WAREHOUSE_COMMON_H_
-#define WAREHOUSE_COMMON_H_
+#ifndef WAREHOUSE_SHARED_H_
+#define WAREHOUSE_SHARED_H_
 
 #include <stdbool.h>
 
@@ -8,6 +8,5 @@
 extern int kProductCount;
 extern Product *kProducts;
 extern bool kPdfMode;
-extern const char kSaveFileName[];
 
 #endif

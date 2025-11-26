@@ -4,42 +4,29 @@
 #include <string.h>
 
 #include "command_parser.h"
+#include "config.h"
 #include "product.h"
 
-int kProductCount;
+size_t kProductCount;
 Product *kProducts;
 bool kPdfMode;
 const char kSaveFileName[] = "store.txt";
 
 int main(int argc, char *argv[])
 {
-    int ch_buffer = 0;
-    size_t line_length = 1;
-    char *line_buffer = malloc(sizeof(char));
-    line_buffer[0] = '\0';
+    char command_buffer[COMMAND_SIZE_MAX] = "";
+    char args_buffer[ARGS_SIZE_MAX] = "";
 
-    kPdfMode = (strcmp(argv[1], "pdf") == 0);
-
-    while ((ch_buffer = getchar()) != EOF)
+    if (argc > 1)
     {
-        if (ch_buffer == '\n')
-        {
-            ParseCommand(line_buffer);
-            line_buffer = realloc(line_buffer, sizeof(char));
-            line_buffer[0] = '\0';
-            line_length = 1;
-        }
-        else
-        {
-            line_length++;
-            line_buffer = realloc(line_buffer, line_length * sizeof(char));
-            line_buffer[line_length - 2] = (char)ch_buffer;
-            line_buffer[line_length - 1] = '\0';
-        }
+        kPdfMode = (strcmp(argv[1], "pdf") == 0);
     }
 
-    ParseCommand(line_buffer);
-    free(line_buffer);
+    while (scanf("%" XSTR(COMMAND_SIZE_MAX) "s %" XSTR(ARGS_SIZE_MAX) "[^\n]", command_buffer, args_buffer) != EOF)
+    {
+        HandleCommand(command_buffer, args_buffer);
+    }
+
     free(kProducts);
 
     return 0;

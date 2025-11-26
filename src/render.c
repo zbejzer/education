@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "common.h"
 #include "render.h"
+#include "shared.h"
 
 void RenderTxt(FILE *file)
 {
@@ -21,8 +21,8 @@ void RenderPdf(FILE *file)
                   "\\usepackage{polski}\n"
                   "\\title{Stan Magazynu}\n"
                   "\\date{");
-    fprintf(file, "%d:%d %d/%d/%d", time_info->tm_hour, time_info->tm_min, time_info->tm_mday, time_info->tm_mon + 1,
-            time_info->tm_year + 1900);
+    fprintf(file, "%.2d:%.2d %.2d/%.2d/%.4d", time_info->tm_hour, time_info->tm_min, time_info->tm_mday,
+            time_info->tm_mon + 1, time_info->tm_year + 1900);
     fprintf(file, "}\n"
                   "\\begin{document}\n"
                   "\\maketitle\n"
