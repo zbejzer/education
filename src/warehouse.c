@@ -9,6 +9,7 @@
 int product_count;
 Product *products;
 bool pdf_mode;
+const char kSave_file_name[] = "store.txt";
 
 int main(int argc, char *argv[])
 {

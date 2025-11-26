@@ -8,5 +8,6 @@
 extern int product_count;
 extern Product *products;
 extern bool pdf_mode;
+extern const char kSave_file_name[];
 
 #endif

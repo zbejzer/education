@@ -131,5 +131,12 @@ void WarehousePrint(FILE *output_file)
 
 void WarehouseSave()
 {
-    WarehousePrint(NULL);
+    FILE *save_file = fopen(kSave_file_name, "w");
+
+    for (int i = 0; i < product_count; i++)
+    {
+        fprintf(save_file, "%s;\t%s;\t%d\n", products[i].id, products[i].name, products[i].stock);
+    }
+
+    fclose(save_file);
 }
