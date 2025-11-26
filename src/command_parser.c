@@ -5,6 +5,7 @@
 #include "command_parser.h"
 #include "common.h"
 #include "product.h"
+#include "render.h"
 
 void ParseCommand(char *prompt)
 {
@@ -125,27 +126,15 @@ void WarehouseUpdate(FILE *input_file)
     }
 }
 
-void WarehousePrintTxt(FILE *output_file)
-{
-    for (int i = 0; i < product_count; i++)
-    {
-        fprintf(output_file, "%s %s %d\n", products[i].id, products[i].name, products[i].stock);
-    }
-}
-
-void WarehousePrintPdf(FILE *output_file)
-{
-}
-
 void WarehousePrint(FILE *output_file)
 {
     if (pdf_mode)
     {
-        WarehousePrintPdf(output_file);
+        RenderPdf(output_file);
     }
     else
     {
-        WarehousePrintTxt(output_file);
+        RenderTxt(output_file);
     }
 }
 
