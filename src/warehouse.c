@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
     for (int i = 0; i < product_count; i++)
     {
-        ProductDelete(products[i]);
+        ProductDelete(&(products[i]));
     }
 
     return 0;

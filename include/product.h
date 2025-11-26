@@ -3,7 +3,8 @@
 
 #include <stdio.h>
 
-#include "common.h"
+#define PRODUCT_ID_SIZE 6 // 5 chars + null character
+#define PRODUCT_NAME_SIZE 128
 
 typedef struct Product
 {

@@ -7,6 +7,7 @@ Product ProductCreate(char *id_, char *name_)
 {
     Product new_product;
 
+    strcpy(new_product.id, id_);
     new_product.name = malloc(strlen(name_) * sizeof(char));
     new_product.stock = 0;
 
