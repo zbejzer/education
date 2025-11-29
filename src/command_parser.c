@@ -107,6 +107,7 @@ void WarehousePrint(const char *base_filename)
         {
             RenderTxt(file);
         }
+        printf("%s\n", full_filename);
         fclose(file);
     }
 }
