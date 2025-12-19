@@ -7,6 +7,7 @@
 #include "product.h"
 #include "render.h"
 #include "shared.h"
+#include "validator.h"
 
 void HandleCommand(const char *command, const char *args)
 {
@@ -17,11 +18,13 @@ void HandleCommand(const char *command, const char *args)
     }
     else if (strcmp(command, "update") == 0)
     {
+        ValidateWarehouseInitialized();
         WarehouseUpdate(args);
         WarehouseSave();
     }
     else if (strcmp(command, "print") == 0)
     {
+        ValidateWarehouseInitialized();
         WarehousePrint(args);
     }
 }
@@ -33,6 +36,8 @@ void WarehouseInit(const char *filename)
     if (file != NULL)
     {
         fscanf(file, "%d", &lines_count);
+
+        ValidateWarehouseSize(lines_count);
 
         for (int i = 0; i < lines_count; i++)
         {

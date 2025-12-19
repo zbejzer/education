@@ -29,5 +29,5 @@ int main(int argc, char *argv[])
 
     free(kProducts);
 
-    return 0;
+    exit(EXIT_SUCCESS);
 }

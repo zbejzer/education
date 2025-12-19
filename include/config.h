@@ -7,6 +7,9 @@
 #define COMMAND_SIZE_MAX 128
 #define ARGS_SIZE_MAX 256
 
+#define WAREHOUSE_SIZE_MIN 1
+#define WAREHOUSE_SIZE_MAX 1000
+
 #define XSTR(s) STR(s)
 #define STR(s) #s
 
