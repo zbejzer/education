@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.21.0)
-project(warehouse VERSION 0.1.0 LANGUAGES C)
+project(warehouse VERSION 0.1.0 LANGUAGES C CXX)
+
+enable_testing()
+
+add_subdirectory(${PROJECT_SOURCE_DIR}/extern/googletest extern/googletest)
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 add_executable(warehouse)
 
@@ -17,6 +23,9 @@ target_include_directories(warehouse
 )
 
 set_property(TARGET warehouse PROPERTY C_STANDARD 11)
+set_property(TARGET warehouse PROPERTY C_STANDARD_REQUIRED ON)
+
+add_subdirectory(tests)
 
 if(MSVC)
     target_compile_options(warehouse PRIVATE /W4)
