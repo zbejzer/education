@@ -1,8 +1,14 @@
 {
-  "editor.tabSize": 4,
-  "editor.detectIndentation": false,
-  "editor.formatOnSave": true,
-  "cmake.useCMakePresets": "never",
-  "cmake.options.statusBarVisibility": "hidden",
-  "C_Cpp.clang_format_sortIncludes": true
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+    "editor.formatOnSave": true,
+    "cmake.useCMakePresets": "never",
+    "cmake.options.statusBarVisibility": "hidden",
+    "C_Cpp.clang_format_sortIncludes": true,
+    "explorer.autoRevealExclude": {
+        "**/extern": true
+    },
+    "search.exclude": {
+        "**/extern": true
+    }
 }
