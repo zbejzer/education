@@ -1,5 +1,5 @@
-#ifndef WAREHOUSE_COMMAND_PARSER_H_
-#define WAREHOUSE_COMMAND_PARSER_H_
+#ifndef WAREHOUSE_CONTROLLER_H_
+#define WAREHOUSE_CONTROLLER_H_
 
 void HandleCommand(const char *command, const char *args);
 void WarehouseInit(const char *filename);

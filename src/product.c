@@ -6,7 +6,7 @@
 
 Product *ProductGetById(const char *id)
 {
-    for (int i = 0; i < kProductCount; i++)
+    for (size_t i = 0; i < kProductCount; i++)
     {
         if (strcmp(kProducts[i].id, id) == 0)
         {
@@ -15,4 +15,17 @@ Product *ProductGetById(const char *id)
     }
 
     return NULL;
+}
+
+bool IsProductIdExists(const char *id)
+{
+    for (size_t i = 0; i < kProductCount; i++)
+    {
+        if (strcmp(kProducts[i].id, id) == 0)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

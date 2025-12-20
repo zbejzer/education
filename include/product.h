@@ -1,9 +1,9 @@
 #ifndef WAREHOUSE_PRODUCT_H_
 #define WAREHOUSE_PRODUCT_H_
 
-#define PRODUCT_ID_SIZE 6 // 5 chars + null character
-#define PRODUCT_NAME_SIZE 128
-#define STR_PRODUCT_NAME_SIZE "128"
+#include <stdbool.h>
+
+#include "config.h"
 
 typedef struct Product
 {
@@ -13,5 +13,6 @@ typedef struct Product
 } Product;
 
 Product *ProductGetById(const char *id);
+bool IsProductIdExists(const char *id);
 
 #endif

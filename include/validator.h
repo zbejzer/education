@@ -1,6 +1,6 @@
 #include <stdbool.h>
 
-void ValidateWarehouseSize(int products);
-void ValidateWarehouseInitialized();
-void ValidateWarehouseNotInitialized();
-void ValidateProductId(char *str);
+int ValidateWarehouseSize(int products);
+int ValidateWarehouseInitialized();
+int ValidateProductId(char *str);
+int ValidateProductName(char *str);

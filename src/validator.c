@@ -7,53 +7,60 @@
 #include "shared.h"
 #include "validator.h"
 
-void ValidateWarehouseSize(int products)
+int ValidateWarehouseSize(int warehouse_size)
 {
-    if (products > WAREHOUSE_SIZE_MAX || products < WAREHOUSE_SIZE_MIN)
+    if (warehouse_size > WAREHOUSE_SIZE_MAX || warehouse_size < WAREHOUSE_SIZE_MIN)
     {
-        fprintf(stderr, "Warehouse size outside of allowed range. Allowed range: %d - %d", WAREHOUSE_SIZE_MIN,
-                WAREHOUSE_SIZE_MAX);
-        exit(EXIT_FAILURE);
+        return 1;
     }
 
-    return;
+    return 0;
 }
 
-void ValidateWarehouseInitialized()
+int ValidateWarehouseInitialized()
 {
     if (kProducts == NULL)
     {
-        fprintf(stderr, "Warehouse hasn't been initialized yet!");
-        exit(EXIT_FAILURE);
+        return 1;
     }
 
-    return;
+    return 0;
 }
 
-void ValidateWarehouseNotInitialized()
+int ValidateProductId(char *id)
 {
-    if (kProducts != NULL)
+    if (strlen(id) != PRODUCT_ID_SIZE - 1)
     {
-        fprintf(stderr, "Warehouse has been already initialized!");
-        exit(EXIT_FAILURE);
+        return 1;
     }
 
-    return;
+    if (!isupper(id[0]) || !isupper(id[1]) || !isdigit(id[2]) || !isdigit(id[3]) || !isdigit(id[4]))
+    {
+        return 1;
+    }
+
+    return 0;
 }
 
-void ValidateProductId(char *str)
+int ValidateProductName(char *str)
 {
-    if (strlen(str) != PRODUCT_ID_SIZE - 1)
+    if (isalpha(str[0]))
     {
-        fprintf(stderr, "Product ID length not allowed! Expected length: %d", PRODUCT_ID_SIZE - 1);
-        exit(EXIT_FAILURE);
+        unsigned int str_len = strnlen(str);
+
+        for (size_t i = 0; i < str_len; i++)
+        {
+            if (!isalnum(str[i]) && !isspace(str[i]))
+            {
+                break;
+            }
+        }
+
+        return;
     }
 
-    if (!isupper(str[0]) || !isupper(str[1]) || !isdigit(str[2]) || !isdigit(str[3]) || !isdigit(str[4]))
-    {
-        fprintf(stderr, "Incorrect product ID format!");
-        exit(EXIT_FAILURE);
-    }
+    fprintf(stderr, "Incorrect product name!\n");
+    exit(EXIT_FAILURE);
 
     return;
 }
