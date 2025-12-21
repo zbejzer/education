@@ -7,7 +7,7 @@
 #include "shared.h"
 #include "validator.h"
 
-int ValidateWarehouseSize(int warehouse_size)
+int ValidateWarehouseSize(const int warehouse_size)
 {
     if (warehouse_size > WAREHOUSE_SIZE_MAX || warehouse_size < WAREHOUSE_SIZE_MIN)
     {
@@ -17,9 +17,9 @@ int ValidateWarehouseSize(int warehouse_size)
     return 0;
 }
 
-int ValidateWarehouseInitialized()
+int ValidateWarehouseInitialized(const WarehouseNode *warehouse)
 {
-    if (kWarehouse == NULL)
+    if (warehouse == NULL)
     {
         return 1;
     }
@@ -27,7 +27,7 @@ int ValidateWarehouseInitialized()
     return 0;
 }
 
-int ValidateProductId(char *id)
+int ValidateProductId(const char *id)
 {
     if (strlen(id) != PRODUCT_ID_SIZE - 1)
     {
@@ -42,7 +42,7 @@ int ValidateProductId(char *id)
     return 0;
 }
 
-int ValidateProductName(char *str)
+int ValidateProductName(const char *str)
 {
     if (isalpha(str[0]))
     {
@@ -52,15 +52,12 @@ int ValidateProductName(char *str)
         {
             if (!isalnum(str[i]) && !isspace(str[i]))
             {
-                break;
+                return 1;
             }
         }
 
         return 0;
     }
-
-    fprintf(stderr, "Incorrect product name!\n");
-    exit(EXIT_FAILURE);
 
     return 1;
 }

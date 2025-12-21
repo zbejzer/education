@@ -30,7 +30,7 @@ void HandleCommand(const char *command, const char *args)
 
 void CommandInitialize(const char *filename)
 {
-    if (!ValidateWarehouseInitialized())
+    if (!ValidateWarehouseInitialized(kWarehouse))
     {
         fprintf(stderr, "Warehouse already initialized!\n");
         exit(EXIT_FAILURE);
@@ -59,7 +59,6 @@ void CommandInitialize(const char *filename)
     {
         Product new_product;
         fscanf(file, "%s", new_product.id);
-
         if (ValidateProductId(new_product.id))
         {
             fprintf(stderr, "Invalid product ID: %s\n", new_product.id);
@@ -75,6 +74,13 @@ void CommandInitialize(const char *filename)
         }
 
         fscanf(file, " %" XSTR(PRODUCT_NAME_SIZE) "[^\n]", new_product.name);
+        if (ValidateProductName(new_product.name))
+        {
+            fprintf(stderr, "Invalid product name: %s\n", new_product.name);
+            fclose(file);
+            exit(EXIT_FAILURE);
+        }
+
         new_product.stock = 0;
 
         if (AddWarehouseItem(&new_product))
@@ -138,7 +144,7 @@ void CommandUpdate(const char *filename)
 
 void CommandPrint(const char *base_filename)
 {
-    if (ValidateWarehouseInitialized())
+    if (ValidateWarehouseInitialized(kWarehouse))
     {
         fprintf(stderr, "Warehouse not initialized!\n");
         exit(EXIT_FAILURE);
