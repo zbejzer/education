@@ -13,22 +13,22 @@ void HandleCommand(const char *command, const char *args)
 {
     if (strcmp(command, "init") == 0)
     {
-        WarehouseInit(args);
-        WarehouseSave();
+        CommandInitialize(args);
+        SaveWarehouse();
     }
     else if (strcmp(command, "update") == 0)
     {
 
-        WarehouseUpdate(args);
-        WarehouseSave();
+        CommandUpdate(args);
+        SaveWarehouse();
     }
     else if (strcmp(command, "print") == 0)
     {
-        WarehousePrint(args);
+        CommandPrint(args);
     }
 }
 
-void WarehouseInit(const char *filename)
+void CommandInitialize(const char *filename)
 {
     if (!ValidateWarehouseInitialized())
     {
@@ -36,7 +36,6 @@ void WarehouseInit(const char *filename)
         exit(EXIT_FAILURE);
     }
 
-    int warehouse_size = 0;
     FILE *file = fopen(filename, "r");
 
     if (file == NULL)
@@ -45,9 +44,10 @@ void WarehouseInit(const char *filename)
         exit(EXIT_FAILURE);
     }
 
-    fscanf(file, "%d", &warehouse_size);
+    int items_count = 0;
+    fscanf(file, "%d", &items_count);
 
-    if (ValidateWarehouseSize(warehouse_size))
+    if (ValidateWarehouseSize(items_count))
     {
         fprintf(stderr, "Warehouse size outside of allowed range. Allowed range: %d - %d\n", WAREHOUSE_SIZE_MIN,
                 WAREHOUSE_SIZE_MAX);
@@ -55,7 +55,7 @@ void WarehouseInit(const char *filename)
         exit(EXIT_FAILURE);
     }
 
-    for (int i = 0; i < warehouse_size; i++)
+    for (int i = 0; i < items_count; i++)
     {
         Product new_product;
         fscanf(file, "%s", new_product.id);
@@ -67,7 +67,7 @@ void WarehouseInit(const char *filename)
             exit(EXIT_FAILURE);
         }
 
-        if (IsProductIdExists(new_product.id))
+        if (GetWarehouseItemById(new_product.id) != NULL)
         {
             fprintf(stderr, "Product with ID %s already exists!\n", new_product.id);
             fclose(file);
@@ -77,23 +77,25 @@ void WarehouseInit(const char *filename)
         fscanf(file, " %" XSTR(PRODUCT_NAME_SIZE) "[^\n]", new_product.name);
         new_product.stock = 0;
 
-        kProductCount++;
-        kProducts = realloc(kProducts, kProductCount * sizeof(Product));
-        memcpy(&(kProducts[kProductCount - 1]), &new_product, sizeof(Product));
+        if (AddWarehouseItem(&new_product))
+        {
+            fprintf(stderr, "Failed to add product with ID %s to warehouse!\n", new_product.id);
+            fclose(file);
+            exit(EXIT_FAILURE);
+        }
     }
 
     fclose(file);
 }
 
-void WarehouseUpdate(const char *filename)
+void CommandUpdate(const char *filename)
 {
-    if (kProducts == NULL)
+    if (kWarehouse == NULL)
     {
         fprintf(stderr, "Warehouse has not been initialized yet!\n");
         exit(EXIT_FAILURE);
     }
 
-    int lines_count = 0;
     FILE *file = fopen(filename, "r");
 
     if (file == NULL)
@@ -102,11 +104,11 @@ void WarehouseUpdate(const char *filename)
         exit(EXIT_FAILURE);
     }
 
-    fscanf(file, "%d", &lines_count);
+    int items_count = 0;
+    fscanf(file, "%d", &items_count);
 
-    for (int i = 0; i < lines_count; i++)
+    for (int i = 0; i < items_count; i++)
     {
-        Product *product_to_update = NULL;
         char product_id[PRODUCT_ID_SIZE] = "";
         char operation[2] = "";
         int stock_change = 0;
@@ -120,34 +122,21 @@ void WarehouseUpdate(const char *filename)
             exit(EXIT_FAILURE);
         }
 
-        product_to_update = ProductGetById(product_id);
-
-        if (product_to_update == NULL)
+        if (strcmp(operation, "-") == 0)
         {
-            fprintf(stderr, "Product with ID %s does not exist!\n", product_id);
+            stock_change = -1 * stock_change;
+        }
+
+        if (UpdateWarehouseItem(product_id, stock_change))
+        {
+            fprintf(stderr, "Failed to update product with ID %s!\n", product_id);
             fclose(file);
             exit(EXIT_FAILURE);
-        }
-
-        if (strcmp(operation, "+") == 0)
-        {
-            product_to_update->stock += stock_change;
-        }
-        else if (strcmp(operation, "-") == 0)
-        {
-            if (product_to_update->stock < stock_change)
-            {
-                fprintf(stderr, "Insufficient stock for product ID %s to remove %d units!\n", product_id, stock_change);
-                fclose(file);
-                exit(EXIT_FAILURE);
-            }
-
-            product_to_update->stock -= stock_change;
         }
     }
 }
 
-void WarehousePrint(const char *base_filename)
+void CommandPrint(const char *base_filename)
 {
     if (ValidateWarehouseInitialized())
     {
@@ -184,23 +173,5 @@ void WarehousePrint(const char *base_filename)
     }
 
     printf("%s\n", filename);
-    fclose(file);
-}
-
-void WarehouseSave()
-{
-    FILE *file = fopen(SAVE_FILENAME, "w");
-
-    if (file == NULL)
-    {
-        fprintf(stderr, "Could not open file: %s\n", SAVE_FILENAME);
-        exit(EXIT_FAILURE);
-    }
-
-    for (int i = 0; i < kProductCount; i++)
-    {
-        fprintf(file, "%s;\t%s;\t%d\n", kProducts[i].id, kProducts[i].name, kProducts[i].stock);
-    }
-
     fclose(file);
 }

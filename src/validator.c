@@ -19,7 +19,7 @@ int ValidateWarehouseSize(int warehouse_size)
 
 int ValidateWarehouseInitialized()
 {
-    if (kProducts == NULL)
+    if (kWarehouse == NULL)
     {
         return 1;
     }
@@ -46,7 +46,7 @@ int ValidateProductName(char *str)
 {
     if (isalpha(str[0]))
     {
-        unsigned int str_len = strnlen(str);
+        unsigned int str_len = strlen(str);
 
         for (size_t i = 0; i < str_len; i++)
         {
@@ -56,11 +56,11 @@ int ValidateProductName(char *str)
             }
         }
 
-        return;
+        return 0;
     }
 
     fprintf(stderr, "Incorrect product name!\n");
     exit(EXIT_FAILURE);
 
-    return;
+    return 1;
 }

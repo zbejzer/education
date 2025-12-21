@@ -3,12 +3,15 @@
 
 #include "render.h"
 #include "shared.h"
+#include "warehouse.h"
 
 void RenderTxt(FILE *file)
 {
-    for (int i = 0; i < kProductCount; i++)
+    WarehouseNode *node = kWarehouse;
+    while (node != NULL)
     {
-        fprintf(file, "%s %s %d\n", kProducts[i].id, kProducts[i].name, kProducts[i].stock);
+        fprintf(file, "%s %s %d\n", node->product->id, node->product->name, node->product->stock);
+        node = node->next;
     }
 }
 
@@ -30,9 +33,11 @@ void RenderPdf(FILE *file)
                   "\\hline\n"
                   "ID & Nazwa & Ilość \\\\ \\hline\n");
 
-    for (int i = 0; i < kProductCount; i++)
+    WarehouseNode *node = kWarehouse;
+    while (node != NULL)
     {
-        fprintf(file, "%s & %s & %d \\\\\n", kProducts[i].id, kProducts[i].name, kProducts[i].stock);
+        fprintf(file, "%s & %s & %d \\\\\n", node->product->id, node->product->name, node->product->stock);
+        node = node->next;
     }
 
     fprintf(file, "\\hline\n"

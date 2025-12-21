@@ -1,10 +1,9 @@
-#ifndef WAREHOUSE_CONTROLLER_H_
-#define WAREHOUSE_CONTROLLER_H_
+#ifndef WHS_CONTROLLER_H_
+#define WHS_CONTROLLER_H_
 
 void HandleCommand(const char *command, const char *args);
-void WarehouseInit(const char *filename);
-void WarehouseUpdate(const char *filename);
-void WarehousePrint(const char *base_filename);
-void WarehouseSave();
+void CommandInitialize(const char *filename);
+void CommandUpdate(const char *filename);
+void CommandPrint(const char *base_filename);
 
 #endif

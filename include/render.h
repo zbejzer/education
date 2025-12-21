@@ -1,5 +1,5 @@
-#ifndef WAREHOUSE_RENDER_H_
-#define WAREHOUSE_RENDER_H_
+#ifndef WHS_RENDER_H_
+#define WHS_RENDER_H_
 
 #include <stdio.h>
 

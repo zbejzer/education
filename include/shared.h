@@ -1,12 +1,11 @@
-#ifndef WAREHOUSE_SHARED_H_
-#define WAREHOUSE_SHARED_H_
+#ifndef WHS_SHARED_H_
+#define WHS_SHARED_H_
 
 #include <stdbool.h>
 
-#include "product.h"
+#include "warehouse.h"
 
-extern int kProductCount;
-extern Product *kProducts;
+extern WarehouseNode *kWarehouse;
 extern bool kPdfMode;
 
 #endif

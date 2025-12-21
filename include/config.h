@@ -1,5 +1,5 @@
-#ifndef WAREHOUSE_CONFIG_H_
-#define WAREHOUSE_CONFIG_H_
+#ifndef WHS_CONFIG_H_
+#define WHS_CONFIG_H_
 
 #define PRODUCT_ID_SIZE 6 // 5 chars + null character
 #define PRODUCT_NAME_SIZE 128

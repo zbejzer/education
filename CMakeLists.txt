@@ -12,7 +12,7 @@ add_executable(warehouse)
 target_sources(warehouse
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src/app.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/product.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/warehouse.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/controller.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/render.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/validator.c

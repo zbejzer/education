@@ -7,10 +7,8 @@
 #include "controller.h"
 #include "product.h"
 
-size_t kProductCount;
-Product *kProducts;
+Product *kWarehouse;
 bool kPdfMode;
-const char kSaveFileName[] = "store.txt";
 
 int main(int argc, char *argv[])
 {
@@ -27,7 +25,7 @@ int main(int argc, char *argv[])
         HandleCommand(command_buffer, args_buffer);
     }
 
-    free(kProducts);
+    free(kWarehouse);
 
     exit(EXIT_SUCCESS);
 }
