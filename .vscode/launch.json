@@ -12,7 +12,6 @@
                 "txt"
             ],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
