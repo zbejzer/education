@@ -14,6 +14,16 @@ Install the following TeX Live packages:
 sudo apt-get install -y texlive-base texlive-latex-recommended texlive-lang-polish
 ```
 
+## Cloning
+
+### Submodules
+
+This software depends on Google Test library. To clone it as a submodule use:
+
+```bash
+git submodule update --init --remote --recursive
+```
+
 ## Building
 
 ### CMake

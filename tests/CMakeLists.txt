@@ -1,20 +1,23 @@
 
-add_executable(test_warehouse)
+add_executable(warehouse_tests
+    ${CMAKE_CURRENT_SOURCE_DIR}/validator_tests.cpp
+)
 
-target_sources(test_warehouse
+set_property(TARGET warehouse_tests PROPERTY CXX_STANDARD 17)
+set_property(TARGET warehouse_tests PROPERTY CXX_STANDARD_REQUIRED ON)
+
+target_link_libraries(warehouse_tests 
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/hello_test.cpp
+        libwarehouse
+        GTest::gtest_main
 )
 
-target_link_libraries(
-    test_warehouse GTest::gtest_main
+target_include_directories(warehouse_tests
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/include
 )
-
-set_property(TARGET test_warehouse PROPERTY CXX_STANDARD 17)
-set_property(TARGET test_warehouse PROPERTY CXX_STANDARD_REQUIRED ON)
 
 include(GoogleTest)
 gtest_discover_tests(
-    test_warehouse
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    warehouse_tests
 )
