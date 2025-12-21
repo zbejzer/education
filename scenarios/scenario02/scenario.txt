@@ -1,0 +1,5 @@
+init i.txt
+print report1211
+update u.txt
+update u.txt
+print report1411
