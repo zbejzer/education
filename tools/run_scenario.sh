@@ -7,14 +7,14 @@ cd "./../"
 
 work_dir="$(realpath "./")"
 build_dir="$work_dir/build"
-test_dir="$work_dir/tests"
+test_dir="$work_dir/data/scenario01"
 dist_dir="$work_dir/dist"
 
 exit_code=0
 
 mkdir -p "$dist_dir/" 2>/dev/null
 
-cd "./tests"
+cd "$test_dir"
 
 "$build_dir/warehouse" $mode < scenario.txt | while
     read -r filename
