@@ -14,13 +14,21 @@ void HandleCommand(const char *command, const char *args)
     if (strcmp(command, "init") == 0)
     {
         CommandInitialize(args);
-        SaveWarehouse();
-    }
+        if (SaveWarehouse())
+        {
+            fprintf(stderr, "Failed to save warehouse!\n");
+            exit(EXIT_FAILURE);
+        }
+        }
     else if (strcmp(command, "update") == 0)
     {
 
         CommandUpdate(args);
-        SaveWarehouse();
+        if (SaveWarehouse())
+        {
+            fprintf(stderr, "Failed to save warehouse!\n");
+            exit(EXIT_FAILURE);
+        }
     }
     else if (strcmp(command, "print") == 0)
     {

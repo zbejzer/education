@@ -9,10 +9,11 @@ typedef struct WarehouseNode
     Product *product;
 } WarehouseNode;
 
-int AddWarehouseItem(Product *product);
-int UpdateWarehouseItem(const char *product_id, int stock_change);
+int AddWarehouseItem(const Product *product);
+int UpdateWarehouseItem(const char *product_id, const int stock_change);
 size_t GetWarehouseSize();
 Product *GetWarehouseItemById(const char *product_id);
-void SaveWarehouse();
+int SaveWarehouse();
+int ClearWarehouse();
 
 #endif

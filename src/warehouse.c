@@ -6,7 +6,7 @@
 #include "shared.h"
 #include "warehouse.h"
 
-int AddWarehouseItem(Product *product)
+int AddWarehouseItem(const Product *product)
 {
     WarehouseNode *new_node = malloc(sizeof(WarehouseNode));
     if (new_node == NULL)
@@ -42,7 +42,7 @@ int AddWarehouseItem(Product *product)
     return 0;
 }
 
-int UpdateWarehouseItem(const char *product_id, int stock_change)
+int UpdateWarehouseItem(const char *product_id, const int stock_change)
 {
     Product *item = GetWarehouseItemById(product_id);
     if (item == NULL)
@@ -90,14 +90,13 @@ Product *GetWarehouseItemById(const char *product_id)
     return NULL;
 }
 
-void SaveWarehouse()
+int SaveWarehouse()
 {
     FILE *file = fopen(SAVE_FILENAME, "w");
 
     if (file == NULL)
     {
-        fprintf(stderr, "Could not open file: %s\n", SAVE_FILENAME);
-        exit(EXIT_FAILURE);
+        return 1;
     }
 
     WarehouseNode *node = kWarehouse;
@@ -108,4 +107,20 @@ void SaveWarehouse()
     }
 
     fclose(file);
+    return 0;
+}
+
+int ClearWarehouse()
+{
+    WarehouseNode *node = kWarehouse;
+    kWarehouse = NULL;
+    while (node != NULL)
+    {
+        WarehouseNode *temp = node;
+        node = node->next;
+        free(temp->product);
+        free(temp);
+    }
+
+    return 0;
 }

@@ -5,6 +5,9 @@ extern "C"
 #include "validator.h"
 }
 
+namespace
+{
+
 TEST(WarehouseSizeValidation, Valid)
 {
     const int sizes[] = {1, 1000, 9, 257, 513};
@@ -76,3 +79,5 @@ TEST(ProductNameValidation, Invalid)
         EXPECT_NE(ValidateProductName(name), 0);
     }
 }
+
+} // namespace

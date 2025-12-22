@@ -6,6 +6,7 @@
 #include "config.h"
 #include "controller.h"
 #include "product.h"
+#include "warehouse.h"
 
 Product *kWarehouse;
 bool kPdfMode;
@@ -25,7 +26,7 @@ int main(int argc, char *argv[])
         HandleCommand(command_buffer, args_buffer);
     }
 
-    free(kWarehouse);
+    ClearWarehouse();
 
     exit(EXIT_SUCCESS);
 }
