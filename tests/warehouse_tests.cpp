@@ -4,7 +4,6 @@
 extern "C"
 {
 #include "product.h"
-#include "shared.h"
 #include "warehouse.h"
 }
 
@@ -23,57 +22,57 @@ class WarehouseTest : public testing::Test
           prod2_({"CD456", "Product 2", 0}), //
           prod3_({"EF789", "Product 3", 0})  //
     {
-        kWarehouse = NULL;
+        kProductsHead = NULL;
     }
 
     ~WarehouseTest() override
     {
-        ClearWarehouse();
+        ClearRegisteredProducts();
     }
 };
 
 TEST_F(WarehouseTest, SizeOfEmptyWarehouse)
 {
-    ASSERT_EQ(kWarehouse, nullptr);
-    EXPECT_EQ(GetWarehouseSize(), 0);
+    ASSERT_EQ(kProductsHead, nullptr);
+    EXPECT_EQ(GetRegisteredProductCount(), 0);
 }
 
 TEST_F(WarehouseTest, ClearEmptyWarehouse)
 {
-    ASSERT_EQ(kWarehouse, nullptr);
-    EXPECT_EQ(ClearWarehouse(), 0);
-    EXPECT_EQ(GetWarehouseSize(), 0);
+    ASSERT_EQ(kProductsHead, nullptr);
+    EXPECT_EQ(ClearRegisteredProducts(), 0);
+    EXPECT_EQ(GetRegisteredProductCount(), 0);
 }
 
-TEST_F(WarehouseTest, AddItemToWarehouse)
+TEST_F(WarehouseTest, AddProductToRegistry)
 {
-    EXPECT_EQ(GetWarehouseSize(), 0);
-    EXPECT_EQ(AddWarehouseItem(&prod1_), 0);
-    EXPECT_EQ(GetWarehouseSize(), 1);
-    EXPECT_EQ(AddWarehouseItem(&prod2_), 0);
-    EXPECT_EQ(GetWarehouseSize(), 2);
-    EXPECT_EQ(AddWarehouseItem(&prod3_), 0);
-    EXPECT_EQ(GetWarehouseSize(), 3);
+    EXPECT_EQ(GetRegisteredProductCount(), 0);
+    EXPECT_EQ(AddProductToRegistry(&prod1_), 0);
+    EXPECT_EQ(GetRegisteredProductCount(), 1);
+    EXPECT_EQ(AddProductToRegistry(&prod2_), 0);
+    EXPECT_EQ(GetRegisteredProductCount(), 2);
+    EXPECT_EQ(AddProductToRegistry(&prod3_), 0);
+    EXPECT_EQ(GetRegisteredProductCount(), 3);
 }
 
 TEST_F(WarehouseTest, ClearNonEmptyWarehouse)
 {
-    EXPECT_EQ(AddWarehouseItem(&prod1_), 0);
-    EXPECT_EQ(ClearWarehouse(), 0);
-    EXPECT_EQ(GetWarehouseSize(), 0);
+    EXPECT_EQ(AddProductToRegistry(&prod1_), 0);
+    EXPECT_EQ(ClearRegisteredProducts(), 0);
+    EXPECT_EQ(GetRegisteredProductCount(), 0);
 }
 
 TEST_F(WarehouseTest, RetrieveNonExistentItem)
 {
-    ASSERT_EQ(kWarehouse, nullptr);
-    Product *retrieved_product = GetWarehouseItemById("ZZ999");
+    ASSERT_EQ(kProductsHead, nullptr);
+    Product *retrieved_product = GetProductById("ZZ999");
     EXPECT_EQ(retrieved_product, nullptr);
 }
 
 TEST_F(WarehouseTest, RetrieveExistingItem)
 {
-    ASSERT_EQ(AddWarehouseItem(&prod1_), 0);
-    Product *retrieved_product = GetWarehouseItemById(prod1_.id);
+    ASSERT_EQ(AddProductToRegistry(&prod1_), 0);
+    Product *retrieved_product = GetProductById(prod1_.id);
     ASSERT_NE(retrieved_product, nullptr);
 
     EXPECT_STREQ(retrieved_product->id, prod1_.id);
@@ -83,24 +82,24 @@ TEST_F(WarehouseTest, RetrieveExistingItem)
 
 TEST_F(WarehouseTest, DifferentiateItems)
 {
-    ASSERT_EQ(AddWarehouseItem(&prod1_), 0);
-    ASSERT_EQ(AddWarehouseItem(&prod2_), 0);
-    ASSERT_EQ(AddWarehouseItem(&prod3_), 0);
+    ASSERT_EQ(AddProductToRegistry(&prod1_), 0);
+    ASSERT_EQ(AddProductToRegistry(&prod2_), 0);
+    ASSERT_EQ(AddProductToRegistry(&prod3_), 0);
 
-    Product *retrieved_product1 = GetWarehouseItemById(prod1_.id);
+    Product *retrieved_product1 = GetProductById(prod1_.id);
     ASSERT_NE(retrieved_product1, nullptr);
     EXPECT_STREQ(retrieved_product1->id, prod1_.id);
     EXPECT_STREQ(retrieved_product1->name, prod1_.name);
     EXPECT_EQ(retrieved_product1->stock, prod1_.stock);
 
-    Product *retrieved_product2 = GetWarehouseItemById(prod2_.id);
+    Product *retrieved_product2 = GetProductById(prod2_.id);
     ASSERT_NE(retrieved_product2, nullptr);
     EXPECT_STREQ(retrieved_product2->id, prod2_.id);
     EXPECT_STREQ(retrieved_product2->name, prod2_.name);
     EXPECT_EQ(retrieved_product2->stock, prod2_.stock);
     EXPECT_NE(retrieved_product1, retrieved_product2);
 
-    Product *retrieved_product3 = GetWarehouseItemById(prod3_.id);
+    Product *retrieved_product3 = GetProductById(prod3_.id);
     ASSERT_NE(retrieved_product3, nullptr);
     EXPECT_STREQ(retrieved_product3->id, prod3_.id);
     EXPECT_STREQ(retrieved_product3->name, prod3_.name);
@@ -111,8 +110,8 @@ TEST_F(WarehouseTest, DifferentiateItems)
 
 TEST_F(WarehouseTest, AddItemStock)
 {
-    ASSERT_EQ(AddWarehouseItem(&prod1_), 0);
-    Product *retrieved_product = GetWarehouseItemById(prod1_.id);
+    ASSERT_EQ(AddProductToRegistry(&prod1_), 0);
+    Product *retrieved_product = GetProductById(prod1_.id);
     ASSERT_NE(retrieved_product, nullptr);
 
     EXPECT_EQ(UpdateWarehouseItem(prod1_.id, 10), 0);
@@ -121,8 +120,8 @@ TEST_F(WarehouseTest, AddItemStock)
 
 TEST_F(WarehouseTest, AddItemStockMultipleTimes)
 {
-    ASSERT_EQ(AddWarehouseItem(&prod1_), 0);
-    Product *retrieved_product = GetWarehouseItemById(prod1_.id);
+    ASSERT_EQ(AddProductToRegistry(&prod1_), 0);
+    Product *retrieved_product = GetProductById(prod1_.id);
     ASSERT_NE(retrieved_product, nullptr);
 
     EXPECT_EQ(UpdateWarehouseItem(prod1_.id, 10), 0);
@@ -135,8 +134,8 @@ TEST_F(WarehouseTest, AddItemStockMultipleTimes)
 
 TEST_F(WarehouseTest, RemoveItemStock)
 {
-    EXPECT_EQ(AddWarehouseItem(&prod1_), 0);
-    Product *retrieved_product = GetWarehouseItemById(prod1_.id);
+    EXPECT_EQ(AddProductToRegistry(&prod1_), 0);
+    Product *retrieved_product = GetProductById(prod1_.id);
     ASSERT_NE(retrieved_product, nullptr);
 
     EXPECT_EQ(UpdateWarehouseItem(prod1_.id, 20), 0);
@@ -148,8 +147,8 @@ TEST_F(WarehouseTest, RemoveItemStock)
 
 TEST_F(WarehouseTest, RemoveItemStockBelowZero)
 {
-    EXPECT_EQ(AddWarehouseItem(&prod1_), 0);
-    Product *retrieved_product = GetWarehouseItemById(prod1_.id);
+    EXPECT_EQ(AddProductToRegistry(&prod1_), 0);
+    Product *retrieved_product = GetProductById(prod1_.id);
     ASSERT_NE(retrieved_product, nullptr);
 
     EXPECT_EQ(UpdateWarehouseItem(prod1_.id, 5), 0);

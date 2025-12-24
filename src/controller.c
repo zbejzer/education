@@ -4,55 +4,70 @@
 
 #include "config.h"
 #include "controller.h"
+#include "file_handler.h"
 #include "product.h"
 #include "render.h"
-#include "shared.h"
 #include "validator.h"
 
-void HandleCommand(const char *command, const char *args)
+void ParseCommandLine(const char *command_line, char *cmd, char *args)
 {
-    if (strcmp(command, "init") == 0)
+    char *delimiter_pos = strchr(command_line, ' ');
+    if (delimiter_pos != NULL)
     {
-        CommandInitialize(args);
-        if (SaveWarehouse())
-        {
-            fprintf(stderr, "Failed to save warehouse!\n");
-            exit(EXIT_FAILURE);
-        }
-        }
-    else if (strcmp(command, "update") == 0)
-    {
-
-        CommandUpdate(args);
-        if (SaveWarehouse())
-        {
-            fprintf(stderr, "Failed to save warehouse!\n");
-            exit(EXIT_FAILURE);
-        }
+        size_t command_length = delimiter_pos - command_line;
+        strncpy(cmd, command_line, command_length);
+        cmd[command_length] = '\0';
+        strcpy(args, delimiter_pos + 1);
     }
-    else if (strcmp(command, "print") == 0)
+    else
     {
-        CommandPrint(args);
+        strcpy(cmd, command_line);
+        args[0] = '\0';
     }
 }
 
-void CommandInitialize(const char *filename)
+void RouteCommand(const char *cmd, const char *args)
 {
-    if (!ValidateWarehouseInitialized(kWarehouse))
+    if (strcmp(cmd, "init") == 0)
+    {
+        HandleCommandInit(args);
+    }
+    else if (strcmp(cmd, "create") == 0)
+    {
+        HandleCommandCreate(args);
+    }
+    else if (strcmp(cmd, "update") == 0)
+    {
+        HandleCommandUpdate(args);
+    }
+    else if (strcmp(cmd, "transfer") == 0)
+    {
+        HandleCommandTransfer(args);
+    }
+    else if (strcmp(cmd, "print") == 0)
+    {
+        HandleCommandPrint(args);
+    }
+    else
+    {
+        fprintf(stderr, "Command %s not recognized!\n", cmd);
+        fprintf(stderr, "Provided arguments: %s\n", args);
+        exit(EXIT_FAILURE);
+    }
+}
+
+void HandleCommandInit(const char *filename)
+{
+    FILE *file = NULL;
+    int items_count = 0;
+
+    if (!ValidateProductsInitialized(kProductsRegistry))
     {
         fprintf(stderr, "Warehouse already initialized!\n");
         exit(EXIT_FAILURE);
     }
 
-    FILE *file = fopen(filename, "r");
-
-    if (file == NULL)
-    {
-        fprintf(stderr, "Could not open file: %s\n", filename);
-        exit(EXIT_FAILURE);
-    }
-
-    int items_count = 0;
+    file = OpenFile(filename, "r");
     fscanf(file, "%d", &items_count);
 
     if (ValidateWarehouseSize(items_count))
@@ -74,14 +89,14 @@ void CommandInitialize(const char *filename)
             exit(EXIT_FAILURE);
         }
 
-        if (GetWarehouseItemById(new_product.id) != NULL)
+        if (GetProductById(new_product.id) != NULL)
         {
             fprintf(stderr, "Product with ID %s already exists!\n", new_product.id);
             fclose(file);
             exit(EXIT_FAILURE);
         }
 
-        fscanf(file, " %" XSTR(PRODUCT_NAME_SIZE) "[^\n]", new_product.name);
+        fscanf(file, " %" XSTR(NAME_ALLOCATED_SIZE) "[^\n]", new_product.name);
         if (ValidateProductName(new_product.name))
         {
             fprintf(stderr, "Invalid product name: %s\n", new_product.name);
@@ -91,7 +106,7 @@ void CommandInitialize(const char *filename)
 
         new_product.stock = 0;
 
-        if (AddWarehouseItem(&new_product))
+        if (AddProductToRegistry(&new_product))
         {
             fprintf(stderr, "Failed to add product with ID %s to warehouse!\n", new_product.id);
             fclose(file);
@@ -102,28 +117,29 @@ void CommandInitialize(const char *filename)
     fclose(file);
 }
 
-void CommandUpdate(const char *filename)
+void HandleCommandCreate(const char *args)
 {
-    if (kWarehouse == NULL)
+    return;
+}
+
+void HandleCommandUpdate(const char *filename)
+{
+    FILE *file = NULL;
+    int items_count = 0;
+
+    if (kProductsRegistry == NULL)
     {
         fprintf(stderr, "Warehouse has not been initialized yet!\n");
         exit(EXIT_FAILURE);
     }
 
-    FILE *file = fopen(filename, "r");
+    file = OpenFile(filename, "r");
 
-    if (file == NULL)
-    {
-        fprintf(stderr, "Could not open file: %s\n", filename);
-        exit(EXIT_FAILURE);
-    }
-
-    int items_count = 0;
     fscanf(file, "%d", &items_count);
 
     for (int i = 0; i < items_count; i++)
     {
-        char product_id[PRODUCT_ID_SIZE] = "";
+        char product_id[ID_ALLOCATED_SIZE] = "";
         char operation[2] = "";
         int stock_change = 0;
 
@@ -141,7 +157,7 @@ void CommandUpdate(const char *filename)
             stock_change = -1 * stock_change;
         }
 
-        if (UpdateWarehouseItem(product_id, stock_change))
+        if (UpdateProduct(product_id, stock_change))
         {
             fprintf(stderr, "Failed to update product with ID %s!\n", product_id);
             fclose(file);
@@ -150,15 +166,21 @@ void CommandUpdate(const char *filename)
     }
 }
 
-void CommandPrint(const char *base_filename)
+void HandleCommandTransfer(const char *args)
 {
-    if (ValidateWarehouseInitialized(kWarehouse))
+    return;
+}
+
+void HandleCommandPrint(const char *base_filename)
+{
+    FILE *file = NULL;
+    char filename[FILENAME_MAX] = "";
+
+    if (ValidateProductsInitialized(kProductsRegistry))
     {
         fprintf(stderr, "Warehouse not initialized!\n");
         exit(EXIT_FAILURE);
     }
-
-    char filename[FILENAME_MAX];
 
     if (kPdfMode)
     {
@@ -169,13 +191,7 @@ void CommandPrint(const char *base_filename)
         sprintf(filename, "%s.txt", base_filename);
     }
 
-    FILE *file = fopen(filename, "w");
-
-    if (file == NULL)
-    {
-        fprintf(stderr, "Could not open file: %s\n", filename);
-        exit(EXIT_FAILURE);
-    }
+    file = OpenFile(filename, "w");
 
     if (kPdfMode)
     {
@@ -187,5 +203,6 @@ void CommandPrint(const char *base_filename)
     }
 
     printf("%s\n", filename);
-    fclose(file);
+
+    CloseFile(file);
 }

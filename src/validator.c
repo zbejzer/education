@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "config.h"
-#include "shared.h"
+#include "product.h"
 #include "validator.h"
 
 int ValidateWarehouseSize(const int warehouse_size)
@@ -17,9 +17,9 @@ int ValidateWarehouseSize(const int warehouse_size)
     return 0;
 }
 
-int ValidateWarehouseInitialized(const WarehouseNode *warehouse)
+int ValidateProductsInitialized(const Product *products)
 {
-    if (warehouse == NULL)
+    if (products == NULL)
     {
         return 1;
     }
@@ -29,7 +29,7 @@ int ValidateWarehouseInitialized(const WarehouseNode *warehouse)
 
 int ValidateProductId(const char *id)
 {
-    if (strlen(id) != PRODUCT_ID_SIZE - 1)
+    if (strlen(id) != PRODUCT_ID_SIZE_MAX)
     {
         return 1;
     }

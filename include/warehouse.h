@@ -1,19 +1,36 @@
 #ifndef WHS_WAREHOUSE_H_
 #define WHS_WAREHOUSE_H_
 
-#include "product.h"
+#include "config.h"
+#include "warehouse_section.h"
+
+typedef struct Warehouse
+{
+    char id[ID_ALLOCATED_SIZE];
+    char name[NAME_ALLOCATED_SIZE];
+    unsigned int max_stock;
+    unsigned int max_categories;
+    unsigned int flammability;
+    WarehouseSectionList sections;
+} Warehouse;
 
 typedef struct WarehouseNode
 {
     struct WarehouseNode *next;
-    Product *product;
+    struct WarehouseNode *prev;
+    Warehouse warehouse;
 } WarehouseNode;
 
-int AddWarehouseItem(const Product *product);
-int UpdateWarehouseItem(const char *product_id, const int stock_change);
-size_t GetWarehouseSize();
-Product *GetWarehouseItemById(const char *product_id);
+typedef struct WarehouseList
+{
+    WarehouseNode *front;
+    WarehouseNode *back;
+    size_t size;
+} WarehouseList;
+
+void AddSectionToWarehouse(Warehouse *warehouse, const WarehouseSection *section);
 int SaveWarehouse();
-int ClearWarehouse();
+
+extern WarehouseList kWarehouses;
 
 #endif

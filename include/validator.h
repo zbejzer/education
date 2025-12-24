@@ -1,8 +1,8 @@
 #include <stdbool.h>
 
-#include "warehouse.h"
+#include "product.h"
 
 int ValidateWarehouseSize(const int products);
-int ValidateWarehouseInitialized(const WarehouseNode *warehouse);
+int ValidateProductsInitialized(const Product *products);
 int ValidateProductId(const char *str);
 int ValidateProductName(const char *str);

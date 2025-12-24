@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <time.h>
 
+#include "product.h"
 #include "render.h"
-#include "shared.h"
-#include "warehouse.h"
 
 void RenderTxt(FILE *file)
 {
-    WarehouseNode *node = kWarehouse;
+    ProductNode *node = kProductsRegistry;
     while (node != NULL)
     {
         fprintf(file, "%s %s %d\n", node->product->id, node->product->name, node->product->stock);
@@ -33,7 +32,7 @@ void RenderPdf(FILE *file)
                   "\\hline\n"
                   "ID & Nazwa & Ilość \\\\ \\hline\n");
 
-    WarehouseNode *node = kWarehouse;
+    ProductNode *node = kProductsRegistry;
     while (node != NULL)
     {
         fprintf(file, "%s & %s & %d \\\\\n", node->product->id, node->product->name, node->product->stock);
@@ -44,3 +43,5 @@ void RenderPdf(FILE *file)
                   "\\end{tabular}\n"
                   "\\end{document}\n");
 }
+
+bool kPdfMode = false;

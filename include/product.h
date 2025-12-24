@@ -7,9 +7,17 @@
 
 typedef struct Product
 {
-    char id[PRODUCT_ID_SIZE];
-    char name[PRODUCT_NAME_SIZE];
+    char id[ID_ALLOCATED_SIZE];
+    char name[NAME_ALLOCATED_SIZE];
     unsigned int stock;
 } Product;
+
+int AddProductToRegistry(const Product *product);
+Product *GetProductById(const char *product_id);
+int UpdateProduct(Product *product, const int stock_change);
+size_t GetRegisteredProductCount();
+int ClearRegisteredProducts();
+
+extern Product *kProductsRegistry;
 
 #endif
