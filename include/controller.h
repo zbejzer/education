@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 
-void ParseCommandLine(const char *command_line, char *command, char *args);
 int RouteCommand(const char *command, const char *args);
 
 int HandleCommandInit();

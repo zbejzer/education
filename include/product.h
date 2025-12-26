@@ -7,8 +7,11 @@
 
 typedef struct Product
 {
-    char id[ID_ALLOCATED_SIZE];
-    char name[NAME_ALLOCATED_SIZE];
+    char id[PRODUCT_ID_LEN_MAX + 1];
+    char name[PRODUCT_NAME_LEN_MAX + 1];
+    unsigned int category;
+    unsigned int subcategory;
+    unsigned int flammability;
 } Product;
 
 typedef struct ProductList

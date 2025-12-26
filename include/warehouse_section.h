@@ -9,7 +9,7 @@ typedef struct WarehouseSection
     unsigned int max_stock;
     unsigned int min_stock_threshold;
     unsigned int category;
-    unsigned int subcategory; // UINT_MAX indicates any
+    unsigned int subcategory;
 } WarehouseSection;
 
 typedef struct WarehouseSectionNode

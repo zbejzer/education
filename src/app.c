@@ -5,14 +5,15 @@
 
 #include "config.h"
 #include "controller.h"
+#include "line_parser.h"
 #include "product.h"
 #include "render.h"
 
 int main(int argc, char *argv[])
 {
-    char line_buffer[LINE_SIZE_MAX] = "";
-    char command[COMMAND_SIZE_MAX] = "";
-    char args[FILENAME_MAX] = "";
+    char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
+    char command[COMMAND_LEN_MAX + 1] = "";
+    char args[FILENAME_MAX + 1] = "";
     int error = 0;
 
     if (argc > 1)
@@ -20,7 +21,7 @@ int main(int argc, char *argv[])
         kPdfMode = (strcmp(argv[1], "pdf") == 0);
     }
 
-    while (scanf("%" XSTR(LINE_SIZE_MAX) "[^\n]", line_buffer) != EOF && !error)
+    while (scanf("%" XSTR(LINE_BUFFER_LEN_MAX) "[^\n]", line_buffer) != EOF && !error)
     {
         ParseCommandLine(line_buffer, command, args);
         error = RouteCommand(command, args);

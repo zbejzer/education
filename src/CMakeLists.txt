@@ -4,6 +4,7 @@ target_sources(libwarehouse
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/controller.c
         ${CMAKE_CURRENT_SOURCE_DIR}/input_handler.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/line_parser.c
         ${CMAKE_CURRENT_SOURCE_DIR}/product.c
         ${CMAKE_CURRENT_SOURCE_DIR}/render.c
         ${CMAKE_CURRENT_SOURCE_DIR}/validator.c

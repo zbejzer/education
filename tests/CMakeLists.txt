@@ -5,6 +5,7 @@ target_sources(warehouse_tests
         ${CMAKE_CURRENT_SOURCE_DIR}/test_runner.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/validator_tests.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/warehouse_tests.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/line_parser_tests.cpp
 )
 
 set_property(TARGET warehouse_tests PROPERTY CXX_STANDARD 17)

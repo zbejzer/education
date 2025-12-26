@@ -11,5 +11,8 @@
     "search.exclude": {
         "**/external": true
     },
-    "cmake.ctest.allowParallelJobs": true
+    "cmake.ctest.allowParallelJobs": true,
+    "cSpell.words": [
+        "STREQ"
+    ]
 }

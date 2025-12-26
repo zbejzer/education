@@ -13,7 +13,7 @@ TEST(WarehouseSizeValidation, Valid)
     const int sizes[] = {1, 1000, 9, 257, 513};
     for (const int size : sizes)
     {
-        EXPECT_EQ(ValidateWarehouseSize(size), 0);
+        EXPECT_EQ(ValidateProductsCount(size), 0);
     }
 }
 
@@ -22,7 +22,7 @@ TEST(WarehouseSizeValidation, InvalidPositive)
     const int sizes[] = {0, 1001, 21321231, 44545444, 1203};
     for (const int size : sizes)
     {
-        EXPECT_NE(ValidateWarehouseSize(size), 0);
+        EXPECT_NE(ValidateProductsCount(size), 0);
     }
 }
 
@@ -31,7 +31,7 @@ TEST(WarehouseSizeValidation, InvalidNegative)
     const int sizes[] = {-1, -1001, -21321231, -44545444, -1203};
     for (const int size : sizes)
     {
-        EXPECT_NE(ValidateWarehouseSize(size), 0);
+        EXPECT_NE(ValidateProductsCount(size), 0);
     }
 }
 

@@ -5,26 +5,10 @@
 #include "config.h"
 #include "controller.h"
 #include "input_handler.h"
+#include "line_parser.h"
 #include "product.h"
 #include "render.h"
 #include "validator.h"
-
-void ParseCommandLine(const char *command_line, char *cmd, char *args)
-{
-    char *delimiter_pos = strchr(command_line, ' ');
-    if (delimiter_pos != NULL)
-    {
-        size_t command_length = delimiter_pos - command_line;
-        strncpy(cmd, command_line, command_length);
-        cmd[command_length] = '\0';
-        strcpy(args, delimiter_pos + 1);
-    }
-    else
-    {
-        strcpy(cmd, command_line);
-        args[0] = '\0';
-    }
-}
 
 int RouteCommand(const char *cmd, const char *args)
 {
@@ -68,16 +52,16 @@ int HandleCommandInit()
 
     if (ValidateProductsClear(kProducts.data))
     {
-        fprintf(stderr, "Warehouse already initialized!\n");
+        fprintf(stderr, "Product list already initialized!\n");
         return 1;
     }
 
     fscanf(kInputStream, "%d", &products_count);
 
-    if (ValidateWarehouseSize(products_count))
+    if (ValidateProductsCount(products_count))
     {
-        fprintf(stderr, "Warehouse size outside of allowed range. Allowed range: %d - %d\n", WAREHOUSE_SIZE_MIN,
-                WAREHOUSE_SIZE_MAX);
+        fprintf(stderr, "Products count outside of allowed range. Allowed range: %d - %d\n", PRODUCTS_COUNT_MIN,
+                PRODUCTS_COUNT_MAX);
         return 1;
     }
 
@@ -93,8 +77,11 @@ int HandleCommandInit()
     for (size_t i = 0; i < products_count; i++)
     {
         Product *new_product = &kProducts.data[i];
+        char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
 
-        fscanf(kInputStream, "%s %" XSTR(NAME_ALLOCATED_SIZE) "[^\n]", new_product->id, new_product->name);
+        fscanf(kInputStream, "%" XSTR(LINE_BUFFER_LEN_MAX) "[^\n]", line_buffer);
+        ParseProductLine(line_buffer, new_product);
+
         if (ValidateProductId(new_product->id))
         {
             fprintf(stderr, "Invalid product ID: %s\n", new_product->id);
@@ -136,7 +123,7 @@ int HandleCommandUpdate()
 
     for (int i = 0; i < products_count; i++)
     {
-        char product_id[ID_ALLOCATED_SIZE] = "";
+        char product_id[PRODUCT_ID_LEN_MAX + 1] = "";
         char operation[2] = "";
         int stock_change = 0;
 

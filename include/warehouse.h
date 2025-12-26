@@ -6,8 +6,8 @@
 
 typedef struct Warehouse
 {
-    char id[ID_ALLOCATED_SIZE];
-    char name[NAME_ALLOCATED_SIZE];
+    char id[WAREHOUSE_ID_LEN_MAX + 1];
+    char name[WAREHOUSE_NAME_LEN_MAX + 1];
     unsigned int max_stock;
     unsigned int max_categories;
     unsigned int flammability;

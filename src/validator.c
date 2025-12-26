@@ -7,9 +7,9 @@
 #include "product.h"
 #include "validator.h"
 
-int ValidateWarehouseSize(const int warehouse_size)
+int ValidateProductsCount(const int warehouse_size)
 {
-    if (warehouse_size > WAREHOUSE_SIZE_MAX || warehouse_size < WAREHOUSE_SIZE_MIN)
+    if (warehouse_size > PRODUCTS_COUNT_MAX || warehouse_size < PRODUCTS_COUNT_MIN)
     {
         return 1;
     }
@@ -29,7 +29,7 @@ int ValidateProductsClear(const Product *products)
 
 int ValidateProductId(const char *id)
 {
-    if (strlen(id) != PRODUCT_ID_SIZE_MAX)
+    if (strlen(id) != PRODUCT_ID_LEN_MAX)
     {
         return 1;
     }
