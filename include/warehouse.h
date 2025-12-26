@@ -17,19 +17,17 @@ typedef struct Warehouse
 typedef struct WarehouseNode
 {
     struct WarehouseNode *next;
-    struct WarehouseNode *prev;
-    Warehouse warehouse;
+    Warehouse data;
 } WarehouseNode;
 
 typedef struct WarehouseList
 {
     WarehouseNode *front;
-    WarehouseNode *back;
     size_t size;
 } WarehouseList;
 
-void AddSectionToWarehouse(Warehouse *warehouse, const WarehouseSection *section);
-int SaveWarehouse();
+void WarehouseAddSection(Warehouse *warehouse, const WarehouseSection *section);
+int WarehouseSave();
 
 extern WarehouseList kWarehouses;
 

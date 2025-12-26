@@ -17,9 +17,9 @@ int ValidateWarehouseSize(const int warehouse_size)
     return 0;
 }
 
-int ValidateProductsInitialized(const Product *products)
+int ValidateProductsClear(const Product *products)
 {
-    if (products == NULL)
+    if (products != NULL)
     {
         return 1;
     }
@@ -60,4 +60,14 @@ int ValidateProductName(const char *str)
     }
 
     return 1;
+}
+
+int ValidateFilename(const char *str)
+{
+    if (str[0] == '\0')
+    {
+        return 1;
+    }
+
+    return 0;
 }

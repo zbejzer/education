@@ -6,11 +6,9 @@
 
 void RenderTxt(FILE *file)
 {
-    ProductNode *node = kProductsRegistry;
-    while (node != NULL)
+    for (size_t i = 0; i < kProducts.size; i++)
     {
-        fprintf(file, "%s %s %d\n", node->product->id, node->product->name, node->product->stock);
-        node = node->next;
+        // fprintf(file, "%s %s %d\n", node->product->id, node->product->name, node->product->stock);
     }
 }
 
@@ -32,11 +30,9 @@ void RenderPdf(FILE *file)
                   "\\hline\n"
                   "ID & Nazwa & Ilość \\\\ \\hline\n");
 
-    ProductNode *node = kProductsRegistry;
-    while (node != NULL)
+    for (size_t i = 0; i < kProducts.size; i++)
     {
-        fprintf(file, "%s & %s & %d \\\\\n", node->product->id, node->product->name, node->product->stock);
-        node = node->next;
+        // fprintf(file, "%s & %s & %d \\\\\n", node->product->id, node->product->name, node->product->stock);
     }
 
     fprintf(file, "\\hline\n"

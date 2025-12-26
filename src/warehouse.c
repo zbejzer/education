@@ -5,12 +5,12 @@
 
 #include "warehouse.h"
 
-void AddSectionToWarehouse(Warehouse *warehouse, const WarehouseSection *section)
+void WarehouseAddSection(Warehouse *warehouse, const WarehouseSection *section)
 {
     return;
 }
 
-int SaveWarehouse()
+int WarehouseSave()
 {
     // FILE *file = fopen(SAVE_FILENAME, "w");
 

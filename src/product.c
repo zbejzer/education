@@ -4,42 +4,21 @@
 
 #include "product.h"
 
-int AddProductToRegistry(const Product *product)
+Product *ProductGetById(const char *product_id)
 {
-    // ProductNode *new_node = malloc(sizeof(ProductNode));
-    // if (new_node == NULL)
-    // {
-    //     fprintf(stderr, "Memory allocation for new ProductNode failed!\n");
-    //     return 1;
-    // }
+    for (size_t i = 0; i < kProducts.size; i++)
+    {
+        if (strcmp(kProducts.data[i].id, product_id) == 0)
+        {
+            return &kProducts.data[i];
+        }
+    }
 
-    // new_node->product = product;
-    // new_node->next = NULL;
-
-    // ProductNode **last_node_ptr = GetProductsTailSuccessorPtr();
-
-    // *last_node_ptr = new_node;
-
-    return 0;
-}
-
-Product *GetProductById(const char *product_id)
-{
-    // ProductNode *node = kProductsRegistry;
-    // while (node != NULL)
-    // {
-    //     if (strcmp(node->product->id, product_id) == 0)
-    //     {
-    //         return node->product;
-    //     }
-    //     node = node->next;
-    // }
-
-    // fprintf(stderr, "Product with ID %s does not exist!\n", product_id);
+    fprintf(stderr, "Product with ID %s does not exist!\n", product_id);
     return NULL;
 }
 
-int UpdateProduct(Product *product, const int stock_change)
+int ProductUpdate(Product *product, const int stock_change)
 {
     // if (stock_change < 0 && product->stock < (unsigned int)(-stock_change))
     // {
@@ -51,33 +30,11 @@ int UpdateProduct(Product *product, const int stock_change)
     return 0;
 }
 
-size_t GetRegisteredProductCount()
+int ProductClearAll()
 {
-    size_t size = 0;
-    // ProductNode *node = kProductsRegistry;
-
-    // while (node != NULL)
-    // {
-    //     size++;
-    //     node = node->next;
-    // }
-
-    return size;
-}
-
-int ClearRegisteredProducts()
-{
-    // ProductNode *node = kProductsRegistry;
-    // kProductsRegistry = NULL;
-    // while (node != NULL)
-    // {
-    //     ProductNode *temp = node;
-    //     node = node->next;
-    //     free(temp->product);
-    //     free(temp);
-    // }
+    free(kProducts.data);
 
     return 0;
 }
 
-Product *kProductsRegistry;
+ProductList kProducts;
