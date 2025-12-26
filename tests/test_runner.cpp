@@ -2,7 +2,7 @@
 
 #include "warehouse.h"
 
-ProductNode *kProductsHead = NULL;
+// ProductNode *kProductsHead = NULL;
 
 int main(int argc, char **argv)
 {
