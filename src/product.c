@@ -14,7 +14,6 @@ Product *ProductGetById(const char *product_id)
         }
     }
 
-    fprintf(stderr, "Product with ID %s does not exist!\n", product_id);
     return NULL;
 }
 
