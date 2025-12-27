@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
         args[0] = '\0';
     }
 
-    error = error || ProductClearAll();
+    error = ProductListClear() || error;
 
     if (error)
     {

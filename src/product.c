@@ -4,6 +4,17 @@
 
 #include "product.h"
 
+int ProductCopy(Product *dst, const Product *src)
+{
+    dst->category = src->category;
+    dst->subcategory = src->subcategory;
+    dst->flammability = src->flammability;
+    strcpy(dst->id, src->id);
+    strcpy(dst->name, src->name);
+
+    return 0;
+}
+
 Product *ProductGetById(const char *product_id)
 {
     for (size_t i = 0; i < kProducts.size; i++)
@@ -29,9 +40,11 @@ int ProductUpdate(Product *product, const int stock_change)
     return 0;
 }
 
-int ProductClearAll()
+int ProductListClear()
 {
     free(kProducts.data);
+    kProducts.data = NULL;
+    kProducts.size = 0;
 
     return 0;
 }

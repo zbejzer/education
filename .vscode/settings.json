@@ -13,6 +13,7 @@
     },
     "cmake.ctest.allowParallelJobs": true,
     "cSpell.words": [
-        "STREQ"
+        "STREQ",
+        "STRNE"
     ]
 }

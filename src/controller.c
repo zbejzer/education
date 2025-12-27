@@ -66,7 +66,7 @@ int HandleCommandInit()
     }
 
     kProducts.size = (size_t)products_count;
-    kProducts.data = malloc(sizeof(Product) * products_count);
+    kProducts.data = (Product *)malloc(sizeof(Product) * products_count);
 
     if (kProducts.data == NULL)
     {
@@ -82,15 +82,15 @@ int HandleCommandInit()
         fscanf(kInputStream, "%" XSTR(LINE_BUFFER_LEN_MAX) "[^\n]", line_buffer);
         ParseProductLine(line_buffer, new_product);
 
-        if (ValidateProductId(new_product->id))
-        {
-            fprintf(stderr, "Invalid product ID: %s\n", new_product->id);
-            return 1;
-        }
-
         if (ProductGetById(new_product->id) != NULL)
         {
             fprintf(stderr, "Product with ID %s already exists!\n", new_product->id);
+            return 1;
+        }
+
+        if (ValidateProductId(new_product->id))
+        {
+            fprintf(stderr, "Invalid product ID: %s\n", new_product->id);
             return 1;
         }
 
