@@ -77,28 +77,34 @@ int HandleCommandInit()
 
     for (size_t i = 0; i < products_count; i++)
     {
-        Product *new_product = &kProducts.data[i];
+        Product new_product;
+        ProductInit(&new_product);
         char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
 
         fscanf(kInputStream, "%" XSTR(LINE_BUFFER_LEN_MAX) "[^\n]", line_buffer);
-        ParseProductLine(line_buffer, new_product);
+        ParseProductLine(line_buffer, &new_product);
 
-        if (ProductGetById(new_product->id) != NULL)
+        if (ValidateProductId(new_product.id))
         {
-            fprintf(stderr, "Product with ID %s already exists!\n", new_product->id);
+            fprintf(stderr, "Invalid product ID: %s\n", new_product.id);
             return 1;
         }
 
-        if (ValidateProductId(new_product->id))
+        if (ProductGetById(new_product.id) != NULL)
         {
-            fprintf(stderr, "Invalid product ID: %s\n", new_product->id);
+            fprintf(stderr, "Product with ID %s already exists!\n", new_product.id);
             return 1;
         }
 
-        if (ValidateProductName(new_product->name))
+        if (ValidateProductName(new_product.name))
         {
-            fprintf(stderr, "Invalid product name: %s\n", new_product->name);
+            fprintf(stderr, "Invalid product name: %s\n", new_product.name);
             return 1;
+        }
+
+        if (ProductCopy(&kProducts.data[i], &new_product))
+        {
+            fprintf(stderr, "Failed to copy product with id: %s\n", new_product.id);
         }
     }
 
