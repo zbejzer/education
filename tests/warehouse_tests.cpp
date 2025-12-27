@@ -1,50 +1,100 @@
 
 #include <gtest/gtest.h>
+#include <string.h>
 
 extern "C"
 {
-#include "product.h"
 #include "warehouse.h"
 }
 
 namespace
 {
 
-// class WarehouseTest : public testing::Test
-// {
-//   protected:
-//     const Product prod1_;
-//     const Product prod2_;
-//     const Product prod3_;
+class WarehouseListTest : public testing::Test
+{
+  protected:
+    WarehouseNode *warehouse_node_1_;
+    WarehouseNode *warehouse_node_2_;
+    WarehouseNode *warehouse_node_3_;
 
-//     WarehouseTest()
-//         : prod1_({"AB123", "Product 1", 0}), //
-//           prod2_({"CD456", "Product 2", 0}), //
-//           prod3_({"EF789", "Product 3", 0})  //
-//     {
-//         kProductsHead = NULL;
-//     }
+    WarehouseListTest()
+        : warehouse_node_1_((WarehouseNode *)malloc(sizeof(WarehouseNode))), //
+          warehouse_node_2_((WarehouseNode *)malloc(sizeof(WarehouseNode))), //
+          warehouse_node_3_((WarehouseNode *)malloc(sizeof(WarehouseNode)))  //
+    {
+        WarehouseListInit(&kWarehouses);
+        WarehouseNodeInit(warehouse_node_1_);
+        WarehouseNodeInit(warehouse_node_2_);
+        WarehouseNodeInit(warehouse_node_3_);
+        strcpy(warehouse_node_1_->data.id, "AB123");
+        strcpy(warehouse_node_2_->data.id, "CD456");
+        strcpy(warehouse_node_3_->data.id, "EF789");
+    }
 
-//     ~WarehouseTest() override
-//     {
-//         ProductClearAll();
-//     }
-// };
+    ~WarehouseListTest() override
+    {
+        free(warehouse_node_1_);
+        free(warehouse_node_2_);
+        free(warehouse_node_3_);
+        WarehouseListInit(&kWarehouses);
+    }
+};
 
-// TEST_F(WarehouseTest, SizeOfEmptyWarehouse)
-// {
-//     ASSERT_EQ(kProductsHead, nullptr);
-//     EXPECT_EQ(ProductGetCount(), 0);
-// }
+TEST_F(WarehouseListTest, ClearNonEmpty)
+{
+    kWarehouses.front = warehouse_node_1_;
+    warehouse_node_1_->next = warehouse_node_2_;
+    warehouse_node_2_->next = warehouse_node_3_;
+    kWarehouses.back = warehouse_node_3_;
+    kWarehouses.size = 3;
 
-// TEST_F(WarehouseTest, ClearEmptyWarehouse)
-// {
-//     ASSERT_EQ(kProductsHead, nullptr);
-//     EXPECT_EQ(ProductClearAll(), 0);
-//     EXPECT_EQ(ProductGetCount(), 0);
-// }
+    warehouse_node_1_ = nullptr;
+    warehouse_node_2_ = nullptr;
+    warehouse_node_3_ = nullptr;
 
-// TEST_F(WarehouseTest, ProductAddToRegistry)
+    WarehouseListClear();
+
+    EXPECT_EQ(kWarehouses.size, 0);
+    EXPECT_EQ(kWarehouses.front, nullptr);
+    EXPECT_EQ(kWarehouses.back, nullptr);
+}
+
+TEST_F(WarehouseListTest, ClearEmpty)
+{
+    ASSERT_EQ(kWarehouses.front, nullptr);
+    ASSERT_EQ(kWarehouses.back, nullptr);
+    ASSERT_EQ(kWarehouses.size, 0);
+    EXPECT_EQ(WarehouseListClear(), 0);
+    EXPECT_EQ(kWarehouses.front, nullptr);
+    EXPECT_EQ(kWarehouses.back, nullptr);
+    EXPECT_EQ(kWarehouses.size, 0);
+}
+
+TEST_F(WarehouseListTest, Push)
+{
+    EXPECT_EQ(WarehouseListPush(warehouse_node_1_), 0);
+    EXPECT_EQ(kWarehouses.front, warehouse_node_1_);
+    EXPECT_EQ(kWarehouses.back, warehouse_node_1_);
+    EXPECT_EQ(kWarehouses.size, 1);
+    EXPECT_EQ(warehouse_node_1_->next, nullptr);
+
+    EXPECT_EQ(WarehouseListPush(warehouse_node_2_), 0);
+    EXPECT_EQ(kWarehouses.front, warehouse_node_1_);
+    EXPECT_EQ(kWarehouses.back, warehouse_node_2_);
+    EXPECT_EQ(kWarehouses.size, 2);
+    EXPECT_EQ(warehouse_node_1_->next, warehouse_node_2_);
+    EXPECT_EQ(warehouse_node_2_->next, nullptr);
+
+    EXPECT_EQ(WarehouseListPush(warehouse_node_3_), 0);
+    EXPECT_EQ(kWarehouses.front, warehouse_node_1_);
+    EXPECT_EQ(kWarehouses.back, warehouse_node_3_);
+    EXPECT_EQ(kWarehouses.size, 3);
+    EXPECT_EQ(warehouse_node_1_->next, warehouse_node_2_);
+    EXPECT_EQ(warehouse_node_2_->next, warehouse_node_3_);
+    EXPECT_EQ(warehouse_node_3_->next, nullptr);
+}
+
+// TEST_F(WarehouseListTest, ProductAddToRegistry)
 // {
 //     EXPECT_EQ(ProductGetCount(), 0);
 //     EXPECT_EQ(ProductAddToRegistry(&prod1_), 0);
@@ -55,21 +105,21 @@ namespace
 //     EXPECT_EQ(ProductGetCount(), 3);
 // }
 
-// TEST_F(WarehouseTest, ClearNonEmptyWarehouse)
+// TEST_F(WarehouseListTest, ClearNonEmptyWarehouse)
 // {
 //     EXPECT_EQ(ProductAddToRegistry(&prod1_), 0);
 //     EXPECT_EQ(ProductClearAll(), 0);
 //     EXPECT_EQ(ProductGetCount(), 0);
 // }
 
-// TEST_F(WarehouseTest, RetrieveNonExistentItem)
+// TEST_F(WarehouseListTest, RetrieveNonExistentItem)
 // {
 //     ASSERT_EQ(kProductsHead, nullptr);
 //     Product *retrieved_product = ProductGetById("ZZ999");
 //     EXPECT_EQ(retrieved_product, nullptr);
 // }
 
-// TEST_F(WarehouseTest, RetrieveExistingItem)
+// TEST_F(WarehouseListTest, RetrieveExistingItem)
 // {
 //     ASSERT_EQ(ProductAddToRegistry(&prod1_), 0);
 //     Product *retrieved_product = ProductGetById(prod1_.id);
@@ -80,7 +130,7 @@ namespace
 //     EXPECT_EQ(retrieved_product->stock, prod1_.stock);
 // }
 
-// TEST_F(WarehouseTest, DifferentiateItems)
+// TEST_F(WarehouseListTest, DifferentiateItems)
 // {
 //     ASSERT_EQ(ProductAddToRegistry(&prod1_), 0);
 //     ASSERT_EQ(ProductAddToRegistry(&prod2_), 0);
@@ -108,7 +158,7 @@ namespace
 //     EXPECT_NE(retrieved_product2, retrieved_product3);
 // }
 
-// TEST_F(WarehouseTest, AddItemStock)
+// TEST_F(WarehouseListTest, AddItemStock)
 // {
 //     ASSERT_EQ(ProductAddToRegistry(&prod1_), 0);
 //     Product *retrieved_product = ProductGetById(prod1_.id);
@@ -118,7 +168,7 @@ namespace
 //     EXPECT_EQ(retrieved_product->stock, 10);
 // }
 
-// TEST_F(WarehouseTest, AddItemStockMultipleTimes)
+// TEST_F(WarehouseListTest, AddItemStockMultipleTimes)
 // {
 //     ASSERT_EQ(ProductAddToRegistry(&prod1_), 0);
 //     Product *retrieved_product = ProductGetById(prod1_.id);
@@ -132,7 +182,7 @@ namespace
 //     EXPECT_EQ(retrieved_product->stock, 30);
 // }
 
-// TEST_F(WarehouseTest, RemoveItemStock)
+// TEST_F(WarehouseListTest, RemoveItemStock)
 // {
 //     EXPECT_EQ(ProductAddToRegistry(&prod1_), 0);
 //     Product *retrieved_product = ProductGetById(prod1_.id);
@@ -145,7 +195,7 @@ namespace
 //     EXPECT_EQ(retrieved_product->stock, 15);
 // }
 
-// TEST_F(WarehouseTest, RemoveItemStockBelowZero)
+// TEST_F(WarehouseListTest, RemoveItemStockBelowZero)
 // {
 //     EXPECT_EQ(ProductAddToRegistry(&prod1_), 0);
 //     Product *retrieved_product = ProductGetById(prod1_.id);

@@ -38,11 +38,19 @@ typedef struct ProductStockList
     size_t size;
 } ProductStockList;
 
+void ProductInit(Product *obj);
 int ProductCopy(Product *dst, const Product *src);
 Product *ProductGetById(const char *product_id);
 int ProductUpdate(Product *product, const int stock_change);
 
+void ProductListInit(ProductList *obj);
 int ProductListClear();
+
+void ProductStockInit(ProductStock *obj);
+
+void ProductStockNodeInit(ProductStockNode *obj);
+
+void ProductStockListInit(ProductStockList *obj);
 
 extern ProductList kProducts;
 

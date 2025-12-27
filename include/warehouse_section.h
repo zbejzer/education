@@ -12,19 +12,14 @@ typedef struct WarehouseSection
     unsigned int subcategory;
 } WarehouseSection;
 
-typedef struct WarehouseSectionNode
-{
-    struct WarehouseSectionNode *next;
-    struct WarehouseSectionNode *prev;
-    WarehouseSection section;
-} WarehouseSectionNode;
-
 typedef struct WarehouseSectionList
 {
-    WarehouseSectionNode *front;
-    WarehouseSectionNode *back;
+    WarehouseSection *data;
     size_t size;
 } WarehouseSectionList;
+
+void WarehouseSectionInit(WarehouseSection *obj);
+void WarehouseSectionListInit(WarehouseSectionList *obj);
 
 void AddProductToSection(WarehouseSection *section, const Product *product);
 

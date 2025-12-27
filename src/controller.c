@@ -21,7 +21,8 @@ int RouteCommand(const char *cmd, const char *args)
     }
     else if (strcmp(cmd, "create") == 0)
     {
-        ret = HandleCommandCreate(args);
+        ret = ret || InputStreamDetect(args, "r");
+        ret = ret || HandleCommandCreate(args);
     }
     else if (strcmp(cmd, "update") == 0)
     {

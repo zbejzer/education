@@ -9,7 +9,6 @@ typedef struct Warehouse
     char id[WAREHOUSE_ID_LEN_MAX + 1];
     char name[WAREHOUSE_NAME_LEN_MAX + 1];
     unsigned int max_stock;
-    unsigned int max_categories;
     unsigned int flammability;
     WarehouseSectionList sections;
 } Warehouse;
@@ -23,11 +22,19 @@ typedef struct WarehouseNode
 typedef struct WarehouseList
 {
     WarehouseNode *front;
+    WarehouseNode *back;
     size_t size;
 } WarehouseList;
 
+void WarehouseInit(Warehouse *obj);
 void WarehouseAddSection(Warehouse *warehouse, const WarehouseSection *section);
 int WarehouseSave();
+
+void WarehouseNodeInit(WarehouseNode *obj);
+
+void WarehouseListInit(WarehouseList *obj);
+int WarehouseListPush(WarehouseNode *warehouse_node);
+int WarehouseListClear();
 
 extern WarehouseList kWarehouses;
 

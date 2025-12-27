@@ -4,6 +4,15 @@
 
 #include "product.h"
 
+void ProductInit(Product *obj)
+{
+    obj->id[0] = '\0';
+    obj->name[0] = '\0';
+    obj->category = UINT_MAX;
+    obj->subcategory = UINT_MAX;
+    obj->flammability = UINT_MAX;
+}
+
 int ProductCopy(Product *dst, const Product *src)
 {
     dst->category = src->category;
@@ -40,6 +49,12 @@ int ProductUpdate(Product *product, const int stock_change)
     return 0;
 }
 
+void ProductListInit(ProductList *obj)
+{
+    obj->data = NULL;
+    obj->size = 0;
+}
+
 int ProductListClear()
 {
     free(kProducts.data);
@@ -47,6 +62,24 @@ int ProductListClear()
     kProducts.size = 0;
 
     return 0;
+}
+
+void ProductStockInit(ProductStock *obj)
+{
+    obj->product = NULL;
+    obj->stock = 0;
+}
+
+void ProductStockNodeInit(ProductStockNode *obj)
+{
+    obj->next = NULL;
+    ProductStockInit(&obj->data);
+}
+
+void ProductStockListInit(ProductStockList *obj)
+{
+    obj->data = NULL;
+    obj->size = 0;
 }
 
 ProductList kProducts;

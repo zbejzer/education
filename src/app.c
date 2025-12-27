@@ -8,6 +8,7 @@
 #include "line_parser.h"
 #include "product.h"
 #include "render.h"
+#include "warehouse.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,6 +16,9 @@ int main(int argc, char *argv[])
     char command[COMMAND_LEN_MAX + 1] = "";
     char args[FILENAME_MAX + 1] = "";
     int error = 0;
+
+    ProductListInit(&kProducts);
+    WarehouseListInit(&kWarehouses);
 
     if (argc > 1)
     {
@@ -32,6 +36,7 @@ int main(int argc, char *argv[])
     }
 
     error = ProductListClear() || error;
+    error = WarehouseListClear() || error;
 
     if (error)
     {
