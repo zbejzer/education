@@ -34,6 +34,32 @@ class ProductTest : public testing::Test
     }
 };
 
+TEST_F(ProductTest, ClearNonEmptyProductList)
+{
+    kProducts.data = (Product *)malloc(sizeof(Product) * 3);
+    kProducts.size = 3;
+
+    ASSERT_NE(kProducts.data, nullptr);
+
+    ProductCopy(&kProducts.data[0], &prod1_);
+    ProductCopy(&kProducts.data[1], &prod2_);
+    ProductCopy(&kProducts.data[2], &prod3_);
+
+    ProductListClear();
+
+    EXPECT_EQ(kProducts.size, 0);
+    EXPECT_EQ(kProducts.data, nullptr);
+}
+
+TEST_F(ProductTest, ClearEmptyProductList)
+{
+    ASSERT_EQ(kProducts.data, nullptr);
+    ASSERT_EQ(kProducts.size, 0);
+    EXPECT_EQ(ProductListClear(), 0);
+    EXPECT_EQ(kProducts.data, nullptr);
+    EXPECT_EQ(kProducts.size, 0);
+}
+
 TEST_F(ProductTest, CopyProduct)
 {
     Product dst_product = {.id = "XY987", .name = "DstProd", .category = 7, .subcategory = 8, .flammability = 9};
