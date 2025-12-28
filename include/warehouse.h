@@ -8,8 +8,8 @@ typedef struct Warehouse
 {
     char id[WAREHOUSE_ID_LEN_MAX + 1];
     char name[WAREHOUSE_NAME_LEN_MAX + 1];
-    unsigned int max_stock;
-    unsigned int flammability;
+    unsigned int stock_max;
+    unsigned int flammability_max;
     WarehouseSectionList sections;
 } Warehouse;
 
@@ -27,13 +27,12 @@ typedef struct WarehouseList
 } WarehouseList;
 
 void WarehouseInit(Warehouse *obj);
-void WarehouseAddSection(Warehouse *warehouse, const WarehouseSection *section);
 int WarehouseSave();
 
 void WarehouseNodeInit(WarehouseNode *obj);
 
 void WarehouseListInit(WarehouseList *obj);
-int WarehouseListPush(WarehouseNode *warehouse_node);
+int WarehouseListPush(WarehouseNode *new_node);
 int WarehouseListClear();
 
 extern WarehouseList kWarehouses;

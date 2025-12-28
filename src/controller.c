@@ -10,6 +10,8 @@
 #include "render.h"
 #include "validator.h"
 
+// TODO: Check validation, maybe move to parsing.
+
 int RouteCommand(const char *cmd, const char *args)
 {
     int ret = 0;
@@ -49,7 +51,7 @@ int RouteCommand(const char *cmd, const char *args)
 
 int HandleCommandInit()
 {
-    unsigned int products_count = 0;
+    int products_count = 0;
     char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
 
     if (ValidateProductsClear(kProducts.data))
@@ -86,7 +88,7 @@ int HandleCommandInit()
 
         fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
         SanitizeRawLine(line_buffer);
-        ParseProductLine(line_buffer, &new_product);
+        ParseProductEntry(line_buffer, &new_product);
 
         if (ValidateProductId(new_product.id))
         {
@@ -117,12 +119,48 @@ int HandleCommandInit()
 
 int HandleCommandCreate(const char *args)
 {
-    return 0;
+    char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
+    int section_count = 0;
+    int ret = 0;
+    WarehouseSectionList *section_list = NULL;
+    WarehouseNode *warehouse_node = malloc(sizeof(WarehouseNode));
+
+    WarehouseNodeInit(warehouse_node);
+    section_list = &warehouse_node->data.sections;
+
+    fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
+    SanitizeRawLine(line_buffer);
+    ParseWarehouseEntry(line_buffer, &warehouse_node->data);
+
+    fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
+    SanitizeRawLine(line_buffer);
+    ParseLineCount(line_buffer, &section_count);
+    if (ValidateProductsCount(section_count))
+    {
+        fprintf(stderr, "Section count outside of allowed range. Allowed range: %d - %d\n",
+                WAREHOUSE_SECTIONS_COUNT_MIN, WAREHOUSE_SECTIONS_COUNT_MAX);
+        return 1;
+    }
+
+    section_list->size = (size_t)section_count;
+    section_list->data = (WarehouseSection *)malloc(sizeof(WarehouseSection) * section_count);
+
+    for (size_t i = 0; i < section_count; i++)
+    {
+        WarehouseSection *section = &section_list->data[i];
+        WarehouseSectionInit(section);
+        fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
+        SanitizeRawLine(line_buffer);
+        ParseWarehouseSectionEntry(line_buffer, section);
+    }
+
+    ret = WarehouseListPush(warehouse_node) || ret;
+    return ret;
 }
 
 int HandleCommandUpdate()
 {
-    int products_count = 0;
+    unsigned int products_count = 0;
 
     if (!ValidateProductsClear(kProducts.data))
     {

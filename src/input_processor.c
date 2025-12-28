@@ -28,12 +28,12 @@ void ParseCommandLine(const char *str, char *cmd, char *args)
     }
 }
 
-void ParseLineCount(const char *str, unsigned int *count)
+void ParseLineCount(const char *str, int *count)
 {
-    sscanf(str, "%u", count);
+    sscanf(str, "%d", count);
 }
 
-void ParseProductLine(const char *str, Product *product)
+void ParseProductEntry(const char *str, Product *product)
 {
     char joint_category_buffer[JOINT_CATEGORY_LEN_MAX + 1] = "";
 
@@ -57,4 +57,20 @@ void ParseJointCategory(const char *str, unsigned int *category, unsigned int *s
         sscanf(str, "%u", category);
         sscanf(delimiter_pos + 1, "%u", subcategory);
     }
+}
+
+void ParseWarehouseEntry(const char *str, Warehouse *warehouse)
+{
+    sscanf(str, "%" XSTR(WAREHOUSE_ID_LEN_MAX) "s %u %u %" XSTR(WAREHOUSE_NAME_LEN_MAX) "[^\n]", warehouse->id,
+           &warehouse->stock_max, &warehouse->flammability_max, warehouse->name);
+}
+
+void ParseWarehouseSectionEntry(const char *str, WarehouseSection *section)
+{
+    char joint_category_buffer[JOINT_CATEGORY_LEN_MAX + 1] = "";
+
+    sscanf(str, "%" XSTR(JOINT_CATEGORY_LEN_MAX) "s %u %u", joint_category_buffer, &section->stock_max,
+           &section->stock_min_threshold);
+
+    ParseJointCategory(joint_category_buffer, &section->category, &section->subcategory);
 }

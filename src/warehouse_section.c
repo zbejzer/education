@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "warehouse_section.h"
 
 void WarehouseSectionInit(WarehouseSection *obj)
@@ -5,8 +7,8 @@ void WarehouseSectionInit(WarehouseSection *obj)
     obj->category = UINT_MAX;
     obj->subcategory = UINT_MAX;
     obj->current_stock = 0;
-    obj->max_stock = UINT_MAX;
-    obj->min_stock_threshold = 0;
+    obj->stock_max = UINT_MAX;
+    obj->stock_min_threshold = 0;
 }
 
 void WarehouseSectionListInit(WarehouseSectionList *obj)

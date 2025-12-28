@@ -12,19 +12,19 @@ void WarehouseListInit(WarehouseList *obj)
     obj->size = 0;
 }
 
-int WarehouseListPush(WarehouseNode *warehouse_node)
+int WarehouseListPush(WarehouseNode *new_node)
 {
     WarehouseNode *last_node = kWarehouses.back;
-    warehouse_node->next = NULL;
-    kWarehouses.back = warehouse_node;
+    new_node->next = NULL;
+    kWarehouses.back = new_node;
 
     if (last_node == NULL)
     {
-        kWarehouses.front = warehouse_node;
+        kWarehouses.front = new_node;
     }
     else
     {
-        last_node->next = warehouse_node;
+        last_node->next = new_node;
     }
 
     kWarehouses.size++;
@@ -54,14 +54,9 @@ void WarehouseInit(Warehouse *obj)
 {
     obj->id[0] = '\0';
     obj->name[0] = '\0';
-    obj->max_stock = UINT_MAX;
-    obj->flammability = UINT_MAX;
+    obj->stock_max = UINT_MAX;
+    obj->flammability_max = UINT_MAX;
     WarehouseSectionListInit(&obj->sections);
-}
-
-void WarehouseAddSection(Warehouse *warehouse, const WarehouseSection *section)
-{
-    return;
 }
 
 int WarehouseSave()

@@ -8,7 +8,7 @@ extern "C"
 namespace
 {
 
-TEST(WarehouseSizeValidation, Valid)
+TEST(ProductCountValidation, Valid)
 {
     const int sizes[] = {1, 1000, 9, 257, 513};
     for (const int size : sizes)
@@ -17,7 +17,7 @@ TEST(WarehouseSizeValidation, Valid)
     }
 }
 
-TEST(WarehouseSizeValidation, InvalidPositive)
+TEST(ProductCountValidation, InvalidPositive)
 {
     const int sizes[] = {0, 1001, 21321231, 44545444, 1203};
     for (const int size : sizes)
@@ -26,7 +26,7 @@ TEST(WarehouseSizeValidation, InvalidPositive)
     }
 }
 
-TEST(WarehouseSizeValidation, InvalidNegative)
+TEST(ProductCountValidation, InvalidNegative)
 {
     const int sizes[] = {-1, -1001, -21321231, -44545444, -1203};
     for (const int size : sizes)
@@ -77,6 +77,33 @@ TEST(ProductNameValidation, Invalid)
     for (const char *name : names)
     {
         EXPECT_NE(ValidateProductName(name), 0);
+    }
+}
+
+TEST(WarehouseSectionCountValidation, Valid)
+{
+    const int sizes[] = {1, 100, 9, 25, 51};
+    for (const int size : sizes)
+    {
+        EXPECT_EQ(ValidateWarehouseSectionCount(size), 0);
+    }
+}
+
+TEST(WarehouseSectionCountValidation, InvalidPositive)
+{
+    const int sizes[] = {0, 101, 2132, 44545444, 1003};
+    for (const int size : sizes)
+    {
+        EXPECT_NE(ValidateWarehouseSectionCount(size), 0);
+    }
+}
+
+TEST(WarehouseSectionCountValidation, InvalidNegative)
+{
+    const int sizes[] = {-1, -101, -2132, -44545444, -1003};
+    for (const int size : sizes)
+    {
+        EXPECT_NE(ValidateWarehouseSectionCount(size), 0);
     }
 }
 

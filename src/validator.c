@@ -7,9 +7,9 @@
 #include "product.h"
 #include "validator.h"
 
-int ValidateProductsCount(const int warehouse_size)
+int ValidateProductsCount(const int count)
 {
-    if (warehouse_size > PRODUCTS_COUNT_MAX || warehouse_size < PRODUCTS_COUNT_MIN)
+    if (count > PRODUCTS_COUNT_MAX || count < PRODUCTS_COUNT_MIN)
     {
         return 1;
     }
@@ -60,6 +60,16 @@ int ValidateProductName(const char *str)
     }
 
     return 1;
+}
+
+int ValidateWarehouseSectionCount(const int count)
+{
+    if (count > WAREHOUSE_SECTIONS_COUNT_MAX || count < WAREHOUSE_SECTIONS_COUNT_MIN)
+    {
+        return 1;
+    }
+
+    return 0;
 }
 
 int ValidateFilename(const char *str)

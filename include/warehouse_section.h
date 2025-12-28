@@ -6,8 +6,8 @@
 typedef struct WarehouseSection
 {
     unsigned int current_stock;
-    unsigned int max_stock;
-    unsigned int min_stock_threshold;
+    unsigned int stock_max;
+    unsigned int stock_min_threshold;
     unsigned int category;
     unsigned int subcategory;
 } WarehouseSection;
@@ -19,6 +19,7 @@ typedef struct WarehouseSectionList
 } WarehouseSectionList;
 
 void WarehouseSectionInit(WarehouseSection *obj);
+
 void WarehouseSectionListInit(WarehouseSectionList *obj);
 
 void AddProductToSection(WarehouseSection *section, const Product *product);

@@ -140,7 +140,7 @@ TEST(ProductParserTest, EmptySubcategory)
         Product result_product = {
             .id = "", .name = "", .category = UINT_MAX, .subcategory = 0, .flammability = UINT_MAX};
         const std::string built_data = build_simple_product(i.id, i.name, i.flammability, i.category);
-        ParseProductLine(built_data.c_str(), &result_product);
+        ParseProductEntry(built_data.c_str(), &result_product);
         EXPECT_EQ(result_product.category, i.category) << "Category failed for input: " << built_data;
         EXPECT_EQ(result_product.subcategory, i.subcategory) << "Subcategory failed for input: " << built_data;
         EXPECT_EQ(result_product.flammability, i.flammability) << "Flammability failed for input: " << built_data;
@@ -163,7 +163,7 @@ TEST(ProductParserTest, CategoryAndSubcategory)
         Product result_product = {
             .id = "", .name = "", .category = UINT_MAX, .subcategory = 0, .flammability = UINT_MAX};
         const std::string built_data = build_full_product(i.id, i.name, i.category, i.subcategory, i.flammability);
-        ParseProductLine(built_data.c_str(), &result_product);
+        ParseProductEntry(built_data.c_str(), &result_product);
         EXPECT_EQ(result_product.category, i.category) << "Category failed for input: " << built_data;
         EXPECT_EQ(result_product.subcategory, i.subcategory) << "Subcategory failed for input: " << built_data;
         EXPECT_EQ(result_product.flammability, i.flammability) << "Flammability failed for input: " << built_data;
