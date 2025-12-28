@@ -5,7 +5,7 @@
 
 #include "config.h"
 #include "controller.h"
-#include "line_parser.h"
+#include "input_processor.h"
 #include "product.h"
 #include "render.h"
 #include "warehouse.h"
@@ -25,8 +25,9 @@ int main(int argc, char *argv[])
         kPdfMode = (strcmp(argv[1], "pdf") == 0);
     }
 
-    while (scanf("%" XSTR(LINE_BUFFER_LEN_MAX) "[^\n]", line_buffer) != EOF && !error)
+    while (fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, stdin) != NULL && !error)
     {
+        SanitizeRawLine(line_buffer);
         ParseCommandLine(line_buffer, command, args);
         error = RouteCommand(command, args);
 

@@ -5,7 +5,7 @@
 #include "config.h"
 #include "controller.h"
 #include "input_handler.h"
-#include "line_parser.h"
+#include "input_processor.h"
 #include "product.h"
 #include "render.h"
 #include "validator.h"
@@ -49,7 +49,8 @@ int RouteCommand(const char *cmd, const char *args)
 
 int HandleCommandInit()
 {
-    int products_count = 0;
+    unsigned int products_count = 0;
+    char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
 
     if (ValidateProductsClear(kProducts.data))
     {
@@ -57,7 +58,9 @@ int HandleCommandInit()
         return 1;
     }
 
-    fscanf(kInputStream, "%d", &products_count);
+    fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
+    SanitizeRawLine(line_buffer);
+    ParseLineCount(line_buffer, &products_count);
 
     if (ValidateProductsCount(products_count))
     {
@@ -77,11 +80,12 @@ int HandleCommandInit()
 
     for (size_t i = 0; i < products_count; i++)
     {
+        line_buffer[0] = '\0';
         Product new_product;
         ProductInit(&new_product);
-        char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
 
-        fscanf(kInputStream, "%" XSTR(LINE_BUFFER_LEN_MAX) "[^\n]", line_buffer);
+        fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
+        SanitizeRawLine(line_buffer);
         ParseProductLine(line_buffer, &new_product);
 
         if (ValidateProductId(new_product.id))

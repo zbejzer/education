@@ -1,11 +1,11 @@
+#include <cstring>
 #include <gtest/gtest.h>
-#include <ranges>
 #include <string>
 
 extern "C"
 {
 #include "config.h"
-#include "line_parser.h"
+#include "input_processor.h"
 }
 
 namespace
@@ -27,6 +27,52 @@ std::string build_full_product(const std::string id, const std::string name, con
 {
     return build_joint_category(category, subcategory) + " " + std::to_string(flammability) + " " + id + " " + name;
 };
+
+TEST(RawInputSanitizerTest, NoPadding)
+{
+    struct
+    {
+        const std::string input;
+        const std::string output;
+    } test_data[] = {{"3", "3"},
+                     {"4.3 4 AB234 R12", "4.3 4 AB234 R12"},
+                     {"4.5 4 SD121 R20", "4.5 4 SD121 R20"},
+                     {"4 4 RS001 Zestaw baterii", "4 4 RS001 Zestaw baterii"}};
+
+    for (auto &&i : test_data)
+    {
+        char *cstr = new char[i.input.length() + 1];
+        std::strcpy(cstr, i.input.c_str());
+        SanitizeRawLine(cstr);
+
+        EXPECT_STREQ(cstr, i.output.c_str()) << "Failed for input: " << i.input;
+
+        delete[] cstr;
+    }
+}
+
+TEST(RawInputSanitizerTest, Padding)
+{
+    struct
+    {
+        const std::string input;
+        const std::string output;
+    } test_data[] = {{"3\n", "3"},
+                     {"4.3 4 AB234 R12\n", "4.3 4 AB234 R12"},
+                     {"4.5 4 SD121 R20\n", "4.5 4 SD121 R20"},
+                     {"4 4 RS001 Zestaw baterii\n", "4 4 RS001 Zestaw baterii"}};
+
+    for (auto &&i : test_data)
+    {
+        char *cstr = new char[i.input.length() + 1];
+        std::strcpy(cstr, i.input.c_str());
+        SanitizeRawLine(cstr);
+
+        EXPECT_STREQ(cstr, i.output.c_str()) << "Failed for input: " << i.input;
+
+        delete[] cstr;
+    }
+}
 
 TEST(CategoryParserTest, EmptySubcategory)
 {
