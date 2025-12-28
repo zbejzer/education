@@ -7,6 +7,8 @@
 #include "product.h"
 #include "validator.h"
 
+// Change return values to a typedef error type acting as bit flags
+
 int ValidateProductsCount(const int count)
 {
     if (count > PRODUCTS_COUNT_MAX || count < PRODUCTS_COUNT_MIN)
@@ -70,6 +72,16 @@ int ValidateWarehouseSectionCount(const int count)
     }
 
     return 0;
+}
+
+int ValidateWarehouseId(const char *str)
+{
+    return ValidateProductId(str);
+}
+
+int ValidateWarehouseName(const char *str)
+{
+    return ValidateProductName(str);
 }
 
 int ValidateFilename(const char *str)

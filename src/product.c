@@ -24,19 +24,6 @@ int ProductCopy(Product *dst, const Product *src)
     return 0;
 }
 
-Product *ProductGetById(const char *product_id)
-{
-    for (size_t i = 0; i < kProducts.size; i++)
-    {
-        if (strcmp(kProducts.data[i].id, product_id) == 0)
-        {
-            return &kProducts.data[i];
-        }
-    }
-
-    return NULL;
-}
-
 int ProductUpdate(Product *product, const int stock_change)
 {
     // if (stock_change < 0 && product->stock < (unsigned int)(-stock_change))
@@ -53,6 +40,19 @@ void ProductListInit(ProductList *obj)
 {
     obj->data = NULL;
     obj->size = 0;
+}
+
+Product *ProductListGetById(const char *product_id)
+{
+    for (size_t i = 0; i < kProducts.size; i++)
+    {
+        if (strcmp(kProducts.data[i].id, product_id) == 0)
+        {
+            return &kProducts.data[i];
+        }
+    }
+
+    return NULL;
 }
 
 int ProductListClear()

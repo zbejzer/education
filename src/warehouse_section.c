@@ -17,7 +17,7 @@ void WarehouseSectionListInit(WarehouseSectionList *obj)
     obj->size = 0;
 }
 
-void AddProductToSection(WarehouseSection *section, const Product *product)
+void WarehouseSectionAddProduct(WarehouseSection *section, const Product *product)
 {
     return;
 }

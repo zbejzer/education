@@ -22,6 +22,6 @@ void WarehouseSectionInit(WarehouseSection *obj);
 
 void WarehouseSectionListInit(WarehouseSectionList *obj);
 
-void AddProductToSection(WarehouseSection *section, const Product *product);
+void WarehouseSectionAddProduct(WarehouseSection *section, const Product *product);
 
 #endif

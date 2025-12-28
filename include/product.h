@@ -40,10 +40,10 @@ typedef struct ProductStockList
 
 void ProductInit(Product *obj);
 int ProductCopy(Product *dst, const Product *src);
-Product *ProductGetById(const char *product_id);
 int ProductUpdate(Product *product, const int stock_change);
 
 void ProductListInit(ProductList *obj);
+Product *ProductListGetById(const char *product_id);
 int ProductListClear();
 
 void ProductStockInit(ProductStock *obj);

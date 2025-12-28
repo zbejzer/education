@@ -2,6 +2,9 @@
 
 #include "input_processor.h"
 
+// TODO: Check test coverage
+// TODO: Add char array restrictions
+
 void SanitizeRawLine(char *str)
 {
     char *padding = strrchr(str, '\n');
@@ -31,6 +34,16 @@ void ParseCommandLine(const char *str, char *cmd, char *args)
 void ParseLineCount(const char *str, int *count)
 {
     sscanf(str, "%d", count);
+}
+
+void ParseUpdateHeader(const char *str, char *warehouse_id)
+{
+    sscanf(str, "%s", warehouse_id);
+}
+
+void ParseUpdateEntry(const char *str, char *product_id, char *operation, int *stock_change)
+{
+    sscanf(str, "%" XSTR(PRODUCT_ID_LEN_MAX) "s %c %d", product_id, operation, stock_change);
 }
 
 void ParseProductEntry(const char *str, Product *product)

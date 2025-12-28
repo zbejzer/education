@@ -96,7 +96,7 @@ int HandleCommandInit()
             return 1;
         }
 
-        if (ProductGetById(new_product.id) != NULL)
+        if (ProductListGetById(new_product.id) != NULL)
         {
             fprintf(stderr, "Product with ID %s already exists!\n", new_product.id);
             return 1;
@@ -160,23 +160,57 @@ int HandleCommandCreate(const char *args)
 
 int HandleCommandUpdate()
 {
+    char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
+    char warehouse_id[WAREHOUSE_ID_LEN + 1] = "";
+    int ret = 0;
     unsigned int products_count = 0;
+    Warehouse *warehouse = NULL;
 
     if (!ValidateProductsClear(kProducts.data))
     {
-        fprintf(stderr, "Warehouse has not been initialized yet!\n");
+        fprintf(stderr, "Products have not been initialized yet!\n");
         return 1;
     }
 
-    fscanf(kInputStream, "%d", &products_count);
+    // TODO: Add validation of warehouses initialization
+
+    fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
+    SanitizeRawLine(line_buffer);
+    ParseUpdateHeader(line_buffer, warehouse_id);
+
+    if (ValidateWarehouseId(warehouse_id))
+    {
+        fprintf(stderr, "Invalid warehouse ID: %s\n", warehouse_id);
+        return 1;
+    }
+
+    warehouse = WarehouseListGetById(warehouse_id);
+
+    if (warehouse == NULL)
+    {
+        fprintf(stderr, "Failed to fetch warehouse with ID: %s\n", warehouse_id);
+        return 1;
+    }
+
+    fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
+    SanitizeRawLine(line_buffer);
+    ParseLineCount(line_buffer, &products_count);
 
     for (int i = 0; i < products_count; i++)
     {
         char product_id[PRODUCT_ID_LEN_MAX + 1] = "";
-        char operation[2] = "";
+        Product *product;
+        char operation = '\0';
         int stock_change = 0;
 
-        fscanf(kInputStream, "%s %1s %d", product_id, operation, &stock_change);
+        fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
+        SanitizeRawLine(line_buffer);
+        ParseUpdateEntry(line_buffer, product_id, &operation, &stock_change);
+
+        if (operation == '-')
+        {
+            stock_change *= -1;
+        }
 
         if (ValidateProductId(product_id))
         {
@@ -184,16 +218,14 @@ int HandleCommandUpdate()
             return 1;
         }
 
-        if (strcmp(operation, "-") == 0)
-        {
-            stock_change = -1 * stock_change;
-        }
+        product = ProductListGetById(product_id);
 
-        if (ProductUpdate(ProductGetById(product_id), stock_change))
-        {
-            fprintf(stderr, "Failed to update product with ID %s!\n", product_id);
-            return 1;
-        }
+        // TODO: Complete functionality
+        // if (ProductUpdate(product, stock_change))
+        // {
+        //     fprintf(stderr, "Failed to update product with ID %s!\n", product_id);
+        //     return 1;
+        // }
     }
 }
 

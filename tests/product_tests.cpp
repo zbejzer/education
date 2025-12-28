@@ -92,9 +92,9 @@ TEST_F(ProductTest, RetrieveExistingItem)
     ProductCopy(&kProducts.data[1], &prod2_);
     ProductCopy(&kProducts.data[2], &prod3_);
 
-    EXPECT_EQ(ProductGetById(prod3_.id), &kProducts.data[2]);
-    EXPECT_EQ(ProductGetById(prod1_.id), &kProducts.data[0]);
-    EXPECT_EQ(ProductGetById(prod2_.id), &kProducts.data[1]);
+    EXPECT_EQ(ProductListGetById(prod3_.id), &kProducts.data[2]);
+    EXPECT_EQ(ProductListGetById(prod1_.id), &kProducts.data[0]);
+    EXPECT_EQ(ProductListGetById(prod2_.id), &kProducts.data[1]);
 }
 
 TEST_F(ProductTest, RetrieveNonExistentItem)
@@ -108,9 +108,9 @@ TEST_F(ProductTest, RetrieveNonExistentItem)
     ProductCopy(&kProducts.data[1], &prod2_);
     ProductCopy(&kProducts.data[2], &prod3_);
 
-    EXPECT_EQ(ProductGetById("ZZ999"), nullptr);
-    EXPECT_EQ(ProductGetById("XY987"), nullptr);
-    EXPECT_EQ(ProductGetById("AB789"), nullptr);
+    EXPECT_EQ(ProductListGetById("ZZ999"), nullptr);
+    EXPECT_EQ(ProductListGetById("XY987"), nullptr);
+    EXPECT_EQ(ProductListGetById("AB789"), nullptr);
 }
 
 } // namespace

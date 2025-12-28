@@ -33,6 +33,7 @@ void WarehouseNodeInit(WarehouseNode *obj);
 
 void WarehouseListInit(WarehouseList *obj);
 int WarehouseListPush(WarehouseNode *new_node);
+Warehouse *WarehouseListGetById(const char *warehouse_id);
 int WarehouseListClear();
 
 extern WarehouseList kWarehouses;

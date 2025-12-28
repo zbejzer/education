@@ -94,6 +94,18 @@ TEST_F(WarehouseListTest, Push)
     EXPECT_EQ(warehouse_node_3_->next, nullptr);
 }
 
+TEST_F(WarehouseListTest, GetById)
+{
+    ASSERT_EQ(WarehouseListPush(warehouse_node_1_), 0);
+    ASSERT_EQ(WarehouseListPush(warehouse_node_2_), 0);
+    ASSERT_EQ(WarehouseListPush(warehouse_node_3_), 0);
+
+    EXPECT_EQ(WarehouseListGetById(warehouse_node_2_->data.id), &warehouse_node_2_->data);
+    EXPECT_EQ(WarehouseListGetById(warehouse_node_1_->data.id), &warehouse_node_1_->data);
+    EXPECT_EQ(WarehouseListGetById(warehouse_node_3_->data.id), &warehouse_node_3_->data);
+    EXPECT_EQ(WarehouseListGetById("XX999"), nullptr);
+}
+
 // TEST_F(WarehouseListTest, ProductAddToRegistry)
 // {
 //     EXPECT_EQ(ProductGetCount(), 0);
@@ -115,14 +127,14 @@ TEST_F(WarehouseListTest, Push)
 // TEST_F(WarehouseListTest, RetrieveNonExistentItem)
 // {
 //     ASSERT_EQ(kProductsHead, nullptr);
-//     Product *retrieved_product = ProductGetById("ZZ999");
+//     Product *retrieved_product = ProductListGetById("ZZ999");
 //     EXPECT_EQ(retrieved_product, nullptr);
 // }
 
 // TEST_F(WarehouseListTest, RetrieveExistingItem)
 // {
 //     ASSERT_EQ(ProductAddToRegistry(&prod1_), 0);
-//     Product *retrieved_product = ProductGetById(prod1_.id);
+//     Product *retrieved_product = ProductListGetById(prod1_.id);
 //     ASSERT_NE(retrieved_product, nullptr);
 
 //     EXPECT_STREQ(retrieved_product->id, prod1_.id);
@@ -136,20 +148,20 @@ TEST_F(WarehouseListTest, Push)
 //     ASSERT_EQ(ProductAddToRegistry(&prod2_), 0);
 //     ASSERT_EQ(ProductAddToRegistry(&prod3_), 0);
 
-//     Product *retrieved_product1 = ProductGetById(prod1_.id);
+//     Product *retrieved_product1 = ProductListGetById(prod1_.id);
 //     ASSERT_NE(retrieved_product1, nullptr);
 //     EXPECT_STREQ(retrieved_product1->id, prod1_.id);
 //     EXPECT_STREQ(retrieved_product1->name, prod1_.name);
 //     EXPECT_EQ(retrieved_product1->stock, prod1_.stock);
 
-//     Product *retrieved_product2 = ProductGetById(prod2_.id);
+//     Product *retrieved_product2 = ProductListGetById(prod2_.id);
 //     ASSERT_NE(retrieved_product2, nullptr);
 //     EXPECT_STREQ(retrieved_product2->id, prod2_.id);
 //     EXPECT_STREQ(retrieved_product2->name, prod2_.name);
 //     EXPECT_EQ(retrieved_product2->stock, prod2_.stock);
 //     EXPECT_NE(retrieved_product1, retrieved_product2);
 
-//     Product *retrieved_product3 = ProductGetById(prod3_.id);
+//     Product *retrieved_product3 = ProductListGetById(prod3_.id);
 //     ASSERT_NE(retrieved_product3, nullptr);
 //     EXPECT_STREQ(retrieved_product3->id, prod3_.id);
 //     EXPECT_STREQ(retrieved_product3->name, prod3_.name);
@@ -161,7 +173,7 @@ TEST_F(WarehouseListTest, Push)
 // TEST_F(WarehouseListTest, AddItemStock)
 // {
 //     ASSERT_EQ(ProductAddToRegistry(&prod1_), 0);
-//     Product *retrieved_product = ProductGetById(prod1_.id);
+//     Product *retrieved_product = ProductListGetById(prod1_.id);
 //     ASSERT_NE(retrieved_product, nullptr);
 
 //     EXPECT_EQ(UpdateWarehouseItem(prod1_.id, 10), 0);
@@ -171,7 +183,7 @@ TEST_F(WarehouseListTest, Push)
 // TEST_F(WarehouseListTest, AddItemStockMultipleTimes)
 // {
 //     ASSERT_EQ(ProductAddToRegistry(&prod1_), 0);
-//     Product *retrieved_product = ProductGetById(prod1_.id);
+//     Product *retrieved_product = ProductListGetById(prod1_.id);
 //     ASSERT_NE(retrieved_product, nullptr);
 
 //     EXPECT_EQ(UpdateWarehouseItem(prod1_.id, 10), 0);
@@ -185,7 +197,7 @@ TEST_F(WarehouseListTest, Push)
 // TEST_F(WarehouseListTest, RemoveItemStock)
 // {
 //     EXPECT_EQ(ProductAddToRegistry(&prod1_), 0);
-//     Product *retrieved_product = ProductGetById(prod1_.id);
+//     Product *retrieved_product = ProductListGetById(prod1_.id);
 //     ASSERT_NE(retrieved_product, nullptr);
 
 //     EXPECT_EQ(UpdateWarehouseItem(prod1_.id, 20), 0);
@@ -198,7 +210,7 @@ TEST_F(WarehouseListTest, Push)
 // TEST_F(WarehouseListTest, RemoveItemStockBelowZero)
 // {
 //     EXPECT_EQ(ProductAddToRegistry(&prod1_), 0);
-//     Product *retrieved_product = ProductGetById(prod1_.id);
+//     Product *retrieved_product = ProductListGetById(prod1_.id);
 //     ASSERT_NE(retrieved_product, nullptr);
 
 //     EXPECT_EQ(UpdateWarehouseItem(prod1_.id, 5), 0);

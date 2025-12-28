@@ -16,7 +16,6 @@ int WarehouseListPush(WarehouseNode *new_node)
 {
     WarehouseNode *last_node = kWarehouses.back;
     new_node->next = NULL;
-    kWarehouses.back = new_node;
 
     if (last_node == NULL)
     {
@@ -27,9 +26,27 @@ int WarehouseListPush(WarehouseNode *new_node)
         last_node->next = new_node;
     }
 
+    kWarehouses.back = new_node;
     kWarehouses.size++;
 
     return 0;
+}
+
+Warehouse *WarehouseListGetById(const char *warehouse_id)
+{
+    WarehouseNode *node = kWarehouses.front;
+
+    while (node != NULL)
+    {
+        if (strcmp(node->data.id, warehouse_id) == 0)
+        {
+            return &node->data;
+        }
+
+        node = node->next;
+    }
+
+    return NULL;
 }
 
 int WarehouseListClear()
