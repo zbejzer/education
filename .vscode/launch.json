@@ -7,10 +7,11 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/warehouse.exe",
+            "program": "${workspaceFolder}/build/src/warehouse.exe",
             "args": [
                 "txt"
             ],
+            "cwd": "${workspaceFolder}/data/scenario03",
             "stopAtEntry": false,
             "environment": [],
             "externalConsole": false,

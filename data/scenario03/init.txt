@@ -1,0 +1,4 @@
+3
+4.3 4 AB234 R12
+4.5 4 SD121 R20
+4 4 RS001 Zestaw baterii
