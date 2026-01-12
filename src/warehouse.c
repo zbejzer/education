@@ -90,6 +90,7 @@ int WarehouseUpdateProduct(Warehouse *warehouse, Product *product, const int sto
         ProductStockInit(&new_product_stock);
         new_product_stock.product = product;
         ProductStockListPush(&warehouse->products, &new_product_stock);
+        product_stock = ProductStockListGetByProduct(&warehouse->products, product);
     }
 
     // Warehouse-wide checks

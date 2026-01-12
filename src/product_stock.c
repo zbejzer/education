@@ -49,7 +49,7 @@ ProductStock *ProductStockListGetByProduct(const ProductStockList *list, const P
         node = node->next;
     }
 
-    return &node->data;
+    return NULL;
 }
 
 void ProductStockListPush(ProductStockList *list, const ProductStock *product_stock)

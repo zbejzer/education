@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
         kPdfMode = (strcmp(argv[1], "pdf") == 0);
     }
 
-    while (fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, stdin) != NULL && !error)
+    while (!error && fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, stdin) != NULL)
     {
         SanitizeRawLine(line_buffer);
         ParseCommandLine(line_buffer, command, args);
