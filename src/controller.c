@@ -163,7 +163,6 @@ int HandleCommandUpdate()
 {
     char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
     char warehouse_id[WAREHOUSE_ID_LEN + 1] = "";
-    int ret = 0;
     unsigned int products_count = 0;
     Warehouse *warehouse = NULL;
 
@@ -178,8 +177,6 @@ int HandleCommandUpdate()
         fprintf(stderr, "Warehouses have not been initialized yet!\n");
         return 1;
     }
-
-    // TODO: Add validation of warehouses initialization
 
     fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
     SanitizeRawLine(line_buffer);
@@ -207,7 +204,6 @@ int HandleCommandUpdate()
     {
         char product_id[PRODUCT_ID_LEN_MAX + 1] = "";
         Product *product = NULL;
-        ProductStock *product_stock = NULL;
         char operation = '\0';
         int stock_change = 0;
 
@@ -234,21 +230,10 @@ int HandleCommandUpdate()
             return 1;
         }
 
-        product_stock = &ProductStockListGetByProduct(&warehouse->products, product)->data;
-
-        if (product_stock == NULL)
+        if (WarehouseUpdateProduct(warehouse, product, stock_change))
         {
-            ProductStock *new_product_stock = (ProductStock *)malloc(sizeof(ProductStock));
-            new_product_stock->product = product;
-
-            ProductStockListPush(&warehouse->products, new_product_stock);
-        }
-
-        if (ProductStockListUpdate(&warehouse->products, product, stock_change))
-        {
-            fprintf(stderr, "Failed to update product with ID %s!\n", product_id);
             return 1;
-        }
+        };
     }
 
     return 0;

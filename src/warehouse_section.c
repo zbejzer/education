@@ -17,7 +17,29 @@ void WarehouseSectionListInit(WarehouseSectionList *obj)
     obj->size = 0;
 }
 
-void WarehouseSectionAddProduct(WarehouseSection *section, const Product *product)
+WarehouseSection *WarehouseSectionListGetCategory(WarehouseSectionList *list, unsigned int category)
 {
-    return;
+    for (size_t i = 0; i < list->size; i++)
+    {
+        if (list->data[i].category == category && list->data[i].subcategory == SUBCATEGORY_WILDCARD)
+        {
+            return &list->data[i];
+        }
+    }
+
+    return NULL;
+}
+
+WarehouseSection *WarehouseSectionListGetSubcategory(WarehouseSectionList *list, unsigned int category,
+                                                     unsigned int subcategory)
+{
+    for (size_t i = 0; i < list->size; i++)
+    {
+        if (list->data[i].category == category && list->data[i].subcategory == subcategory)
+        {
+            return &list->data[i];
+        }
+    }
+
+    return NULL;
 }

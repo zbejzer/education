@@ -29,7 +29,8 @@ typedef struct WarehouseList
 } WarehouseList;
 
 void WarehouseInit(Warehouse *obj);
-void WarehouseUpdateProduct(Warehouse *warehouse, Product *product, int stock_change);
+int WarehouseUpdateProduct(Warehouse *warehouse, Product *product, const int stock_change);
+
 int WarehouseSave();
 
 void WarehouseNodeInit(WarehouseNode *obj);

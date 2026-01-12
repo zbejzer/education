@@ -21,7 +21,8 @@ typedef struct WarehouseSectionList
 void WarehouseSectionInit(WarehouseSection *obj);
 
 void WarehouseSectionListInit(WarehouseSectionList *obj);
-
-void WarehouseSectionAddProduct(WarehouseSection *section, const Product *product);
+WarehouseSection *WarehouseSectionListGetCategory(WarehouseSectionList *list, unsigned int category);
+WarehouseSection *WarehouseSectionListGetSubcategory(WarehouseSectionList *list, unsigned int category,
+                                                     unsigned int subcategory);
 
 #endif

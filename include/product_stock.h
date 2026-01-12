@@ -25,13 +25,12 @@ typedef struct ProductStockList
 } ProductStockList;
 
 void ProductStockInit(ProductStock *obj);
-int ProductStockUpdate(ProductStock *product_stock, const int stock_change);
 
 void ProductStockNodeInit(ProductStockNode *obj);
 
 void ProductStockListInit(ProductStockList *obj);
-ProductStockNode *ProductStockListGetByProduct(ProductStockList *list, Product *prod);
-int ProductStockListUpdate(ProductStockList *list, Product *prod, const int stock_change);
-ProductStockNode *ProductStockListPush(ProductStockList *list, ProductStock *new_stock);
+unsigned int ProductStockListGetTotalStock(const ProductStockList *list);
+ProductStock *ProductStockListGetByProduct(const ProductStockList *list, const Product *prod);
+void ProductStockListPush(ProductStockList *list, const ProductStock *product_stock);
 
 #endif
