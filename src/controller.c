@@ -54,7 +54,7 @@ int HandleCommandInit()
     int products_count = 0;
     char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
 
-    if (ValidateProductsClear(kProducts.data))
+    if (ValidateProductListClear(&kProducts))
     {
         fprintf(stderr, "Product list already initialized!\n");
         return 1;
@@ -166,9 +166,15 @@ int HandleCommandUpdate()
     unsigned int products_count = 0;
     Warehouse *warehouse = NULL;
 
-    if (!ValidateProductsClear(kProducts.data))
+    if (!ValidateProductListClear(&kProducts))
     {
         fprintf(stderr, "Products have not been initialized yet!\n");
+        return 1;
+    }
+
+    if (!ValidateWarehouseListClear(&kWarehouses))
+    {
+        fprintf(stderr, "Warehouses have not been initialized yet!\n");
         return 1;
     }
 
@@ -199,7 +205,8 @@ int HandleCommandUpdate()
     for (int i = 0; i < products_count; i++)
     {
         char product_id[PRODUCT_ID_LEN_MAX + 1] = "";
-        Product *product;
+        Product *product = NULL;
+        ProductStock *product_stock = NULL;
         char operation = '\0';
         int stock_change = 0;
 
@@ -220,13 +227,30 @@ int HandleCommandUpdate()
 
         product = ProductListGetById(product_id);
 
-        // TODO: Complete functionality
-        // if (ProductUpdate(product, stock_change))
-        // {
-        //     fprintf(stderr, "Failed to update product with ID %s!\n", product_id);
-        //     return 1;
-        // }
+        if (product == NULL)
+        {
+            fprintf(stderr, "Product with ID %s does not exists!\n", product_id);
+            return 1;
+        }
+
+        product_stock = &ProductStockListGetByProduct(&warehouse->products, product)->data;
+
+        if (product_stock == NULL)
+        {
+            ProductStock *new_product_stock = (ProductStock *)malloc(sizeof(ProductStock));
+            new_product_stock->product = product;
+
+            ProductStockListPush(&warehouse->products, new_product_stock);
+        }
+
+        if (ProductStockListUpdate(&warehouse->products, product, stock_change))
+        {
+            fprintf(stderr, "Failed to update product with ID %s!\n", product_id);
+            return 1;
+        }
     }
+
+    return 0;
 }
 
 int HandleCommandTransfer(const char *args)
@@ -239,7 +263,7 @@ int HandleCommandPrint(const char *base_filename)
     FILE *file = NULL;
     char filename[FILENAME_MAX] = "";
 
-    if (!ValidateProductsClear(kProducts.data))
+    if (!ValidateProductListClear(&kProducts))
     {
         fprintf(stderr, "Warehouse not initialized!\n");
         return 1;

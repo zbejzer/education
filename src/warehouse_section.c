@@ -6,7 +6,7 @@ void WarehouseSectionInit(WarehouseSection *obj)
 {
     obj->category = UINT_MAX;
     obj->subcategory = UINT_MAX;
-    obj->current_stock = 0;
+    obj->stock_current = 0;
     obj->stock_max = UINT_MAX;
     obj->stock_min_threshold = 0;
 }

@@ -11,6 +11,7 @@ typedef struct Warehouse
     unsigned int stock_max;
     unsigned int flammability_max;
     WarehouseSectionList sections;
+    ProductStockList products;
 } Warehouse;
 
 typedef struct WarehouseNode
@@ -27,6 +28,7 @@ typedef struct WarehouseList
 } WarehouseList;
 
 void WarehouseInit(Warehouse *obj);
+void WarehouseUpdateProduct(Warehouse *warehouse, Product *product, int stock_change);
 int WarehouseSave();
 
 void WarehouseNodeInit(WarehouseNode *obj);

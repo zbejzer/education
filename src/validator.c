@@ -6,8 +6,9 @@
 #include "config.h"
 #include "product.h"
 #include "validator.h"
+#include "warehouse.h"
 
-// Change return values to a typedef error type acting as bit flags
+// TODO: Change return values to a typedef error type acting as bit flags
 
 int ValidateProductsCount(const int count)
 {
@@ -19,9 +20,9 @@ int ValidateProductsCount(const int count)
     return 0;
 }
 
-int ValidateProductsClear(const Product *products)
+int ValidateProductListClear(const ProductList *list)
 {
-    if (products != NULL)
+    if (list->data != NULL)
     {
         return 1;
     }
@@ -67,6 +68,16 @@ int ValidateProductName(const char *str)
 int ValidateWarehouseSectionCount(const int count)
 {
     if (count > WAREHOUSE_SECTIONS_COUNT_MAX || count < WAREHOUSE_SECTIONS_COUNT_MIN)
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+int ValidateWarehouseListClear(const WarehouseList *list)
+{
+    if (list->front != NULL)
     {
         return 1;
     }

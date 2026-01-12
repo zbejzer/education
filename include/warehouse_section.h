@@ -5,7 +5,7 @@
 
 typedef struct WarehouseSection
 {
-    unsigned int current_stock;
+    unsigned int stock_current;
     unsigned int stock_max;
     unsigned int stock_min_threshold;
     unsigned int category;

@@ -74,6 +74,11 @@ void WarehouseInit(Warehouse *obj)
     obj->stock_max = UINT_MAX;
     obj->flammability_max = UINT_MAX;
     WarehouseSectionListInit(&obj->sections);
+    ProductStockListInit(&obj->products);
+}
+
+void WarehouseUpdateProduct(Warehouse *warehouse, Product *product, int stock_change)
+{
 }
 
 int WarehouseSave()
