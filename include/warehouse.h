@@ -2,6 +2,7 @@
 #define WHS_WAREHOUSE_H_
 
 #include "config.h"
+#include "product_stock.h"
 #include "warehouse_section.h"
 
 typedef struct Warehouse

@@ -7,6 +7,7 @@
 #include "input_handler.h"
 #include "input_processor.h"
 #include "product.h"
+#include "product_stock.h"
 #include "render.h"
 #include "validator.h"
 

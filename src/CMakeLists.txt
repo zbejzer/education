@@ -6,6 +6,7 @@ target_sources(libwarehouse
         ${CMAKE_CURRENT_SOURCE_DIR}/input_handler.c
         ${CMAKE_CURRENT_SOURCE_DIR}/input_processor.c
         ${CMAKE_CURRENT_SOURCE_DIR}/product.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/product_stock.c
         ${CMAKE_CURRENT_SOURCE_DIR}/render.c
         ${CMAKE_CURRENT_SOURCE_DIR}/validator.c
         ${CMAKE_CURRENT_SOURCE_DIR}/warehouse_section.c
