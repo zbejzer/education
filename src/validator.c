@@ -20,16 +20,6 @@ int ValidateProductsCount(const int count)
     return 0;
 }
 
-int ValidateProductListClear(const ProductList *list)
-{
-    if (list->data != NULL)
-    {
-        return 1;
-    }
-
-    return 0;
-}
-
 int ValidateProductId(const char *id)
 {
     if (strlen(id) != PRODUCT_ID_LEN_MAX)
@@ -68,16 +58,6 @@ int ValidateProductName(const char *str)
 int ValidateWarehouseSectionCount(const int count)
 {
     if (count > WAREHOUSE_SECTIONS_COUNT_MAX || count < WAREHOUSE_SECTIONS_COUNT_MIN)
-    {
-        return 1;
-    }
-
-    return 0;
-}
-
-int ValidateWarehouseListClear(const WarehouseList *list)
-{
-    if (list->front != NULL)
     {
         return 1;
     }

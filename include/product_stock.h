@@ -30,6 +30,8 @@ void ProductStockNodeInit(ProductStockNode *obj);
 
 void ProductStockListInit(ProductStockList *obj);
 unsigned int ProductStockListGetTotalStock(const ProductStockList *list);
+unsigned int ProductStockListGetCategoryStock(const ProductStockList *list, const unsigned int category,
+                                              const unsigned int subcategory);
 ProductStock *ProductStockListGetByProduct(const ProductStockList *list, const Product *prod);
 void ProductStockListPush(ProductStockList *list, const ProductStock *product_stock);
 

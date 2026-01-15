@@ -13,5 +13,7 @@ void ParseProductEntry(const char *str, Product *product);
 void ParseJointCategory(const char *str, unsigned int *category, unsigned int *subcategory);
 void ParseWarehouseEntry(const char *str, Warehouse *warehouse);
 void ParseWarehouseSectionEntry(const char *str, WarehouseSection *section);
+void ParseTransferHeader(const char *str, char *dst_warehouse_id, char *src_warehouse_id);
+void ParseTransferEntry(const char *str, char *product_id, unsigned int *stock_change);
 
 #endif

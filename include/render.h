@@ -6,6 +6,7 @@
 
 void RenderTxt(FILE *file);
 void RenderPdf(FILE *file);
+void RenderJointCategory(char *buffer, unsigned int category, unsigned int subcategory);
 
 extern bool kPdfMode;
 

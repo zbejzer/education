@@ -34,11 +34,12 @@ int RouteCommand(const char *cmd, const char *args)
     }
     else if (strcmp(cmd, "transfer") == 0)
     {
-        ret = HandleCommandTransfer(args);
+        ret = ret || InputStreamDetect(args, "r");
+        ret = ret || HandleCommandTransfer();
     }
     else if (strcmp(cmd, "print") == 0)
     {
-        ret = HandleCommandPrint(args);
+        ret = ret || HandleCommandPrint(args);
     }
     else
     {
@@ -55,7 +56,7 @@ int HandleCommandInit()
     int products_count = 0;
     char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
 
-    if (ValidateProductListClear(&kProducts))
+    if (ProductListIsClear(&kProducts))
     {
         fprintf(stderr, "Product list already initialized!\n");
         return 1;
@@ -124,6 +125,7 @@ int HandleCommandCreate(const char *args)
     int section_count = 0;
     int ret = 0;
     WarehouseSectionList *section_list = NULL;
+    // TODO: Replace with static allocation and later copy
     WarehouseNode *warehouse_node = malloc(sizeof(WarehouseNode));
 
     WarehouseNodeInit(warehouse_node);
@@ -136,12 +138,16 @@ int HandleCommandCreate(const char *args)
     fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
     SanitizeRawLine(line_buffer);
     ParseLineCount(line_buffer, &section_count);
+
     if (ValidateProductsCount(section_count))
     {
         fprintf(stderr, "Section count outside of allowed range. Allowed range: %d - %d\n",
                 WAREHOUSE_SECTIONS_COUNT_MIN, WAREHOUSE_SECTIONS_COUNT_MAX);
         return 1;
     }
+
+    // TODO: Check for subcategory aligning with category restrictions
+    // TODO: Check for sections aligning with warehouse restrictions
 
     section_list->size = (size_t)section_count;
     section_list->data = (WarehouseSection *)malloc(sizeof(WarehouseSection) * section_count);
@@ -166,13 +172,13 @@ int HandleCommandUpdate()
     unsigned int products_count = 0;
     Warehouse *warehouse = NULL;
 
-    if (!ValidateProductListClear(&kProducts))
+    if (!ProductListIsClear(&kProducts))
     {
         fprintf(stderr, "Products have not been initialized yet!\n");
         return 1;
     }
 
-    if (!ValidateWarehouseListClear(&kWarehouses))
+    if (!WarehouseListIsClear(&kWarehouses))
     {
         fprintf(stderr, "Warehouses have not been initialized yet!\n");
         return 1;
@@ -239,8 +245,94 @@ int HandleCommandUpdate()
     return 0;
 }
 
-int HandleCommandTransfer(const char *args)
+int HandleCommandTransfer()
 {
+    char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
+    char dst_warehouse_id[WAREHOUSE_ID_LEN + 1] = "";
+    char src_warehouse_id[WAREHOUSE_ID_LEN + 1] = "";
+    unsigned int products_count = 0;
+    Warehouse *dst_warehouse = NULL;
+    Warehouse *src_warehouse = NULL;
+
+    if (!ProductListIsClear(&kProducts))
+    {
+        fprintf(stderr, "Products have not been initialized yet!\n");
+        return 1;
+    }
+
+    if (!WarehouseListIsClear(&kWarehouses))
+    {
+        fprintf(stderr, "Warehouses have not been initialized yet!\n");
+        return 1;
+    }
+
+    fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
+    SanitizeRawLine(line_buffer);
+    ParseTransferHeader(line_buffer, dst_warehouse_id, src_warehouse_id);
+
+    if (ValidateWarehouseId(dst_warehouse_id))
+    {
+        fprintf(stderr, "Invalid source warehouse ID: %s\n", dst_warehouse_id);
+        return 1;
+    }
+
+    if (ValidateWarehouseId(src_warehouse_id))
+    {
+        fprintf(stderr, "Invalid destination warehouse ID: %s\n", src_warehouse_id);
+        return 1;
+    }
+
+    dst_warehouse = WarehouseListGetById(dst_warehouse_id);
+
+    if (dst_warehouse == NULL)
+    {
+        fprintf(stderr, "Failed to fetch warehouse with ID: %s\n", dst_warehouse_id);
+        return 1;
+    }
+
+    src_warehouse = WarehouseListGetById(src_warehouse_id);
+
+    if (src_warehouse == NULL)
+    {
+        fprintf(stderr, "Failed to fetch warehouse with ID: %s\n", src_warehouse_id);
+        return 1;
+    }
+
+    fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
+    SanitizeRawLine(line_buffer);
+    ParseLineCount(line_buffer, &products_count);
+
+    for (int i = 0; i < products_count; i++)
+    {
+        char product_id[PRODUCT_ID_LEN_MAX + 1] = "";
+        Product *product = NULL;
+        unsigned int stock_change = 0;
+
+        fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
+        SanitizeRawLine(line_buffer);
+        ParseTransferEntry(line_buffer, product_id, &stock_change);
+
+        if (ValidateProductId(product_id))
+        {
+            fprintf(stderr, "Invalid product ID: %s\n", product_id);
+            return 1;
+        }
+
+        product = ProductListGetById(product_id);
+
+        if (product == NULL)
+        {
+            fprintf(stderr, "Product with ID %s does not exists!\n", product_id);
+            return 1;
+        }
+
+        if (WarehouseUpdateProduct(dst_warehouse, product, stock_change) ||
+            WarehouseUpdateProduct(src_warehouse, product, -((int)stock_change)))
+        {
+            return 1;
+        };
+    }
+
     return 0;
 }
 
@@ -249,7 +341,7 @@ int HandleCommandPrint(const char *base_filename)
     FILE *file = NULL;
     char filename[FILENAME_MAX] = "";
 
-    if (!ValidateProductListClear(&kProducts))
+    if (!ProductListIsClear(&kProducts))
     {
         fprintf(stderr, "Warehouse not initialized!\n");
         return 1;

@@ -5,7 +5,6 @@
 
 typedef struct WarehouseSection
 {
-    unsigned int stock_current;
     unsigned int stock_max;
     unsigned int stock_min_threshold;
     unsigned int category;
@@ -21,8 +20,8 @@ typedef struct WarehouseSectionList
 void WarehouseSectionInit(WarehouseSection *obj);
 
 void WarehouseSectionListInit(WarehouseSectionList *obj);
-WarehouseSection *WarehouseSectionListGetCategory(WarehouseSectionList *list, unsigned int category);
-WarehouseSection *WarehouseSectionListGetSubcategory(WarehouseSectionList *list, unsigned int category,
-                                                     unsigned int subcategory);
+WarehouseSection *WarehouseSectionListGetSection(WarehouseSectionList *list, unsigned int category);
+WarehouseSection *WarehouseSectionListGetSubsection(WarehouseSectionList *list, unsigned int category,
+                                                    unsigned int subcategory);
 
 #endif

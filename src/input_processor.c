@@ -3,7 +3,6 @@
 #include "input_processor.h"
 
 // TODO: Check test coverage
-// TODO: Add char array restrictions
 
 void SanitizeRawLine(char *str)
 {
@@ -86,4 +85,14 @@ void ParseWarehouseSectionEntry(const char *str, WarehouseSection *section)
            &section->stock_min_threshold);
 
     ParseJointCategory(joint_category_buffer, &section->category, &section->subcategory);
+}
+
+void ParseTransferHeader(const char *str, char *dst_warehouse_id, char *src_warehouse_id)
+{
+    sscanf(str, "%s %s", dst_warehouse_id, src_warehouse_id);
+}
+
+void ParseTransferEntry(const char *str, char *product_id, unsigned int *stock_change)
+{
+    sscanf(str, "%s %d", product_id, stock_change);
 }

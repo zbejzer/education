@@ -40,4 +40,16 @@ void RenderPdf(FILE *file)
                   "\\end{document}\n");
 }
 
+void RenderJointCategory(char *buffer, unsigned int category, unsigned int subcategory)
+{
+    if (subcategory == SUBCATEGORY_WILDCARD)
+    {
+        sprintf(buffer, "%d", category);
+    }
+    else
+    {
+        sprintf(buffer, "%d.%d", category, subcategory);
+    }
+}
+
 bool kPdfMode = false;

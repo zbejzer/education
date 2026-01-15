@@ -52,4 +52,14 @@ int ProductListClear()
     return 0;
 }
 
+int ProductListIsClear(const ProductList *list)
+{
+    if (list->data != NULL)
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
 ProductList kProducts;

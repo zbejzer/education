@@ -26,6 +26,7 @@ int ProductCopy(Product *dst, const Product *src);
 void ProductListInit(ProductList *obj);
 Product *ProductListGetById(const char *product_id);
 int ProductListClear();
+int ProductListIsClear(const ProductList *list);
 
 extern ProductList kProducts;
 
