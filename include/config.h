@@ -24,6 +24,7 @@
 #define CATEGORY_MAX 10
 #define SUBCATEGORY_MIN 1
 #define SUBCATEGORY_MAX 10
+#define FILENAME_LEN_MAX 10
 
 // Conventions
 #define SAVE_FILENAME "store.txt"

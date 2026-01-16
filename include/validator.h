@@ -12,4 +12,4 @@ int ValidateWarehouseSectionCount(const int count);
 int ValidateWarehouseId(const char *str);
 int ValidateWarehouseName(const char *str);
 
-int ValidateFilename(const char *str);
+int ValidatePrintFilename(const char *str);

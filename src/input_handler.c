@@ -5,7 +5,7 @@
 
 int InputStreamDetect(const char *filename, const char *mode)
 {
-    if (!ValidateFilename(filename))
+    if (!ValidatePrintFilename(filename))
     {
         return InputStreamOpen(filename, mode);
     }
