@@ -6,8 +6,8 @@
 
 void SanitizeRawLine(char *str)
 {
-    char *padding = strrchr(str, '\n');
-    if (padding != NULL)
+    char *padding = &str[strlen(str) - 1];
+    if (*padding == '\n')
     {
         *padding = '\0';
     }
