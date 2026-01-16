@@ -2,8 +2,6 @@
 
 #include "input_processor.h"
 
-// TODO: Check test coverage
-
 void SanitizeRawLine(char *str)
 {
     char *padding = &str[strlen(str) - 1];
@@ -45,7 +43,7 @@ void ParseUpdateEntry(const char *str, char *product_id, char *operation, int *s
     sscanf(str, "%" XSTR(PRODUCT_ID_LEN_MAX) "s %c %d", product_id, operation, stock_change);
 }
 
-void ParseProductEntry(const char *str, Product *product)
+void ParseInitEntry(const char *str, Product *product)
 {
     char joint_category_buffer[JOINT_CATEGORY_LEN_MAX + 1] = "";
 
@@ -71,13 +69,13 @@ void ParseJointCategory(const char *str, unsigned int *category, unsigned int *s
     }
 }
 
-void ParseWarehouseEntry(const char *str, Warehouse *warehouse)
+void ParseCreateHeader(const char *str, Warehouse *warehouse)
 {
     sscanf(str, "%" XSTR(WAREHOUSE_ID_LEN_MAX) "s %u %u %" XSTR(WAREHOUSE_NAME_LEN_MAX) "[^\n]", warehouse->id,
            &warehouse->stock_max, &warehouse->flammability_max, warehouse->name);
 }
 
-void ParseWarehouseSectionEntry(const char *str, WarehouseSection *section)
+void ParseCreateEntry(const char *str, WarehouseSection *section)
 {
     char joint_category_buffer[JOINT_CATEGORY_LEN_MAX + 1] = "";
 

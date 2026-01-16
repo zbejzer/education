@@ -90,7 +90,7 @@ int HandleCommandInit()
 
         fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
         SanitizeRawLine(line_buffer);
-        ParseProductEntry(line_buffer, &new_product);
+        ParseInitEntry(line_buffer, &new_product);
 
         if (ValidateProductId(new_product.id))
         {
@@ -133,7 +133,7 @@ int HandleCommandCreate(const char *args)
 
     fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
     SanitizeRawLine(line_buffer);
-    ParseWarehouseEntry(line_buffer, &warehouse_node->data);
+    ParseCreateHeader(line_buffer, &warehouse_node->data);
 
     fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
     SanitizeRawLine(line_buffer);
@@ -158,7 +158,7 @@ int HandleCommandCreate(const char *args)
         WarehouseSectionInit(section);
         fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
         SanitizeRawLine(line_buffer);
-        ParseWarehouseSectionEntry(line_buffer, section);
+        ParseCreateEntry(line_buffer, section);
     }
 
     ret = WarehouseListPush(warehouse_node) || ret;
