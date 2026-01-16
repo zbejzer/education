@@ -97,3 +97,23 @@ int ValidatePrintFilename(const char *str)
 
     return 0;
 }
+
+int ValidateGenericFilename(const char *str)
+{
+    size_t len = strlen(str);
+
+    if (str[0] == '\0')
+    {
+        return 1;
+    }
+
+    for (size_t i = 0; i < len; i++)
+    {
+        if (!isalnum(str[i]) && str[i] != ' ' && str[i] != '_' && str[i] != '-' && str[i] != '.')
+        {
+            return 1;
+        }
+    }
+
+    return 0;
+}

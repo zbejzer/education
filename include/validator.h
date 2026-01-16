@@ -13,3 +13,4 @@ int ValidateWarehouseId(const char *str);
 int ValidateWarehouseName(const char *str);
 
 int ValidatePrintFilename(const char *str);
+int ValidateGenericFilename(const char *str);

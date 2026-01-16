@@ -191,4 +191,34 @@ TEST(PrintFilenameValidation, InvalidLength)
     }
 }
 
+TEST(GenericFilenameValidation, ValidSimple)
+{
+    const std::string test_data[] = {"file", "o", "longerfilename"};
+    for (auto &&test : test_data)
+    {
+        EXPECT_EQ(ValidateGenericFilename(test.c_str()), 0) << "Failed for input: " << test;
+    }
+}
+
+TEST(GenericFilenameValidation, ValidWithDigits)
+{
+    const std::string test_data[] = {"file12", "3o", "3", "longer10filename"};
+    for (auto &&test : test_data)
+    {
+        EXPECT_EQ(ValidateGenericFilename(test.c_str()), 0) << "Failed for input: " << test;
+    }
+}
+
+TEST(GenericFilenameValidation, ValidWithSpecialCharacters)
+{
+    const std::string test_data[] = {"file-name",
+                                     "file-name-10"
+                                     "file with spaces",
+                                     "file with 4 spaces", "longer_file_name", "16_longer_file_name"};
+    for (auto &&test : test_data)
+    {
+        EXPECT_EQ(ValidateGenericFilename(test.c_str()), 0) << "Failed for input: " << test;
+    }
+}
+
 } // namespace
