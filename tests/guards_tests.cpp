@@ -54,12 +54,12 @@ TEST_F(RemoveStockGuard, PositiveChange)
     }
 }
 
-class WarehouseTakeProductGuardTest : public testing::Test
+class WarehouseTakeProductGuard : public testing::Test
 {
   protected:
     Warehouse test_warehouse;
 
-    WarehouseTakeProductGuardTest()
+    WarehouseTakeProductGuard()
     {
         WarehouseInit(&test_warehouse);
         strcpy(test_warehouse.id, "WH123");
@@ -77,9 +77,14 @@ class WarehouseTakeProductGuardTest : public testing::Test
         test_warehouse.sections.data[4] = {
             .stock_max = 800, .stock_min_threshold = 10, .category = 2, .subcategory = SUBCATEGORY_WILDCARD};
     }
+
+    ~WarehouseTakeProductGuard() override
+    {
+        delete[] test_warehouse.sections.data;
+    }
 };
 
-TEST_F(WarehouseTakeProductGuardTest, ValidStockChangeNoProductSubcategoryWithNoWarehouseSubcategory)
+TEST_F(WarehouseTakeProductGuard, ValidStockChangeNoProductSubcategoryWithNoWarehouseSubcategory)
 {
     Product test_product = {
         .id = "AB789", .name = "TestProd", .category = 5, .subcategory = SUBCATEGORY_WILDCARD, .flammability = 0};
@@ -87,7 +92,7 @@ TEST_F(WarehouseTakeProductGuardTest, ValidStockChangeNoProductSubcategoryWithNo
     EXPECT_EQ(CanWarehouseTakeProduct(&test_warehouse, &test_product, 100), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, ValidStockChangeNoProductSubcategoryWithWarehouseSubcategory)
+TEST_F(WarehouseTakeProductGuard, ValidStockChangeNoProductSubcategoryWithWarehouseSubcategory)
 {
     Product test_product = {
         .id = "AB789", .name = "TestProd", .category = 4, .subcategory = SUBCATEGORY_WILDCARD, .flammability = 0};
@@ -95,14 +100,14 @@ TEST_F(WarehouseTakeProductGuardTest, ValidStockChangeNoProductSubcategoryWithWa
     EXPECT_EQ(CanWarehouseTakeProduct(&test_warehouse, &test_product, 100), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, ValidStockChangeProductSubcategoryWithWarehouseSubcategory)
+TEST_F(WarehouseTakeProductGuard, ValidStockChangeProductSubcategoryWithWarehouseSubcategory)
 {
     Product test_product = {.id = "AB789", .name = "TestProd", .category = 4, .subcategory = 3, .flammability = 0};
 
     EXPECT_EQ(CanWarehouseTakeProduct(&test_warehouse, &test_product, 20), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, StockChangeEqualToWarehouseMax)
+TEST_F(WarehouseTakeProductGuard, StockChangeEqualToWarehouseMax)
 {
     Product test_product = {
         .id = "AB789", .name = "TestProd", .category = 2, .subcategory = SUBCATEGORY_WILDCARD, .flammability = 0};
@@ -110,7 +115,7 @@ TEST_F(WarehouseTakeProductGuardTest, StockChangeEqualToWarehouseMax)
     EXPECT_EQ(CanWarehouseTakeProduct(&test_warehouse, &test_product, 700), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, StockChangeHigherThanWarehouseMax)
+TEST_F(WarehouseTakeProductGuard, StockChangeHigherThanWarehouseMax)
 {
     Product test_product = {
         .id = "AB789", .name = "TestProd", .category = 5, .subcategory = SUBCATEGORY_WILDCARD, .flammability = 0};
@@ -118,28 +123,28 @@ TEST_F(WarehouseTakeProductGuardTest, StockChangeHigherThanWarehouseMax)
     EXPECT_NE(CanWarehouseTakeProduct(&test_warehouse, &test_product, 701), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, FlammabilityEqualToMax)
+TEST_F(WarehouseTakeProductGuard, FlammabilityEqualToMax)
 {
     Product test_product = {.id = "AB789", .name = "TestProd", .category = 4, .subcategory = 3, .flammability = 5};
 
     EXPECT_EQ(CanWarehouseTakeProduct(&test_warehouse, &test_product, 30), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, FlammabilityHigherThanMax)
+TEST_F(WarehouseTakeProductGuard, FlammabilityHigherThanMax)
 {
     Product test_product = {.id = "AB789", .name = "TestProd", .category = 4, .subcategory = 3, .flammability = 6};
 
     EXPECT_NE(CanWarehouseTakeProduct(&test_warehouse, &test_product, 30), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, StockChangeEqualToSectionMaxProductWithSubcategory)
+TEST_F(WarehouseTakeProductGuard, StockChangeEqualToSectionMaxProductWithSubcategory)
 {
     Product test_product = {.id = "AB789", .name = "TestProd", .category = 4, .subcategory = 3, .flammability = 0};
 
     EXPECT_EQ(CanWarehouseTakeProduct(&test_warehouse, &test_product, 30), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, StockChangeEqualToSectionMaxProductWithCategory)
+TEST_F(WarehouseTakeProductGuard, StockChangeEqualToSectionMaxProductWithCategory)
 {
     Product test_product = {
         .id = "AB789", .name = "TestProd", .category = 5, .subcategory = SUBCATEGORY_WILDCARD, .flammability = 0};
@@ -147,14 +152,14 @@ TEST_F(WarehouseTakeProductGuardTest, StockChangeEqualToSectionMaxProductWithCat
     EXPECT_EQ(CanWarehouseTakeProduct(&test_warehouse, &test_product, 500), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, StockChangeHigherThanSectionMaxProductWithSubcategory)
+TEST_F(WarehouseTakeProductGuard, StockChangeHigherThanSectionMaxProductWithSubcategory)
 {
     Product test_product = {.id = "AB789", .name = "TestProd", .category = 4, .subcategory = 3, .flammability = 0};
 
     EXPECT_NE(CanWarehouseTakeProduct(&test_warehouse, &test_product, 31), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, StockChangeHigherThanSectionMaxProductWithCategory)
+TEST_F(WarehouseTakeProductGuard, StockChangeHigherThanSectionMaxProductWithCategory)
 {
     Product test_product = {
         .id = "AB789", .name = "TestProd", .category = 5, .subcategory = SUBCATEGORY_WILDCARD, .flammability = 0};
@@ -162,28 +167,28 @@ TEST_F(WarehouseTakeProductGuardTest, StockChangeHigherThanSectionMaxProductWith
     EXPECT_NE(CanWarehouseTakeProduct(&test_warehouse, &test_product, 501), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, NonExistentSubcategoryWithOtherSubcategories)
+TEST_F(WarehouseTakeProductGuard, NonExistentSubcategoryWithOtherSubcategories)
 {
     Product test_product = {.id = "AB789", .name = "TestProd", .category = 4, .subcategory = 4, .flammability = 0};
 
     EXPECT_NE(CanWarehouseTakeProduct(&test_warehouse, &test_product, 10), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, NonExistentSubcategoryWithoutOtherSubcategories)
+TEST_F(WarehouseTakeProductGuard, NonExistentSubcategoryWithoutOtherSubcategories)
 {
     Product test_product = {.id = "AB789", .name = "TestProd", .category = 5, .subcategory = 3, .flammability = 0};
 
     EXPECT_NE(CanWarehouseTakeProduct(&test_warehouse, &test_product, 10), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, NonExistentCategoryWithSubcategory)
+TEST_F(WarehouseTakeProductGuard, NonExistentCategoryWithSubcategory)
 {
     Product test_product = {.id = "AB789", .name = "TestProd", .category = 3, .subcategory = 4, .flammability = 0};
 
     EXPECT_NE(CanWarehouseTakeProduct(&test_warehouse, &test_product, 10), 0);
 }
 
-TEST_F(WarehouseTakeProductGuardTest, NonExistentCategoryWithoutSubcategory)
+TEST_F(WarehouseTakeProductGuard, NonExistentCategoryWithoutSubcategory)
 {
     Product test_product = {
         .id = "AB789", .name = "TestProd", .category = 3, .subcategory = SUBCATEGORY_WILDCARD, .flammability = 0};
