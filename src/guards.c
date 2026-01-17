@@ -1,6 +1,8 @@
 #include "guards.h"
 #include "config.h"
+#include "product.h"
 #include "render.h"
+#include "warehouse.h"
 #include "warehouse_section.h"
 
 int CanRemoveStock(const ProductStock *product_stock, const int stock_change)
@@ -42,7 +44,7 @@ int CanWarehouseTakeProduct(const Warehouse *warehouse, const Product *product, 
 
     if (warehouse_section == NULL)
     {
-        fprintf(stderr, "No suitable category(%s) for product with ID %s!\n", product->category, product->id);
+        fprintf(stderr, "No suitable category(%d) for product with ID %s!\n", product->category, product->id);
         return 1;
     }
 

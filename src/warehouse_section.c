@@ -17,7 +17,7 @@ void WarehouseSectionListInit(WarehouseSectionList *obj)
     obj->size = 0;
 }
 
-WarehouseSection *WarehouseSectionListGetSection(WarehouseSectionList *list, unsigned int category)
+WarehouseSection *WarehouseSectionListGetSection(const WarehouseSectionList *list, unsigned int category)
 {
     for (size_t i = 0; i < list->size; i++)
     {
@@ -30,7 +30,7 @@ WarehouseSection *WarehouseSectionListGetSection(WarehouseSectionList *list, uns
     return NULL;
 }
 
-WarehouseSection *WarehouseSectionListGetSubsection(WarehouseSectionList *list, unsigned int category,
+WarehouseSection *WarehouseSectionListGetSubsection(const WarehouseSectionList *list, unsigned int category,
                                                     unsigned int subcategory)
 {
     for (size_t i = 0; i < list->size; i++)

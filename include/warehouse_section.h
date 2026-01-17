@@ -20,8 +20,8 @@ typedef struct WarehouseSectionList
 void WarehouseSectionInit(WarehouseSection *obj);
 
 void WarehouseSectionListInit(WarehouseSectionList *obj);
-WarehouseSection *WarehouseSectionListGetSection(WarehouseSectionList *list, unsigned int category);
-WarehouseSection *WarehouseSectionListGetSubsection(WarehouseSectionList *list, unsigned int category,
+WarehouseSection *WarehouseSectionListGetSection(const WarehouseSectionList *list, unsigned int category);
+WarehouseSection *WarehouseSectionListGetSubsection(const WarehouseSectionList *list, unsigned int category,
                                                     unsigned int subcategory);
 
 #endif
