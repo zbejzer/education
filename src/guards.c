@@ -73,7 +73,7 @@ int CanWarehouseTakeProduct(const Warehouse *warehouse, const Product *product, 
         warehouse_subsection_stock =
             ProductStockListGetCategoryStock(&warehouse->products, product->category, product->subcategory);
 
-        if (stock_change + (int)warehouse_section_stock > (int)warehouse_section->stock_max)
+        if (stock_change + (int)warehouse_subsection_stock > (int)warehouse_subsection->stock_max)
         {
             fprintf(stderr, "Stock change by %d exceeds subcategory %d.%d limit(%d)!\n", stock_change,
                     product->category, product->subcategory, warehouse_subsection->stock_max);
