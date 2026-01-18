@@ -8,6 +8,7 @@ target_sources(warehouse_tests
         ${CMAKE_CURRENT_SOURCE_DIR}/product_tests.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/test_runner.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/validator_tests.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/warehouse_section_tests.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/warehouse_tests.cpp
 )
 
