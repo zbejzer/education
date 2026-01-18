@@ -4,6 +4,7 @@
 #include "product.h"
 #include "render.h"
 
+// TODO : Update to new architecture
 void RenderTxt(FILE *file)
 {
     for (size_t i = 0; i < kProducts.size; i++)

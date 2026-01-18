@@ -11,8 +11,6 @@
 #include "render.h"
 #include "validator.h"
 
-// TODO: Check validation, maybe move to parsing.
-
 int RouteCommand(const char *cmd, const char *args)
 {
     int ret = 0;

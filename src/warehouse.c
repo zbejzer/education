@@ -121,7 +121,7 @@ int WarehouseUpdateProduct(Warehouse *warehouse, Product *product, const int sto
     return 0;
 }
 
-// TODO : Implement
+// TODO : Update to new architecture
 int WarehouseSave(Warehouse *obj)
 {
     // FILE *file = fopen(SAVE_FILENAME, "w");
