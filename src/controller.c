@@ -4,6 +4,7 @@
 
 #include "config.h"
 #include "controller.h"
+#include "guards.h"
 #include "input_handler.h"
 #include "input_processor.h"
 #include "product.h"
@@ -140,9 +141,6 @@ int HandleCommandCreate(const char *args)
         return 1;
     }
 
-    // TODO: Check for subcategory aligning with category restrictions
-    // TODO: Check for sections aligning with warehouse restrictions
-
     if (WarehouseSectionListReserve(section_list, section_count))
     {
         fprintf(stderr, "Failed to allocate memory for %d warehouse sections!\n", section_count);
@@ -151,14 +149,32 @@ int HandleCommandCreate(const char *args)
 
     for (size_t i = 0; i < section_count; i++)
     {
+        // TODO: Postopone changing data until after validation
         WarehouseSection *section = &section_list->data[i];
         WarehouseSectionInit(section);
+
         fgets(line_buffer, LINE_BUFFER_LEN_MAX + 1, kInputStream);
         SanitizeRawLine(line_buffer);
         ParseCreateEntry(line_buffer, section);
+
+        ret = CanSectionCapacityFitStockThreshold(section) || ret;
+        ret = CanWarehouseFitSectionCapacity(section, &warehouse_node->data) || ret;
     }
 
-    ret = WarehouseListPush(warehouse_node) || ret;
+    ret = ret || CanWarehouseFitTotalStockThreshold(&warehouse_node->data);
+    ret = ret || CanAllSectionsFitSubsections(&warehouse_node->data.sections);
+    ret = ret || CanAllSectionsFitSubsectionsTotalStockThreshold(&warehouse_node->data.sections);
+
+    if (ret == 0)
+    {
+        ret = WarehouseListPush(warehouse_node) || ret;
+    }
+    else
+    {
+        free(warehouse_node);
+        warehouse_node = NULL;
+    }
+
     return ret;
 }
 

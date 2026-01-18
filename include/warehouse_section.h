@@ -21,6 +21,9 @@ void WarehouseSectionInit(WarehouseSection *obj);
 
 void WarehouseSectionListInit(WarehouseSectionList *obj);
 int WarehouseSectionListReserve(WarehouseSectionList *list, size_t new_cap);
+unsigned int WarehouseSectionListGetSectionsTotalStockThreshold(const WarehouseSectionList *list);
+unsigned int WarehouseSectionListGetSubsectionsTotalStockThreshold(const WarehouseSectionList *list,
+                                                                   const unsigned int category);
 WarehouseSection *WarehouseSectionListGetSection(const WarehouseSectionList *list, unsigned int category);
 WarehouseSection *WarehouseSectionListGetSubsection(const WarehouseSectionList *list, unsigned int category,
                                                     unsigned int subcategory);

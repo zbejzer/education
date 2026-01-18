@@ -83,3 +83,88 @@ int CanWarehouseTakeProduct(const Warehouse *warehouse, const Product *product, 
 
     return 0;
 }
+
+// TODO: Cover with unit tests
+int CanSectionCapacityFitStockThreshold(const WarehouseSection *section)
+{
+    if (section->stock_min_threshold > section->stock_max)
+    {
+        fprintf(stderr, "Maximum section capacity has to be at least the same as minimal stock threshold\n");
+        return 1;
+    }
+
+    return 0;
+}
+
+// TODO: Cover with unit tests
+int CanWarehouseFitSectionCapacity(const WarehouseSection *section, const Warehouse *warehouse)
+{
+    if (section->stock_max > warehouse->stock_max)
+    {
+        fprintf(stderr, "Section capacity cannot exceed warehouse capacity\n");
+        return 1;
+    }
+
+    return 0;
+}
+
+// TODO: Cover with unit tests
+int CanWarehouseFitTotalStockThreshold(const Warehouse *warehouse)
+{
+    if (WarehouseSectionListGetSectionsTotalStockThreshold(&warehouse->sections) > warehouse->stock_max)
+    {
+        fprintf(stderr, "Total categories stock threshold cannot exceed warehouse capacity\n");
+        return 1;
+    }
+
+    return 0;
+}
+
+// TODO: Cover with unit tests
+int CanAllSectionsFitSubsections(const WarehouseSectionList *list)
+{
+    for (size_t i = 0; i < list->size; i++)
+    {
+        if (list->data[i].subcategory == SUBCATEGORY_WILDCARD &&
+            CanSectionFitAllSubsections(list, list->data[i].category) != 0)
+        {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+// TODO: Cover with unit tests
+int CanSectionFitAllSubsections(const WarehouseSectionList *list, const unsigned int category)
+{
+    const WarehouseSection *section = WarehouseSectionListGetSection(list, category);
+
+    for (size_t i = 0; i < list->size; i++)
+    {
+        if (list->data[i].category == category && list->data[i].stock_max > section->stock_max)
+        {
+            fprintf(stderr, "Subcategory's %d.%d capacity exceeds category %d capacity\n", list->data[i].category,
+                    list->data[i].subcategory, category);
+            return 1;
+        }
+    }
+}
+
+// TODO: Cover with unit tests
+int CanAllSectionsFitSubsectionsTotalStockThreshold(const WarehouseSectionList *list)
+{
+    for (size_t i = 0; i < list->size; i++)
+    {
+        if (list->data[i].subcategory == SUBCATEGORY_WILDCARD &&
+            WarehouseSectionListGetSubsectionsTotalStockThreshold(list, list->data[i].category) >
+                list->data[i].stock_max)
+        {
+            fprintf(stderr, "Total stock threshold of category %d subsections cannot exceed section capacity\n",
+                    list->data[i].category);
+            return 1;
+        }
+    }
+
+    return 0;
+}

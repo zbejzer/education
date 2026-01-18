@@ -32,6 +32,39 @@ int WarehouseSectionListReserve(WarehouseSectionList *list, size_t new_cap)
     return 0;
 }
 
+// TODO: Cover with unit tests
+unsigned int WarehouseSectionListGetSectionsTotalStockThreshold(const WarehouseSectionList *list)
+{
+    unsigned int total_stock_threshold = 0;
+
+    for (size_t i = 0; i < list->size; i++)
+    {
+        if (list->data[i].subcategory == SUBCATEGORY_WILDCARD)
+        {
+            total_stock_threshold += list->data[i].stock_min_threshold;
+        }
+    }
+
+    return total_stock_threshold;
+}
+
+// TODO: Cover with unit tests
+unsigned int WarehouseSectionListGetSubsectionsTotalStockThreshold(const WarehouseSectionList *list,
+                                                                   const unsigned int category)
+{
+    unsigned int total_stock_threshold = 0;
+
+    for (size_t i = 0; i < list->size; i++)
+    {
+        if (list->data[i].category == category && list->data[i].subcategory != SUBCATEGORY_WILDCARD)
+        {
+            total_stock_threshold += list->data[i].stock_min_threshold;
+        }
+    }
+
+    return total_stock_threshold;
+}
+
 WarehouseSection *WarehouseSectionListGetSection(const WarehouseSectionList *list, unsigned int category)
 {
     for (size_t i = 0; i < list->size; i++)
