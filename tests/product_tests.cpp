@@ -41,11 +41,11 @@ TEST_F(ProductTest, ClearNonEmptyProductList)
 
     ASSERT_NE(kProducts.data, nullptr);
 
-    ProductCopy(&kProducts.data[0], &prod1_);
-    ProductCopy(&kProducts.data[1], &prod2_);
-    ProductCopy(&kProducts.data[2], &prod3_);
+    ASSERT_EQ(ProductCopy(&kProducts.data[0], &prod1_), 0);
+    ASSERT_EQ(ProductCopy(&kProducts.data[1], &prod2_), 0);
+    ASSERT_EQ(ProductCopy(&kProducts.data[2], &prod3_), 0);
 
-    ProductListClear(&kProducts);
+    ASSERT_EQ(ProductListClear(&kProducts), 0);
 
     EXPECT_EQ(kProducts.size, 0);
     EXPECT_EQ(kProducts.data, nullptr);
@@ -55,7 +55,9 @@ TEST_F(ProductTest, ClearEmptyProductList)
 {
     ASSERT_EQ(kProducts.data, nullptr);
     ASSERT_EQ(kProducts.size, 0);
-    EXPECT_EQ(ProductListClear(&kProducts), 0);
+
+    ASSERT_EQ(ProductListClear(&kProducts), 0);
+
     EXPECT_EQ(kProducts.data, nullptr);
     EXPECT_EQ(kProducts.size, 0);
 }
@@ -71,7 +73,8 @@ TEST_F(ProductTest, CopyProduct)
     ASSERT_NE(prod1_.subcategory, dst_product.subcategory);
     ASSERT_NE(prod1_.flammability, dst_product.flammability);
 
-    EXPECT_EQ(ProductCopy(&dst_product, &prod1_), 0);
+    ASSERT_EQ(ProductCopy(&dst_product, &prod1_), 0);
+
     EXPECT_NE(prod1_.id, dst_product.id);
     EXPECT_NE(prod1_.name, dst_product.name);
     EXPECT_STREQ(prod1_.id, dst_product.id);
@@ -88,9 +91,9 @@ TEST_F(ProductTest, RetrieveExistingItem)
 
     ASSERT_NE(kProducts.data, nullptr);
 
-    ProductCopy(&kProducts.data[0], &prod1_);
-    ProductCopy(&kProducts.data[1], &prod2_);
-    ProductCopy(&kProducts.data[2], &prod3_);
+    ASSERT_EQ(ProductCopy(&kProducts.data[0], &prod1_), 0);
+    ASSERT_EQ(ProductCopy(&kProducts.data[1], &prod2_), 0);
+    ASSERT_EQ(ProductCopy(&kProducts.data[2], &prod3_), 0);
 
     EXPECT_EQ(ProductListGetById(prod3_.id), &kProducts.data[2]);
     EXPECT_EQ(ProductListGetById(prod1_.id), &kProducts.data[0]);
@@ -104,9 +107,9 @@ TEST_F(ProductTest, RetrieveNonExistentItem)
 
     ASSERT_NE(kProducts.data, nullptr);
 
-    ProductCopy(&kProducts.data[0], &prod1_);
-    ProductCopy(&kProducts.data[1], &prod2_);
-    ProductCopy(&kProducts.data[2], &prod3_);
+    ASSERT_EQ(ProductCopy(&kProducts.data[0], &prod1_), 0);
+    ASSERT_EQ(ProductCopy(&kProducts.data[1], &prod2_), 0);
+    ASSERT_EQ(ProductCopy(&kProducts.data[2], &prod3_), 0);
 
     EXPECT_EQ(ProductListGetById("ZZ999"), nullptr);
     EXPECT_EQ(ProductListGetById("XY987"), nullptr);
