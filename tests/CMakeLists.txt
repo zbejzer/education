@@ -4,7 +4,7 @@ target_sources(warehouse_tests
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/guards_tests.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/input_processor_tests.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/product_stock_list_tests.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/product_stock_tests.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/product_tests.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/test_runner.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/validator_tests.cpp
