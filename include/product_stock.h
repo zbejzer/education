@@ -34,5 +34,7 @@ unsigned int ProductStockListGetCategoryStock(const ProductStockList *list, cons
                                               const unsigned int subcategory);
 ProductStock *ProductStockListGetByProduct(const ProductStockList *list, const Product *prod);
 void ProductStockListPush(ProductStockList *list, const ProductStock *product_stock);
+int ProductStockListClear(ProductStockList *list);
+int ProductStockListIsClear(const ProductStockList *list);
 
 #endif

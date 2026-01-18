@@ -25,12 +25,12 @@ class ProductTest : public testing::Test
                   .flammability = 6}),                                                                     //
           prod3_({.id = "EF789", .name = "Product 3", .category = 7, .subcategory = 4, .flammability = 2}) //
     {
-        ProductListClear();
+        ProductListClear(&kProducts);
     }
 
     ~ProductTest() override
     {
-        ProductListClear();
+        ProductListClear(&kProducts);
     }
 };
 
@@ -45,7 +45,7 @@ TEST_F(ProductTest, ClearNonEmptyProductList)
     ProductCopy(&kProducts.data[1], &prod2_);
     ProductCopy(&kProducts.data[2], &prod3_);
 
-    ProductListClear();
+    ProductListClear(&kProducts);
 
     EXPECT_EQ(kProducts.size, 0);
     EXPECT_EQ(kProducts.data, nullptr);
@@ -55,7 +55,7 @@ TEST_F(ProductTest, ClearEmptyProductList)
 {
     ASSERT_EQ(kProducts.data, nullptr);
     ASSERT_EQ(kProducts.size, 0);
-    EXPECT_EQ(ProductListClear(), 0);
+    EXPECT_EQ(ProductListClear(&kProducts), 0);
     EXPECT_EQ(kProducts.data, nullptr);
     EXPECT_EQ(kProducts.size, 0);
 }

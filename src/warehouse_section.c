@@ -17,6 +17,21 @@ void WarehouseSectionListInit(WarehouseSectionList *obj)
     obj->size = 0;
 }
 
+int WarehouseSectionListReserve(WarehouseSectionList *list, size_t new_cap)
+{
+    WarehouseSection *new_data = (WarehouseSection *)realloc(list->data, sizeof(WarehouseSection) * new_cap);
+
+    if (new_data == NULL)
+    {
+        return 1;
+    }
+
+    list->data = new_data;
+    list->size = new_cap;
+
+    return 0;
+}
+
 WarehouseSection *WarehouseSectionListGetSection(const WarehouseSectionList *list, unsigned int category)
 {
     for (size_t i = 0; i < list->size; i++)
@@ -42,4 +57,23 @@ WarehouseSection *WarehouseSectionListGetSubsection(const WarehouseSectionList *
     }
 
     return NULL;
+}
+
+int WarehouseSectionListClear(WarehouseSectionList *list)
+{
+    free(list->data);
+    list->data = NULL;
+    list->size = 0;
+
+    return 0;
+}
+
+int WarehouseSectionListIsClear(const WarehouseSectionList *list)
+{
+    if (list->data != NULL)
+    {
+        return 1;
+    }
+
+    return 0;
 }

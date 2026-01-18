@@ -51,22 +51,24 @@ Warehouse *WarehouseListGetById(const char *warehouse_id)
     return NULL;
 }
 
-int WarehouseListClear()
+int WarehouseListClear(WarehouseList *list)
 {
-    WarehouseNode *node = kWarehouses.front;
+    int ret = 0;
+    WarehouseNode *node = list->front;
 
     while (node != NULL)
     {
         WarehouseNode *next_node = node->next;
+        ret = WarehouseClear(&node->data) || ret;
         free(node);
         node = next_node;
     }
 
-    kWarehouses.front = NULL;
-    kWarehouses.back = NULL;
-    kWarehouses.size = 0;
+    list->front = NULL;
+    list->back = NULL;
+    list->size = 0;
 
-    return 0;
+    return ret;
 }
 
 int WarehouseListIsClear(const WarehouseList *list)
@@ -120,7 +122,7 @@ int WarehouseUpdateProduct(Warehouse *warehouse, Product *product, const int sto
 }
 
 // TODO : Implement
-int WarehouseSave()
+int WarehouseSave(Warehouse *obj)
 {
     // FILE *file = fopen(SAVE_FILENAME, "w");
 
@@ -141,6 +143,16 @@ int WarehouseSave()
     // return 0;
 
     return 0;
+}
+
+int WarehouseClear(Warehouse *obj)
+{
+    int ret = 0;
+
+    ret = ProductStockListClear(&obj->products) || ret;
+    ret = WarehouseSectionListClear(&obj->sections) || ret;
+
+    return ret;
 }
 
 void WarehouseNodeInit(WarehouseNode *obj)

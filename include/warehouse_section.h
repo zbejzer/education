@@ -20,8 +20,11 @@ typedef struct WarehouseSectionList
 void WarehouseSectionInit(WarehouseSection *obj);
 
 void WarehouseSectionListInit(WarehouseSectionList *obj);
+int WarehouseSectionListReserve(WarehouseSectionList *list, size_t new_cap);
 WarehouseSection *WarehouseSectionListGetSection(const WarehouseSectionList *list, unsigned int category);
 WarehouseSection *WarehouseSectionListGetSubsection(const WarehouseSectionList *list, unsigned int category,
                                                     unsigned int subcategory);
+int WarehouseSectionListClear(WarehouseSectionList *list);
+int WarehouseSectionListIsClear(const WarehouseSectionList *list);
 
 #endif

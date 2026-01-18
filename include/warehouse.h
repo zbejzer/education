@@ -30,15 +30,15 @@ typedef struct WarehouseList
 
 void WarehouseInit(Warehouse *obj);
 int WarehouseUpdateProduct(Warehouse *warehouse, Product *product, const int stock_change);
-
-int WarehouseSave();
+int WarehouseSave(Warehouse *obj);
+int WarehouseClear(Warehouse *obj);
 
 void WarehouseNodeInit(WarehouseNode *obj);
 
 void WarehouseListInit(WarehouseList *obj);
 int WarehouseListPush(WarehouseNode *new_node);
 Warehouse *WarehouseListGetById(const char *warehouse_id);
-int WarehouseListClear();
+int WarehouseListClear(WarehouseList *list);
 int WarehouseListIsClear(const WarehouseList *list);
 
 extern WarehouseList kWarehouses;

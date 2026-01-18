@@ -36,8 +36,8 @@ int main(int argc, char *argv[])
         args[0] = '\0';
     }
 
-    error = ProductListClear() || error;
-    error = WarehouseListClear() || error;
+    error = ProductListClear(&kProducts) || error;
+    error = WarehouseListClear(&kWarehouses) || error;
 
     if (error)
     {

@@ -94,3 +94,31 @@ void ProductStockListPush(ProductStockList *list, const ProductStock *product_st
     list->back = new_node;
     list->size++;
 }
+
+int ProductStockListClear(ProductStockList *list)
+{
+    ProductStockNode *node = list->front;
+
+    while (node != NULL)
+    {
+        ProductStockNode *next_node = node->next;
+        free(node);
+        node = next_node;
+    }
+
+    list->front = NULL;
+    list->back = NULL;
+    list->size = 0;
+
+    return 0;
+}
+
+int ProductStockListIsClear(const ProductStockList *list)
+{
+    if (list->front != NULL)
+    {
+        return 1;
+    }
+
+    return 0;
+}

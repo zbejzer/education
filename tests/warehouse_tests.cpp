@@ -52,7 +52,7 @@ TEST_F(WarehouseListTest, ClearNonEmpty)
     warehouse_node_2_ = nullptr;
     warehouse_node_3_ = nullptr;
 
-    WarehouseListClear();
+    ASSERT_EQ(WarehouseListClear(&kWarehouses), 0);
 
     EXPECT_EQ(kWarehouses.size, 0);
     EXPECT_EQ(kWarehouses.front, nullptr);
@@ -64,7 +64,9 @@ TEST_F(WarehouseListTest, ClearEmpty)
     ASSERT_EQ(kWarehouses.front, nullptr);
     ASSERT_EQ(kWarehouses.back, nullptr);
     ASSERT_EQ(kWarehouses.size, 0);
-    EXPECT_EQ(WarehouseListClear(), 0);
+
+    ASSERT_EQ(WarehouseListClear(&kWarehouses), 0);
+
     EXPECT_EQ(kWarehouses.front, nullptr);
     EXPECT_EQ(kWarehouses.back, nullptr);
     EXPECT_EQ(kWarehouses.size, 0);

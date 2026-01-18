@@ -30,6 +30,21 @@ void ProductListInit(ProductList *obj)
     obj->size = 0;
 }
 
+int ProductListReserve(ProductList *list, size_t new_cap)
+{
+    Product *new_data = (Product *)realloc(list->data, sizeof(Product) * new_cap);
+
+    if (new_data == NULL)
+    {
+        return 1;
+    }
+
+    list->data = new_data;
+    list->size = new_cap;
+
+    return 0;
+}
+
 Product *ProductListGetById(const char *product_id)
 {
     for (size_t i = 0; i < kProducts.size; i++)
@@ -43,11 +58,11 @@ Product *ProductListGetById(const char *product_id)
     return NULL;
 }
 
-int ProductListClear()
+int ProductListClear(ProductList *list)
 {
-    free(kProducts.data);
-    kProducts.data = NULL;
-    kProducts.size = 0;
+    free(list->data);
+    list->data = NULL;
+    list->size = 0;
 
     return 0;
 }

@@ -73,10 +73,7 @@ int HandleCommandInit()
         return 1;
     }
 
-    kProducts.size = (size_t)products_count;
-    kProducts.data = (Product *)malloc(sizeof(Product) * products_count);
-
-    if (kProducts.data == NULL)
+    if (ProductListReserve(&kProducts, products_count))
     {
         fprintf(stderr, "Failed to allocate memory for %d products!\n", products_count);
         return 1;
@@ -125,7 +122,6 @@ int HandleCommandCreate(const char *args)
     int section_count = 0;
     int ret = 0;
     WarehouseSectionList *section_list = NULL;
-    // TODO: Replace with static allocation and later copy
     WarehouseNode *warehouse_node = malloc(sizeof(WarehouseNode));
 
     WarehouseNodeInit(warehouse_node);
@@ -149,8 +145,11 @@ int HandleCommandCreate(const char *args)
     // TODO: Check for subcategory aligning with category restrictions
     // TODO: Check for sections aligning with warehouse restrictions
 
-    section_list->size = (size_t)section_count;
-    section_list->data = (WarehouseSection *)malloc(sizeof(WarehouseSection) * section_count);
+    if (WarehouseSectionListReserve(section_list, section_count))
+    {
+        fprintf(stderr, "Failed to allocate memory for %d warehouse sections!\n", section_count);
+        return 1;
+    }
 
     for (size_t i = 0; i < section_count; i++)
     {
