@@ -7,11 +7,11 @@
 #include "jfrog/game.h"
 #include "jfrog/input.h"
 
-constexpr unsigned int TICKRATE = 64;  // frequency of ticks per second
-constexpr double TICK_DURATION =
+const unsigned int TICKRATE = 64;  // frequency of ticks per second
+const double TICK_DURATION =
     1000.0f / TICKRATE;  // single tick duration in milliseconds
 
-struct App {
+typedef struct App {
   double delta_time;  // measured in milliseconds
   double time_accumulator;
   bool is_active;
@@ -20,7 +20,7 @@ struct App {
   Input input;
 
   WINDOW *game_window, *ui_window;
-};
+} App;
 
 void appInit(App& _app);
 void appCreateInterface(App& _app);

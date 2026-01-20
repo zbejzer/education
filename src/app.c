@@ -6,7 +6,7 @@
 
 #include "jfrog/game.h"
 
-constexpr unsigned int MAX_STRING_SIZE = 100;
+const unsigned int MAX_STRING_SIZE = 100;
 
 void appInit(App& _app) {
   configInit(_app.config);

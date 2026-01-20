@@ -1,7 +1,7 @@
 #ifndef JFROG_CONFIG_H
 #define JFROG_CONFIG_H
 
-struct Config {
+typedef struct Config {
   unsigned int fps_limit;
 
   unsigned int window_width, window_game_height, window_ui_height;
@@ -20,7 +20,7 @@ struct Config {
 
   unsigned int time_limit;
   unsigned int cars_count;
-};
+} Config;
 
 void configInit(Config& _config);
 void configDeinit(Config& _config);

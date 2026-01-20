@@ -3,20 +3,20 @@
 
 #include <stdbool.h>
 
-constexpr unsigned int INPUT_TICKRATE = 16;  // frequency of ticks per second
+const unsigned int INPUT_TICKRATE = 16;  // frequency of ticks per second
 
-struct Key {
+typedef struct Key {
   bool is_down;
   bool is_released;
   bool is_pressed;
-};
+} Key;
 
-struct Input {
+typedef struct Input {
   enum KeyCodes { kUp = 0, kDown = 1, kRight = 2, kLeft = 3, kF1 = 4, kF2 = 5 };
 
   unsigned int skipped_ticks;
   Key keys[6];
-};
+} Input;
 
 void inputPoll(Input& _input, WINDOW* window);
 void inputRegisterKeyDown(Key& _key);

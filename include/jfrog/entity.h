@@ -3,13 +3,13 @@
 
 #include "jfrog/config.h"
 
-struct Entity {
+typedef struct Entity {
   float pos_x, pos_y;
   int width, height;
   float speed;
   int color;
   char* sprite;
-};
+} Entity;
 
 void entityInitPlayer(Entity& _player, Config& _config);
 void entityDeinit(Entity& _entity);

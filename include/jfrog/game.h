@@ -7,7 +7,7 @@
 #include "jfrog/entity.h"
 #include "jfrog/input.h"
 
-struct Game {
+typedef struct Game {
   bool is_paused;
   float time_left;
 
@@ -15,7 +15,7 @@ struct Game {
   Entity* cars;
 
   Config* config;
-};
+} Game;
 
 void gameInit(Game& _game);
 void gameDeinit(Game& _game);
