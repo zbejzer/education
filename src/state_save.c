@@ -83,13 +83,19 @@ void StateSaveRenderWarehouse(FILE *stream, const Warehouse *warehouse)
     fprintf(stream, "\tStock limit: %u\n", warehouse->stock_max);
     fprintf(stream, "\tFlammability limit: %u\n", warehouse->flammability_max);
 
-    fprintf(stream, "[Warehouse Sections]\n");
+    if (sections->size > 0)
+    {
+        fprintf(stream, "[Warehouse Sections]\n");
+    }
     for (size_t i = 0; i < sections->size; i++)
     {
         StateSaveRenderSection(stream, &sections->data[i]);
     }
 
-    fprintf(stream, "[Warehouse Product Stock]\n");
+    if (product_stock_node != NULL)
+    {
+        fprintf(stream, "[Warehouse Product Stock]\n");
+    }
     while (product_stock_node != NULL)
     {
         StateSaveRenderProductStock(stream, &product_stock_node->data);
