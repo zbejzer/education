@@ -15,5 +15,6 @@ void ParseCreateHeader(const char *str, Warehouse *warehouse);
 void ParseCreateEntry(const char *str, WarehouseSection *section);
 void ParseTransferHeader(const char *str, char *dst_warehouse_id, char *src_warehouse_id);
 void ParseTransferEntry(const char *str, char *product_id, unsigned int *stock_change);
+void ParsePrintArgs(const char *str, char *filename, char *flags);
 
 #endif

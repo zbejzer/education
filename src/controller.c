@@ -349,10 +349,14 @@ int HandleCommandTransfer()
     return 0;
 }
 
-int HandleCommandPrint(const char *base_filename)
+int HandleCommandPrint(const char *args)
 {
     FILE *file = NULL;
+    char base_filename[FILENAME_MAX] = "";
     char filename[FILENAME_MAX] = "";
+
+    // TODO: Replace null when args handling added
+    ParsePrintArgs(args, base_filename, NULL);
 
     if (!ProductListIsClear(&kProducts))
     {

@@ -94,3 +94,9 @@ void ParseTransferEntry(const char *str, char *product_id, unsigned int *stock_c
 {
     sscanf(str, "%s %d", product_id, stock_change);
 }
+
+// TODO: Handle flags parsing
+void ParsePrintArgs(const char *str, char *filename, char *flags)
+{
+    sscanf(str, "%s", filename);
+}

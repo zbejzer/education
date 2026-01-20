@@ -3,14 +3,42 @@
 
 #include "product.h"
 #include "render.h"
+#include "warehouse.h"
 
 // TODO : Update to new architecture
 void RenderTxt(FILE *file)
 {
+    fprintf(file, "Registered products:\n");
     for (size_t i = 0; i < kProducts.size; i++)
     {
-        // fprintf(file, "%s %s %d\n", node->product->id, node->product->name, node->product->stock);
     }
+
+    fprintf(file, "Registered warehouses:\n");
+    for (size_t i = 0; i < kWarehouses.size; i++)
+    {
+    }
+
+    fprintf(file, "Warehouses stock:\n");
+    for (size_t i = 0; i < kWarehouses.size; i++)
+    {
+    }
+}
+
+void RenderTxtProduct(FILE *file, const Product *product)
+{
+    // fprintf(file, "%s %s %d\n", node->product->id, node->product->name, node->product->stock);
+}
+
+void RenderTxtWarehouse(FILE *file, const Warehouse *warehouse)
+{
+}
+
+void RenderTxtSectionList(FILE *file, const WarehouseSectionList *list)
+{
+}
+
+void RenderTxtStockList(FILE *file, const ProductStockList *list)
+{
 }
 
 void RenderPdf(FILE *file)
