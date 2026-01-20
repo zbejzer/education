@@ -1,8 +1,6 @@
 #ifndef JFROG_INPUT_H
 #define JFROG_INPUT_H
 
-namespace input {
-
 constexpr unsigned int INPUT_TICKRATE = 16;  // frequency of ticks per second
 
 struct Key {
@@ -18,15 +16,13 @@ struct Input {
   Key keys[6];
 };
 
-void pollInput(Input& _input, WINDOW* window);
-void registerKeyDown(Key& _key);
-void setInputDownState(Input& _input, bool state);
-void setInputReleasedState(Input& _input, bool state);
-void setInputPressedState(Input& _input, bool state);
-void tryRelease(Input& _input);
-void verifyDownState(Input& _input);
-void printDebugInfo(Input& _input);
-
-}  // namespace input
+void inputPoll(Input& _input, WINDOW* window);
+void inputRegisterKeyDown(Key& _key);
+void inputSetDownState(Input& _input, bool state);
+void inputSetReleasedState(Input& _input, bool state);
+void inputSetPressedState(Input& _input, bool state);
+void inputTryRelease(Input& _input);
+void inputVerifyDownState(Input& _input);
+void inputPrintDebugInfo(Input& _input);
 
 #endif

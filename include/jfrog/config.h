@@ -1,8 +1,6 @@
 #ifndef JFROG_CONFIG_H
 #define JFROG_CONFIG_H
 
-namespace config {
-
 struct Config {
   unsigned int fps_limit;
 
@@ -24,9 +22,7 @@ struct Config {
   unsigned int cars_count;
 };
 
-void initConfig(Config& _config);
-void deinitConfig(Config& _config);
-
-}  // namespace config
+void configInit(Config& _config);
+void configDeinit(Config& _config);
 
 #endif

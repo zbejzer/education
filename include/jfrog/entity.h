@@ -3,8 +3,6 @@
 
 #include "jfrog/config.h"
 
-namespace entity {
-
 struct Entity {
   float pos_x, pos_y;
   int width, height;
@@ -13,10 +11,8 @@ struct Entity {
   char* sprite;
 };
 
-void initPlayer(Entity& _player, config::Config& _config);
-void deinitEntity(Entity& _entity);
-void printEntity(Entity& _entity, WINDOW* _window);
-
-}  // namespace entity
+void entityInitPlayer(Entity& _player, Config& _config);
+void entityDeinit(Entity& _entity);
+void entityPrint(Entity& _entity, WINDOW* _window);
 
 #endif

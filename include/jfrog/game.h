@@ -5,23 +5,19 @@
 #include "jfrog/entity.h"
 #include "jfrog/input.h"
 
-namespace game {
-
 struct Game {
   bool is_paused;
   float time_left;
 
-  entity::Entity* player;
-  entity::Entity* cars;
+  Entity* player;
+  Entity* cars;
 
-  config::Config* config;
+  Config* config;
 };
 
-void initGame(Game& _game);
-void deinitGame(Game& _game);
-void restartGame(Game& _game);
-void doPlayerMovement(Game& _game, input::Input& input);
-
-}  // namespace game
+void gameInit(Game& _game);
+void gameDeinit(Game& _game);
+void gameRestart(Game& _game);
+void gameDoPlayerMovement(Game& _game, Input& input);
 
 #endif
