@@ -12,4 +12,5 @@ target_sources(jfrog
     game.c
     input.c
     main.c
+    render.c
 )
