@@ -13,13 +13,13 @@ typedef struct Game {
 
   Entity* player;
   Entity* cars;
-
-  Config* config;
 } Game;
 
 void gameInit(Game* _game);
 void gameDeinit(Game* _game);
 void gameRestart(Game* _game);
 void gameDoPlayerMovement(Game* _game, Input* input);
+
+extern Game* k_game;
 
 #endif

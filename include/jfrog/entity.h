@@ -11,8 +11,8 @@ typedef struct Entity {
   char* sprite;
 } Entity;
 
-void entityInitPlayer(Entity* _player, Config* _config);
-void entityDeinit(Entity* _entity);
-void entityPrint(Entity* _entity, WINDOW* _window);
+// void entityInitPlayer(Entity* _player, Config* _config);
+// void entityDeinit(Entity* _entity);
+// void entityPrint(Entity* _entity, WINDOW* _window);
 
 #endif

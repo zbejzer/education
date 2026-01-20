@@ -3,8 +3,6 @@
 
 #include <stdbool.h>
 
-const unsigned int INPUT_TICKRATE = 16;  // frequency of ticks per second
-
 typedef struct Key {
   bool is_down;
   bool is_released;
@@ -18,13 +16,15 @@ typedef struct Input {
   Key keys[6];
 } Input;
 
-void inputPoll(Input* _input, WINDOW* window);
+void inputPoll(Input* _input);
 void inputRegisterKeyDown(Key* _key);
 void inputSetDownState(Input* _input, bool state);
 void inputSetReleasedState(Input* _input, bool state);
 void inputSetPressedState(Input* _input, bool state);
 void inputTryRelease(Input* _input);
 void inputVerifyDownState(Input* _input);
-void inputPrintDebugInfo(Input* _input);
+
+// frequency of ticks per second
+extern const unsigned int INPUT_TICKRATE;
 
 #endif

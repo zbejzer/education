@@ -25,4 +25,6 @@ typedef struct Config {
 void configInit(Config* _config);
 void configDeinit(Config* _config);
 
+extern Config* k_config;
+
 #endif

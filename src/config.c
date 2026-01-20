@@ -44,3 +44,5 @@ void configDeinit(Config* _config) {
   free(_config->player_sprite);
   free(_config->car_sprite);
 }
+
+Config* k_config = NULL;
