@@ -46,3 +46,11 @@ cmake --build build
 ```bash
  ./scripts/run_scenario.sh <pdf|txt>
 ```
+
+## Running tests
+
+### Unit tests
+
+```bash
+ctest --test-dir build -j4 --output-on-failure
+```
