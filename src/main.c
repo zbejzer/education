@@ -7,44 +7,44 @@
 
 int main() {
   App app;
-  appInit(app);
-  appCreateInterface(app);
+  appInit(&app);
+  appCreateInterface(&app);
   appUpdateDeltaTime(
-      app.delta_time);  // set starting values for static variables
+      &app.delta_time);  // set starting values for static variables
 
   Game game;
   game.config = &app.config;
-  gameInit(game);
+  gameInit(&game);
   app.game = &game;
 
-  inputSetDownState(app.input, false);
-  inputSetPressedState(app.input, false);
-  inputSetReleasedState(app.input, false);
+  inputSetDownState(&app.input, false);
+  inputSetPressedState(&app.input, false);
+  inputSetReleasedState(&app.input, false);
 
   // main game loop
   while (app.is_active) {
-    appUpdateDeltaTime(app.delta_time);
+    appUpdateDeltaTime(&app.delta_time);
     app.time_accumulator += app.delta_time;
 
     while (app.time_accumulator > TICK_DURATION) {
-      inputPoll(app.input, app.game_window);
-      appHandleInput(app);
+      inputPoll(&app.input, app.game_window);
+      appHandleInput(&app);
 
       if (!game.is_paused) {
         game.time_left -= TICK_DURATION / 1000.0f;
-        gameDoPlayerMovement(game, app.input);
+        gameDoPlayerMovement(&game, app.input);
       }
 
       // clear one-time flags
-      inputSetPressedState(app.input, false);
-      inputSetReleasedState(app.input, false);
+      inputSetPressedState(&app.input, false);
+      inputSetReleasedState(&app.input, false);
 
       app.time_accumulator -= TICK_DURATION;
     }
 
-    appRender(app);
+    appRender(&app);
   }
 
-  gameDeinit(game);
-  appDeinit(app);
+  gameDeinit(&game);
+  appDeinit(&app);
 }

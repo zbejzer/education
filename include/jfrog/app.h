@@ -22,12 +22,12 @@ typedef struct App {
   WINDOW *game_window, *ui_window;
 } App;
 
-void appInit(App& _app);
-void appCreateInterface(App& _app);
-void appDeinit(App& _app);
-void appUpdateDeltaTime(double& delta_time);
-void appRender(App& _app);
-void appHandleInput(App& _app);
-void appDrawUserInterface(App& _app);
+void appInit(App* _app);
+void appCreateInterface(App* _app);
+void appDeinit(App* _app);
+void appUpdateDeltaTime(double* delta_time);
+void appRender(App* _app);
+void appHandleInput(App* _app);
+void appDrawUserInterface(App* _app);
 
 #endif

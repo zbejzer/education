@@ -18,13 +18,13 @@ typedef struct Input {
   Key keys[6];
 } Input;
 
-void inputPoll(Input& _input, WINDOW* window);
-void inputRegisterKeyDown(Key& _key);
-void inputSetDownState(Input& _input, bool state);
-void inputSetReleasedState(Input& _input, bool state);
-void inputSetPressedState(Input& _input, bool state);
-void inputTryRelease(Input& _input);
-void inputVerifyDownState(Input& _input);
-void inputPrintDebugInfo(Input& _input);
+void inputPoll(Input* _input, WINDOW* window);
+void inputRegisterKeyDown(Key* _key);
+void inputSetDownState(Input* _input, bool state);
+void inputSetReleasedState(Input* _input, bool state);
+void inputSetPressedState(Input* _input, bool state);
+void inputTryRelease(Input* _input);
+void inputVerifyDownState(Input* _input);
+void inputPrintDebugInfo(Input* _input);
 
 #endif

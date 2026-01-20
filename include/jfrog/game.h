@@ -17,9 +17,9 @@ typedef struct Game {
   Config* config;
 } Game;
 
-void gameInit(Game& _game);
-void gameDeinit(Game& _game);
-void gameRestart(Game& _game);
-void gameDoPlayerMovement(Game& _game, Input& input);
+void gameInit(Game* _game);
+void gameDeinit(Game* _game);
+void gameRestart(Game* _game);
+void gameDoPlayerMovement(Game* _game, Input* input);
 
 #endif

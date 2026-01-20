@@ -22,7 +22,7 @@ typedef struct Config {
   unsigned int cars_count;
 } Config;
 
-void configInit(Config& _config);
-void configDeinit(Config& _config);
+void configInit(Config* _config);
+void configDeinit(Config* _config);
 
 #endif
