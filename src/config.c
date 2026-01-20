@@ -8,12 +8,15 @@ void configInit(Config* _config) {
 
   _config->window_width = 80;
   _config->window_game_height = 16;
-  _config->window_ui_height = 4;
+  _config->window_ui_height = 6;
 
-  _config->game_min_y = 1;
-  _config->game_max_y = _config->window_game_height - 1;
-  _config->game_min_x = 1;
-  _config->game_max_x = _config->window_width - 1;
+  _config->border_size = 1;
+
+  _config->area_width = _config->window_width - 2 * _config->border_size;
+  _config->area_game_height =
+      _config->window_game_height - 2 * _config->border_size;
+  _config->area_ui_height =
+      _config->window_ui_height - 2 * _config->border_size;
 
   _config->player_height = 3;
   _config->player_width = 3;

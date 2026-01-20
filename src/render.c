@@ -21,9 +21,10 @@ void renderClearConsole(void) {
 
 void renderInit(Screen* _screen) {
   // include 1 char-wide borders
-  _screen->height_game = (size_t)k_config->window_game_height + 2;
-  _screen->height_ui = (size_t)k_config->window_ui_height + 2;
-  _screen->width = (size_t)k_config->window_width + 2;
+  _screen->height_game = (size_t)k_config->window_game_height;
+  _screen->height_ui = (size_t)k_config->window_ui_height;
+  _screen->width = (size_t)k_config->window_width;
+  _screen->border_size = (size_t)k_config->border_size;
 
   _screen->game_buffer_size = _screen->height_game * _screen->width;
   _screen->ui_buffer_size = _screen->height_ui * _screen->width;
@@ -40,14 +41,19 @@ void renderDeinit(Screen* _screen) {
   _screen->ui_buffer = NULL;
 }
 
-void renderCreateUi(Screen* _screen) { renderCreateBorders(_screen); }
+void renderCreateUi(Screen* _screen) {
+  renderPutTextUi(k_screen, "Sterowanie", 1, 0);
+  renderPutTextUi(k_screen, "W S A D - Sterowanie postacia", 1, 1);
+  renderPutTextUi(k_screen, "Q - Wyjscie", 1, 2);
+  renderCreateBorders(_screen);
+}
 
 void renderCreateBorders(Screen* const _screen) {
   // game part of the screen
   for (size_t y = 0; y < _screen->height_game; y++) {
     for (size_t x = 0; x < _screen->width; x++) {
-      if (x == 0 || x == _screen->width - 1 || y == 0 ||
-          y == _screen->height_game - 1) {
+      if (x == 0 || x == _screen->width - _screen->border_size || y == 0 ||
+          y == _screen->height_game - _screen->border_size) {
         _screen->game_buffer[y * _screen->width + x] = '*';
       }
     }
@@ -56,12 +62,26 @@ void renderCreateBorders(Screen* const _screen) {
   // ui part of the screen
   for (size_t y = 0; y < _screen->height_ui; y++) {
     for (size_t x = 0; x < _screen->width; x++) {
-      if (x == 0 || x == _screen->width - 1 || y == 0 ||
-          y == _screen->height_ui - 1) {
+      if (x == 0 || x == _screen->width - _screen->border_size || y == 0 ||
+          y == _screen->height_ui - _screen->border_size) {
         _screen->ui_buffer[y * _screen->width + x] = '*';
       }
     }
   }
+}
+
+void renderPutTextUi(Screen* const _screen, const char* _str, size_t _x,
+                     size_t _y) {
+  size_t offset =
+      (_y + _screen->border_size) * _screen->width + _x + _screen->border_size;
+  strncpy(_screen->ui_buffer + offset, _str, strlen(_str));
+}
+
+void renderPutTextGame(Screen* const _screen, const char* _str, size_t _x,
+                       size_t _y) {
+  size_t offset =
+      (_y + _screen->border_size) * _screen->width + _x + _screen->border_size;
+  strncpy(_screen->game_buffer + offset, _str, strlen(_str));
 }
 
 void renderClearBuffer(Screen* const _screen) {

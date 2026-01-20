@@ -5,7 +5,8 @@ typedef struct Config {
   unsigned int fps_limit;
 
   unsigned int window_width, window_game_height, window_ui_height;
-  unsigned int game_min_y, game_max_y, game_min_x, game_max_x;
+  unsigned int border_size;
+  unsigned int area_width, area_game_height, area_ui_height;
 
   unsigned int player_width, player_height;
   int player_color;
