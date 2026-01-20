@@ -10,6 +10,7 @@
 #include "product.h"
 #include "product_stock.h"
 #include "render.h"
+#include "state_save.h"
 #include "validator.h"
 
 int RouteCommand(const char *cmd, const char *args)
@@ -20,21 +21,25 @@ int RouteCommand(const char *cmd, const char *args)
     {
         ret = ret || InputStreamDetect(args, "r");
         ret = ret || HandleCommandInit();
+        ret = ret || StateSave(&kProducts, &kWarehouses);
     }
     else if (strcmp(cmd, "create") == 0)
     {
         ret = ret || InputStreamDetect(args, "r");
         ret = ret || HandleCommandCreate(args);
+        ret = ret || StateSave(&kProducts, &kWarehouses);
     }
     else if (strcmp(cmd, "update") == 0)
     {
         ret = ret || InputStreamDetect(args, "r");
         ret = ret || HandleCommandUpdate();
+        ret = ret || StateSave(&kProducts, &kWarehouses);
     }
     else if (strcmp(cmd, "transfer") == 0)
     {
         ret = ret || InputStreamDetect(args, "r");
         ret = ret || HandleCommandTransfer();
+        ret = ret || StateSave(&kProducts, &kWarehouses);
     }
     else if (strcmp(cmd, "print") == 0)
     {
@@ -55,7 +60,7 @@ int HandleCommandInit()
     int products_count = 0;
     char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
 
-    if (ProductListIsClear(&kProducts))
+    if (!ProductListIsClear(&kProducts))
     {
         fprintf(stderr, "Product list already initialized!\n");
         return 1;
@@ -185,13 +190,13 @@ int HandleCommandUpdate()
     unsigned int products_count = 0;
     Warehouse *warehouse = NULL;
 
-    if (!ProductListIsClear(&kProducts))
+    if (ProductListIsClear(&kProducts))
     {
         fprintf(stderr, "Products have not been initialized yet!\n");
         return 1;
     }
 
-    if (!WarehouseListIsClear(&kWarehouses))
+    if (WarehouseListIsClear(&kWarehouses))
     {
         fprintf(stderr, "Warehouses have not been initialized yet!\n");
         return 1;
@@ -267,13 +272,13 @@ int HandleCommandTransfer()
     Warehouse *dst_warehouse = NULL;
     Warehouse *src_warehouse = NULL;
 
-    if (!ProductListIsClear(&kProducts))
+    if (ProductListIsClear(&kProducts))
     {
         fprintf(stderr, "Products have not been initialized yet!\n");
         return 1;
     }
 
-    if (!WarehouseListIsClear(&kWarehouses))
+    if (WarehouseListIsClear(&kWarehouses))
     {
         fprintf(stderr, "Warehouses have not been initialized yet!\n");
         return 1;
@@ -358,9 +363,15 @@ int HandleCommandPrint(const char *args)
     // TODO: Replace null when args handling added
     ParsePrintArgs(args, base_filename, NULL);
 
-    if (!ProductListIsClear(&kProducts))
+    if (ProductListIsClear(&kProducts))
     {
-        fprintf(stderr, "Warehouse not initialized!\n");
+        fprintf(stderr, "Products have not been initialized yet!\n");
+        return 1;
+    }
+
+    if (WarehouseListIsClear(&kWarehouses))
+    {
+        fprintf(stderr, "Warehouses have not been initialized yet!\n");
         return 1;
     }
 
