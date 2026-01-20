@@ -1,0 +1,14 @@
+target_sources(jfrog
+  PRIVATE
+    main.cpp
+    app.cpp
+    app.hpp
+    game.cpp
+    game.hpp
+    entity.cpp
+    entity.hpp
+    config.cpp
+    config.hpp
+    input.cpp
+    input.hpp
+)
