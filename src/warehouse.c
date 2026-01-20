@@ -97,7 +97,7 @@ int WarehouseUpdateProduct(Warehouse *warehouse, Product *product, const int sto
 
     if (product_stock == NULL)
     {
-        if (CanWarehouseTakeProduct(warehouse, product, stock_change))
+        if (stock_change < 0)
         {
             return 1;
         }
@@ -114,6 +114,11 @@ int WarehouseUpdateProduct(Warehouse *warehouse, Product *product, const int sto
         {
             return 1;
         }
+    }
+
+    if (CanWarehouseTakeProduct(warehouse, product, stock_change))
+    {
+        return 1;
     }
 
     product_stock->stock += stock_change;
