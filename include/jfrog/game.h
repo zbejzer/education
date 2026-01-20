@@ -7,19 +7,20 @@
 #include "jfrog/entity.h"
 #include "jfrog/input.h"
 
-typedef struct Game {
-  bool is_paused;
-  float time_left;
+typedef struct Game
+{
+    bool is_paused;
+    float time_left;
 
-  Entity* player;
-  Entity* cars;
+    Entity *player;
+    Entity *cars;
 } Game;
 
-void gameInit(Game* _game);
-void gameDeinit(Game* _game);
-void gameRestart(Game* _game);
-void gameDoPlayerMovement(Game* _game, Input* input);
+void gameInit(Game *_game);
+void gameDeinit(Game *_game);
+void gameRestart(Game *_game);
+void gameDoPlayerMovement(Game *_game, Input *input);
 
-extern Game* k_game;
+extern Game *k_game;
 
 #endif
