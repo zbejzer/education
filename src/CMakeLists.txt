@@ -1,14 +1,15 @@
+add_executable(jfrog)
+
+set_target_properties(jfrog PROPERTIES 
+    OUTPUT_NAME "jumping_frog"
+)
+
 target_sources(jfrog
   PRIVATE
-    main.cpp
-    app.cpp
-    app.hpp
-    game.cpp
-    game.hpp
-    entity.cpp
-    entity.hpp
-    config.cpp
-    config.hpp
-    input.cpp
-    input.hpp
+    app.c
+    config.c
+    entity.c
+    game.c
+    input.c
+    main.c
 )

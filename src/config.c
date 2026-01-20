@@ -1,12 +1,9 @@
-#include "config.hpp"
+#include "jfrog/config.h"
 
-#include <cstring>
+#include <string.h>
 
-namespace config
-{
-
-void initConfig(Config &_config)
-{
+namespace config {
+  void initConfig(Config & _config) {
     _config.fps_limit = 256;
 
     _config.window_width = 80;
@@ -24,24 +21,27 @@ void initConfig(Config &_config)
     _config.car_width = 3;
     _config.time_limit = 60;
 
-    _config.player_sprite = new char[_config.player_height * _config.player_width + 1];
-    _config.car_sprite = new char[_config.player_height * _config.player_width + 1];
+    _config.player_sprite =
+        new char[_config.player_height * _config.player_width + 1];
+    _config.car_sprite =
+        new char[_config.player_height * _config.player_width + 1];
 
-    strcpy(_config.player_sprite, "* *"
-                                  "***"
-                                  "***");
+    strcpy(_config.player_sprite,
+           "* *"
+           "***"
+           "***");
 
-    strcpy(_config.car_sprite, "###"
-                               "###");
+    strcpy(_config.car_sprite,
+           "###"
+           "###");
 
     _config.player_speed = 1.0f;
 
     _config.cars_count = 5;
-}
+  }
 
-void deinitConfig(Config &_config)
-{
+  void deinitConfig(Config & _config) {
     delete _config.player_sprite;
     delete _config.car_sprite;
-}
-} // namespace config
+  }
+}  // namespace config
