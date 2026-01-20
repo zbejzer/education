@@ -3,124 +3,167 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "shared.h"
+#include "guards.h"
 #include "warehouse.h"
+#include "warehouse_section.h"
 
-int AddWarehouseItem(const Product *product)
+void WarehouseListInit(WarehouseList *obj)
 {
-    WarehouseNode *new_node = malloc(sizeof(WarehouseNode));
-    if (new_node == NULL)
-    {
-        fprintf(stderr, "Memory allocation for new WarehouseNode failed in AddWarehouseItem!\n");
-        return 1;
-    }
+    obj->front = NULL;
+    obj->back = NULL;
+    obj->size = 0;
+}
 
-    new_node->product = malloc(sizeof(Product));
-    if (new_node->product == NULL)
-    {
-        fprintf(stderr, "Memory allocation for new Product failed in AddWarehouseItem!\n");
-        return 1;
-    }
-    memcpy(new_node->product, product, sizeof(Product));
-
+int WarehouseListPush(WarehouseNode *new_node)
+{
+    WarehouseNode *last_node = kWarehouses.back;
     new_node->next = NULL;
 
-    if (kWarehouse == NULL)
+    if (last_node == NULL)
     {
-        kWarehouse = new_node;
+        kWarehouses.front = new_node;
     }
     else
     {
-        WarehouseNode *current_node = kWarehouse;
-        while (current_node->next != NULL)
-        {
-            current_node = current_node->next;
-        }
-        current_node->next = new_node;
+        last_node->next = new_node;
     }
+
+    kWarehouses.back = new_node;
+    kWarehouses.size++;
 
     return 0;
 }
 
-int UpdateWarehouseItem(const char *product_id, const int stock_change)
+Warehouse *WarehouseListGetById(const char *warehouse_id)
 {
-    Product *item = GetWarehouseItemById(product_id);
-    if (item == NULL)
-    {
-        fprintf(stderr, "Product with ID %s does not exist!\n", product_id);
-        return 1;
-    }
-
-    if (stock_change < 0 && item->stock < (unsigned int)(-stock_change))
-    {
-        fprintf(stderr, "Insufficient stock for product ID %s to remove %d units!\n", product_id, -stock_change);
-        return 1;
-    }
-
-    item->stock += stock_change;
-    return 0;
-}
-
-size_t GetWarehouseSize()
-{
-    size_t size = 0;
-    WarehouseNode *node = kWarehouse;
+    WarehouseNode *node = kWarehouses.front;
 
     while (node != NULL)
     {
-        size++;
-        node = node->next;
-    }
-
-    return size;
-}
-
-Product *GetWarehouseItemById(const char *product_id)
-{
-    WarehouseNode *node = kWarehouse;
-    while (node != NULL)
-    {
-        if (strcmp(node->product->id, product_id) == 0)
+        if (strcmp(node->data.id, warehouse_id) == 0)
         {
-            return node->product;
+            return &node->data;
         }
+
         node = node->next;
     }
 
     return NULL;
 }
 
-int SaveWarehouse()
+int WarehouseListClear(WarehouseList *list)
 {
-    FILE *file = fopen(SAVE_FILENAME, "w");
+    int ret = 0;
+    WarehouseNode *node = list->front;
 
-    if (file == NULL)
+    while (node != NULL)
+    {
+        WarehouseNode *next_node = node->next;
+        ret = WarehouseClear(&node->data) || ret;
+        free(node);
+        node = next_node;
+    }
+
+    list->front = NULL;
+    list->back = NULL;
+    list->size = 0;
+
+    return ret;
+}
+
+int WarehouseListIsClear(const WarehouseList *list)
+{
+    if (list->front == NULL)
     {
         return 1;
     }
 
-    WarehouseNode *node = kWarehouse;
-    while (node != NULL)
-    {
-        fprintf(file, "%s;\t%s;\t%d\n", node->product->id, node->product->name, node->product->stock);
-        node = node->next;
-    }
-
-    fclose(file);
     return 0;
 }
 
-int ClearWarehouse()
+void WarehouseInit(Warehouse *obj)
 {
-    WarehouseNode *node = kWarehouse;
-    kWarehouse = NULL;
-    while (node != NULL)
+    obj->id[0] = '\0';
+    obj->name[0] = '\0';
+    obj->stock_max = UINT_MAX;
+    obj->flammability_max = UINT_MAX;
+    WarehouseSectionListInit(&obj->sections);
+    ProductStockListInit(&obj->products);
+}
+
+int WarehouseUpdateProduct(Warehouse *warehouse, Product *product, const int stock_change)
+{
+    ProductStock *product_stock = ProductStockListGetByProduct(&warehouse->products, product);
+
+    if (product_stock == NULL)
     {
-        WarehouseNode *temp = node;
-        node = node->next;
-        free(temp->product);
-        free(temp);
+        if (stock_change < 0)
+        {
+            return 1;
+        }
+
+        ProductStock new_product_stock;
+        ProductStockInit(&new_product_stock);
+        new_product_stock.product = product;
+        ProductStockListPush(&warehouse->products, &new_product_stock);
+        product_stock = ProductStockListGetByProduct(&warehouse->products, product);
     }
+    else
+    {
+        if (CanRemoveStock(product_stock, stock_change))
+        {
+            return 1;
+        }
+    }
+
+    if (CanWarehouseTakeProduct(warehouse, product, stock_change))
+    {
+        return 1;
+    }
+
+    product_stock->stock += stock_change;
 
     return 0;
 }
+
+// TODO : Update to new architecture
+int WarehouseSave(Warehouse *obj)
+{
+    // FILE *file = fopen(SAVE_FILENAME, "w");
+
+    // if (file == NULL)
+    // {
+    //    fprintf(stderr, "Failed to save warehouse!\n");
+    //     return 1;
+    // }
+
+    // ProductNode *node = kProductsRegistry;
+    // while (node != NULL)
+    // {
+    //     fprintf(file, "%s;\t%s;\t%d\n", node->product->id, node->product->name, node->product->stock);
+    //     node = node->next;
+    // }
+
+    // fclose(file);
+    // return 0;
+
+    return 0;
+}
+
+int WarehouseClear(Warehouse *obj)
+{
+    int ret = 0;
+
+    ret = ProductStockListClear(&obj->products) || ret;
+    ret = WarehouseSectionListClear(&obj->sections) || ret;
+
+    return ret;
+}
+
+void WarehouseNodeInit(WarehouseNode *obj)
+{
+    obj->next = NULL;
+    WarehouseInit(&obj->data);
+}
+
+WarehouseList kWarehouses;

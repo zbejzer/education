@@ -6,10 +6,14 @@
     "cmake.options.statusBarVisibility": "hidden",
     "C_Cpp.clang_format_sortIncludes": true,
     "explorer.autoRevealExclude": {
-        "**/extern": true
+        "**/external": true
     },
     "search.exclude": {
-        "**/extern": true
+        "**/external": true
     },
-    "cmake.ctest.allowParallelJobs": true
+    "cmake.ctest.allowParallelJobs": true,
+    "cSpell.words": [
+        "STREQ",
+        "STRNE"
+    ]
 }
