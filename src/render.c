@@ -5,68 +5,72 @@
 #include "render.h"
 #include "warehouse.h"
 
-// TODO : Update to new architecture
-void RenderTxt(FILE *file)
+void RenderTxt(FILE *stream, WarehouseList *warehouses)
 {
-    fprintf(file, "Registered products:\n");
-    for (size_t i = 0; i < kProducts.size; i++)
-    {
-    }
+    WarehouseNode *warehouse_node = warehouses->front;
 
-    fprintf(file, "Registered warehouses:\n");
-    for (size_t i = 0; i < kWarehouses.size; i++)
+    while (warehouse_node != NULL)
     {
-    }
-
-    fprintf(file, "Warehouses stock:\n");
-    for (size_t i = 0; i < kWarehouses.size; i++)
-    {
+        RenderTxtWarehouse(stream, &warehouse_node->data);
+        warehouse_node = warehouse_node->next;
     }
 }
 
-void RenderTxtProduct(FILE *file, const Product *product)
+void RenderTxtWarehouse(FILE *stream, const Warehouse *warehouse)
 {
-    // fprintf(file, "%s %s %d\n", node->product->id, node->product->name, node->product->stock);
+    ProductStockNode *stock_node = warehouse->products.front;
+
+    fprintf(stream, "%s\t%s\n", warehouse->id, warehouse->name);
+    while (stock_node != NULL)
+    {
+        if (stock_node->data.stock > 0)
+        {
+            RenderTxtProductStock(stream, &stock_node->data);
+        }
+
+        stock_node = stock_node->next;
+    }
 }
 
-void RenderTxtWarehouse(FILE *file, const Warehouse *warehouse)
+void RenderTxtProductStock(FILE *stream, const ProductStock *stock)
 {
+    fprintf(stream, "%s ", stock->product->id);
+    fprintf(stream, "%u ", stock->stock);
+    fprintf(stream, "%s ", stock->product->name);
+    fprintf(stream, "%u", stock->product->category);
+    if (stock->product->subcategory != SUBCATEGORY_WILDCARD)
+    {
+        fprintf(stream, ".%u", stock->product->subcategory);
+    }
+    fprintf(stream, " %u\n", stock->product->flammability);
 }
 
-void RenderTxtSectionList(FILE *file, const WarehouseSectionList *list)
-{
-}
-
-void RenderTxtStockList(FILE *file, const ProductStockList *list)
-{
-}
-
-void RenderPdf(FILE *file)
+void RenderPdf(FILE *stream)
 {
     time_t raw_time = time(NULL);
     struct tm *time_info = localtime(&raw_time);
 
-    fprintf(file, "\\documentclass{article}\n"
-                  "\\usepackage{polski}\n"
-                  "\\title{Stan Magazynu}\n"
-                  "\\date{");
-    fprintf(file, "%.2d:%.2d %.2d/%.2d/%.4d", time_info->tm_hour, time_info->tm_min, time_info->tm_mday,
+    fprintf(stream, "\\documentclass{article}\n"
+                    "\\usepackage{polski}\n"
+                    "\\title{Stan Magazynu}\n"
+                    "\\date{");
+    fprintf(stream, "%.2d:%.2d %.2d/%.2d/%.4d", time_info->tm_hour, time_info->tm_min, time_info->tm_mday,
             time_info->tm_mon + 1, time_info->tm_year + 1900);
-    fprintf(file, "}\n"
-                  "\\begin{document}\n"
-                  "\\maketitle\n"
-                  "\\begin{tabular}{|l|l|l|}\n"
-                  "\\hline\n"
-                  "ID & Nazwa & Ilość \\\\ \\hline\n");
+    fprintf(stream, "}\n"
+                    "\\begin{document}\n"
+                    "\\maketitle\n"
+                    "\\begin{tabular}{|l|l|l|}\n"
+                    "\\hline\n"
+                    "ID & Nazwa & Ilość \\\\ \\hline\n");
 
     for (size_t i = 0; i < kProducts.size; i++)
     {
-        // fprintf(file, "%s & %s & %d \\\\\n", node->product->id, node->product->name, node->product->stock);
+        // fprintf(stream, "%s & %s & %d \\\\\n", node->product->id, node->product->name, node->product->stock);
     }
 
-    fprintf(file, "\\hline\n"
-                  "\\end{tabular}\n"
-                  "\\end{document}\n");
+    fprintf(stream, "\\hline\n"
+                    "\\end{tabular}\n"
+                    "\\end{document}\n");
 }
 
 void RenderJointCategory(char *buffer, unsigned int category, unsigned int subcategory)

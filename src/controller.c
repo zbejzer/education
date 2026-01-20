@@ -384,8 +384,7 @@ int HandleCommandPrint(const char *args)
         sprintf(filename, "%s.txt", base_filename);
     }
 
-    file = fopen(filename, "w");
-    if (file == NULL)
+    if ((file = fopen(filename, "w")) == NULL)
     {
         fprintf(stderr, "Could not open file %s with mode %s\n", filename, "w");
         return 1;
@@ -397,7 +396,13 @@ int HandleCommandPrint(const char *args)
     }
     else
     {
-        RenderTxt(file);
+        RenderTxt(file, &kWarehouses);
+    }
+
+    if (fclose(file) == EOF)
+    {
+        fprintf(stderr, "Error while saving state\n");
+        return 1;
     }
 
     printf("%s\n", filename);

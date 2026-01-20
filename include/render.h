@@ -9,13 +9,11 @@
 #include "warehouse.h"
 #include "warehouse_section.h"
 
-void RenderTxt(FILE *file);
-void RenderTxtProduct(FILE *file, const Product *product);
-void RenderTxtWarehouse(FILE *file, const Warehouse *warehouse);
-void RenderTxtSectionList(FILE *file, const WarehouseSectionList *list);
-void RenderTxtStockList(FILE *file, const ProductStockList *list);
+void RenderTxt(FILE *stream, WarehouseList *warehouses);
+void RenderTxtWarehouse(FILE *stream, const Warehouse *warehouse);
+void RenderTxtProductStock(FILE *stream, const ProductStock *stock);
 
-void RenderPdf(FILE *file);
+void RenderPdf(FILE *stream);
 void RenderJointCategory(char *buffer, unsigned int category, unsigned int subcategory);
 
 extern bool kPdfMode;
