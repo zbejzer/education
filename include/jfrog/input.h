@@ -1,6 +1,8 @@
 #ifndef JFROG_INPUT_H
 #define JFROG_INPUT_H
 
+#include <stdbool.h>
+
 constexpr unsigned int INPUT_TICKRATE = 16;  // frequency of ticks per second
 
 struct Key {

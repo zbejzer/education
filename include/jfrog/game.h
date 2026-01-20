@@ -1,6 +1,8 @@
 #ifndef JFROG_GAME_H
 #define JFROG_GAME_H
 
+#include <stdbool.h>
+
 #include "jfrog/config.h"
 #include "jfrog/entity.h"
 #include "jfrog/input.h"
