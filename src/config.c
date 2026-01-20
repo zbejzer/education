@@ -1,5 +1,6 @@
 #include "jfrog/config.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 void configInit(Config* _config) {
@@ -20,10 +21,10 @@ void configInit(Config* _config) {
   _config->car_width = 3;
   _config->time_limit = 60;
 
-  _config->player_sprite =
-      new char[_config->player_height * _config->player_width + 1];
-  _config->car_sprite =
-      new char[_config->player_height * _config->player_width + 1];
+  _config->player_sprite = (char*)malloc(
+      sizeof(char) * (_config->player_height * _config->player_width + 1));
+  _config->car_sprite = (char*)malloc(
+      sizeof(char) * (_config->car_height * _config->car_width + 1));
 
   strcpy(_config->player_sprite,
          "* *"
@@ -40,6 +41,6 @@ void configInit(Config* _config) {
 }
 
 void configDeinit(Config* _config) {
-  delete _config->player_sprite;
-  delete _config->car_sprite;
+  free(_config->player_sprite);
+  free(_config->car_sprite);
 }

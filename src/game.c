@@ -1,5 +1,7 @@
 #include "jfrog/game.h"
 
+#include <stdlib.h>
+
 #include "jfrog/app.h"
 #include "jfrog/config.h"
 #include "jfrog/entity.h"
@@ -9,8 +11,8 @@ void gameInit(Game* _game) {
   _game->is_paused = true;
 
   _game->time_left = _game->config->time_limit;
-  _game->player = new Entity;
-  _game->cars = new Entity[_game->config->cars_count];
+  _game->player = (Entity*)malloc(sizeof(Entity));
+  _game->cars = (Entity*)malloc(sizeof(Entity) * _game->config->cars_count);
 
   entityInitPlayer(_game->player, _game->config);
 }
@@ -23,8 +25,8 @@ void gameDeinit(Game* _game) {
   //     entityDeinit(_game->cars[i]);
   // }
 
-  delete _game->player;
-  delete _game->cars;
+  free(_game->player);
+  free(_game->cars);
 }
 
 void gameRestart(Game* _game) {

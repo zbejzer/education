@@ -1,16 +1,17 @@
-
-
 #include "jfrog/app.h"
 #include "jfrog/config.h"
 #include "jfrog/game.h"
 #include "jfrog/input.h"
 
 int main() {
+  Config config;
+  configInit(&config);
+
   App app;
   appInit(&app);
   appCreateInterface(&app);
-  appUpdateDeltaTime(
-      &app.delta_time);  // set starting values for static variables
+  // set starting values for static variables
+  appUpdateDeltaTime(&app.delta_time);
 
   Game game;
   game.config = &app.config;
