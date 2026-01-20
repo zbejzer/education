@@ -1,10 +1,18 @@
 # Warsztat programisty - Zadanie projektowe - Magazyn
 
+## Completed non-mandatory elements
+
+| Code | Punctuation | Description            |
+|------|-------------|------------------------|
+| RD   | 1           | Readme file            |
+| L1   | 1           | Using library          |
+| EC   | 2           | Handling subcategories |
+
 ## Prerequisites
 
 - [CMake](https://cmake.org/download/)
 
-In order to use the [run_scenario.sh script](scripts\run_scenario.sh) you'll need the `pdflatex` tool along with support for Polish language.
+In order to use the [run_scenario.sh script](tools\run_scenario.sh) you'll need the `pdflatex` tool along with support for Polish language.
 
 ### Ubuntu
 
