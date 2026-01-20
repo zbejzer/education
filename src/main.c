@@ -10,6 +10,8 @@ int main() {
   k_config = &config;
 
   Screen screen;
+  renderInit(&screen);
+  k_screen = &screen;
 
   App app;
   appInit(&app);
@@ -23,6 +25,8 @@ int main() {
   k_game = &game;
 
   renderHideCursor();
+  renderClearConsole();
+  renderClearBuffer(k_screen);
 
   // inputSetDownState(&app.input, false);
   // inputSetPressedState(&app.input, false);
@@ -48,8 +52,9 @@ int main() {
 
     //   // app.time_accumulator -= TICK_DURATION;
     // }
-
-    
+    renderClearBuffer(k_screen);
+    renderCreateUi(k_screen);
+    renderDrawBuffer(k_screen);
 
     // appRender(&app);
   }
@@ -58,5 +63,6 @@ int main() {
 
   gameDeinit(&game);
   appDeinit(&app);
+  renderDeinit(&screen);
   configDeinit(&config);
 }
