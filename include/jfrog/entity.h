@@ -1,5 +1,5 @@
-#ifndef ENTITY_H
-#define ENTITY_H
+#ifndef JFROG_ENTITY_H
+#define JFROG_ENTITY_H
 
 #include "jfrog/config.h"
 

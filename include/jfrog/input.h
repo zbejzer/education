@@ -1,5 +1,5 @@
-#ifndef INPUT_H
-#define INPUT_H
+#ifndef JFROG_INPUT_H
+#define JFROG_INPUT_H
 
 namespace input {
 

@@ -1,5 +1,5 @@
-#ifndef APP_H
-#define APP_H
+#ifndef JFROG_APP_H
+#define JFROG_APP_H
 
 #include "jfrog/config.h"
 #include "jfrog/game.h"
