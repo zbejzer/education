@@ -20,7 +20,7 @@ void RenderTxtWarehouse(FILE *stream, const Warehouse *warehouse)
 {
     ProductStockNode *stock_node = warehouse->products.front;
 
-    fprintf(stream, "%s\t%s\n", warehouse->id, warehouse->name);
+    fprintf(stream, "%s\n", warehouse->id);
     while (stock_node != NULL)
     {
         if (stock_node->data.stock > 0)
@@ -45,32 +45,65 @@ void RenderTxtProductStock(FILE *stream, const ProductStock *stock)
     fprintf(stream, " %u\n", stock->product->flammability);
 }
 
-void RenderPdf(FILE *stream)
+void RenderPdf(FILE *stream, WarehouseList *warehouses)
 {
+    WarehouseNode *warehouse_node = warehouses->front;
     time_t raw_time = time(NULL);
     struct tm *time_info = localtime(&raw_time);
 
     fprintf(stream, "\\documentclass{article}\n"
                     "\\usepackage{polski}\n"
-                    "\\title{Stan Magazynu}\n"
-                    "\\date{");
-    fprintf(stream, "%.2d:%.2d %.2d/%.2d/%.4d", time_info->tm_hour, time_info->tm_min, time_info->tm_mday,
-            time_info->tm_mon + 1, time_info->tm_year + 1900);
-    fprintf(stream, "}\n"
-                    "\\begin{document}\n"
-                    "\\maketitle\n"
-                    "\\begin{tabular}{|l|l|l|}\n"
-                    "\\hline\n"
-                    "ID & Nazwa & Ilość \\\\ \\hline\n");
+                    "\\title{Stan Magazynu}\n");
+    fprintf(stream,
+            "\\date{"
+            "%.2d:%.2d %.2d/%.2d/%.4d"
+            "}",
+            time_info->tm_hour, time_info->tm_min, time_info->tm_mday, time_info->tm_mon + 1,
+            time_info->tm_year + 1900);
 
-    for (size_t i = 0; i < kProducts.size; i++)
+    fprintf(stream, "\\begin{document}\n"
+                    "\\maketitle\n");
+
+    while (warehouse_node != NULL)
     {
-        // fprintf(stream, "%s & %s & %d \\\\\n", node->product->id, node->product->name, node->product->stock);
+        RenderPdfWarehouse(stream, &warehouse_node->data);
+        warehouse_node = warehouse_node->next;
     }
 
-    fprintf(stream, "\\hline\n"
-                    "\\end{tabular}\n"
-                    "\\end{document}\n");
+    fprintf(stream, "\\end{document}\n");
+}
+
+void RenderPdfWarehouse(FILE *stream, const Warehouse *warehouse)
+{
+    ProductStockNode *stock_node = warehouse->products.front;
+
+    fprintf(stream, "\\section{%s}", warehouse->id);
+
+    if (ProductStockListGetTotalStock(&warehouse->products) > 0)
+    {
+        fprintf(stream, "\\begin{tabular}{|l|l|l|}\n"
+                        "\\hline\n"
+                        "ID & Ilość & Nazwa \\\\\n"
+                        "\\hline\n");
+
+        while (stock_node != NULL)
+        {
+            if (stock_node->data.stock > 0)
+            {
+                RenderPdfProductStock(stream, &stock_node->data);
+            }
+
+            stock_node = stock_node->next;
+        }
+
+        fprintf(stream, "\\hline\n"
+                        "\\end{tabular}\n");
+    }
+}
+
+void RenderPdfProductStock(FILE *stream, const ProductStock *stock)
+{
+    fprintf(stream, "%s & %u & %s \\\\", stock->product->id, stock->stock, stock->product->name);
 }
 
 void RenderJointCategory(char *buffer, unsigned int category, unsigned int subcategory)

@@ -392,7 +392,7 @@ int HandleCommandPrint(const char *args)
 
     if (kPdfMode)
     {
-        RenderPdf(file);
+        RenderPdf(file, &kWarehouses);
     }
     else
     {
