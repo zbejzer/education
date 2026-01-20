@@ -73,7 +73,7 @@ int WarehouseListClear(WarehouseList *list)
 
 int WarehouseListIsClear(const WarehouseList *list)
 {
-    if (list->front != NULL)
+    if (list->front == NULL)
     {
         return 1;
     }

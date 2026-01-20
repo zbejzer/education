@@ -149,6 +149,8 @@ int CanSectionFitAllSubsections(const WarehouseSectionList *list, const unsigned
             return 1;
         }
     }
+
+    return 0;
 }
 
 // TODO: Cover with unit tests

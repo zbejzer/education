@@ -69,7 +69,7 @@ int ProductListClear(ProductList *list)
 
 int ProductListIsClear(const ProductList *list)
 {
-    if (list->data != NULL)
+    if (list->data == NULL)
     {
         return 1;
     }
