@@ -17,7 +17,9 @@ set_property(TARGET unit_tests PROPERTY CXX_STANDARD_REQUIRED ON)
 
 target_link_libraries(unit_tests 
     PRIVATE
-        libwarehouse
+        warehouse_config
+        warehouse_core
+        warehouse_validation
         GTest::gtest
 )
 

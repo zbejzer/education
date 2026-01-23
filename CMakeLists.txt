@@ -16,16 +16,12 @@ if(BUILD_TESTING)
     )
 endif()
 
-add_subdirectory(src)
-
-if(BUILD_TESTING)
-    add_subdirectory(tests)
-endif()
+add_subdirectory(libs)
 
 get_property(
     WAREHOUSE_BUILD_DIR
     TARGET
-        warehouse
+        warehouse_cli
     PROPERTY
         BINARY_DIR
 )

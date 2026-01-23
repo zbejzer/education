@@ -1,8 +1,5 @@
 #include <stdbool.h>
 
-#include "product.h"
-#include "warehouse.h"
-
 int ValidateProductsCount(const int count);
 int ValidateProductId(const char *str);
 int ValidateProductName(const char *str);

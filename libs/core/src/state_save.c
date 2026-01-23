@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-#include "input_handler.h"
 #include "product.h"
 #include "product_stock.h"
 #include "render.h"

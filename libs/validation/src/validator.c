@@ -4,9 +4,7 @@
 #include <string.h>
 
 #include "config.h"
-#include "product.h"
 #include "validator.h"
-#include "warehouse.h"
 
 int ValidateProductsCount(const int count)
 {
