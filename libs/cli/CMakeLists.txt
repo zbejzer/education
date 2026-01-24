@@ -44,13 +44,6 @@ target_link_libraries(warehouse_cli
         warehouse_config
 )
 
-if(MSVC)
-    target_compile_options(warehouse_cli PRIVATE /W4)
-else()
-    target_compile_options(warehouse_cli PRIVATE -Wall -Wextra -Wpedantic)
-endif()
-
-
 if(BUILD_TESTING)
     add_executable(warehouse_cli_internal_unit_tests)
 
