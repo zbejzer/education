@@ -18,12 +18,10 @@ class WarehouseSectionListTest : public testing::Test
         WarehouseSectionListInit(&test_section_list_);
         test_section_list_.size = 5;
         test_section_list_.data = new WarehouseSection[4];
-        test_section_list_.data[0] = {.stock_max = 30, .stock_min_threshold = 10, .category = 4, .subcategory = 3};
-        test_section_list_.data[1] = {.stock_max = 50, .stock_min_threshold = 10, .category = 4, .subcategory = 5};
-        test_section_list_.data[2] = {
-            .stock_max = 400, .stock_min_threshold = 10, .category = 4, .subcategory = SUBCATEGORY_WILDCARD};
-        test_section_list_.data[3] = {
-            .stock_max = 500, .stock_min_threshold = 10, .category = 5, .subcategory = SUBCATEGORY_WILDCARD};
+        test_section_list_.data[0] = {30, 10, 4, 3};
+        test_section_list_.data[1] = {50, 10, 4, 5};
+        test_section_list_.data[2] = {400, 10, 4, SUBCATEGORY_WILDCARD};
+        test_section_list_.data[3] = {500, 10, 5, SUBCATEGORY_WILDCARD};
     }
 
     ~WarehouseSectionListTest() override

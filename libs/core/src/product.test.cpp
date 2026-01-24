@@ -17,13 +17,9 @@ class ProductTest : public testing::Test
     const Product prod3_;
 
     ProductTest()
-        : prod1_({.id = "AB123", .name = "Product 1", .category = 1, .subcategory = 3, .flammability = 5}), //
-          prod2_({.id = "CD456",
-                  .name = "Product 2",
-                  .category = 2,
-                  .subcategory = SUBCATEGORY_WILDCARD,
-                  .flammability = 6}),                                                                     //
-          prod3_({.id = "EF789", .name = "Product 3", .category = 7, .subcategory = 4, .flammability = 2}) //
+        : prod1_({"AB123", "Product 1", 1, 3, 5}),                    //
+          prod2_({"CD456", "Product 2", 2, SUBCATEGORY_WILDCARD, 6}), //
+          prod3_({"EF789", "Product 3", 7, 4, 2})                     //
     {
         ProductListClear(&kProducts);
     }
@@ -64,7 +60,7 @@ TEST_F(ProductTest, ClearEmptyProductList)
 
 TEST_F(ProductTest, CopyProduct)
 {
-    Product dst_product = {.id = "XY987", .name = "DstProd", .category = 7, .subcategory = 8, .flammability = 9};
+    Product dst_product = {"XY987", "DstProd", 7, 8, 9};
     ASSERT_NE(prod1_.id, dst_product.id);
     ASSERT_NE(prod1_.name, dst_product.name);
     ASSERT_STRNE(prod1_.id, dst_product.id);

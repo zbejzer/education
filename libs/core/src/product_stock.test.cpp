@@ -16,13 +16,8 @@ class ProductStockListTest : public testing::Test
     ProductStock product_stock_a_, product_stock_b_, product_stock_c_;
 
     ProductStockListTest()
-        : product_a_({.id = "AB123", .name = "Product 1", .category = 1, .subcategory = 3, .flammability = 5}),
-          product_b_({.id = "CD456",
-                      .name = "Product 2",
-                      .category = 2,
-                      .subcategory = SUBCATEGORY_WILDCARD,
-                      .flammability = 6}),
-          product_c_({.id = "EF789", .name = "Product 3", .category = 1, .subcategory = 4, .flammability = 2})
+        : product_a_({"AB123", "Product 1", 1, 3, 5}), product_b_({"CD456", "Product 2", 2, SUBCATEGORY_WILDCARD, 6}),
+          product_c_({"EF789", "Product 3", 1, 4, 2})
     {
         ProductStockListInit(&test_stock_list_);
         product_stock_a_.product = &product_a_;
@@ -45,9 +40,9 @@ TEST_F(ProductStockListTest, ClearNonEmpty)
     ProductStockNode *product_stock_node_b_ = new ProductStockNode;
     ProductStockNode *product_stock_node_c_ = new ProductStockNode;
 
-    *product_stock_node_a_ = {.next = product_stock_node_b_, .data = product_stock_a_};
-    *product_stock_node_b_ = {.next = product_stock_node_c_, .data = product_stock_b_};
-    *product_stock_node_c_ = {.next = nullptr, .data = product_stock_c_};
+    *product_stock_node_a_ = {product_stock_node_b_, product_stock_a_};
+    *product_stock_node_b_ = {product_stock_node_c_, product_stock_b_};
+    *product_stock_node_c_ = {nullptr, product_stock_c_};
 
     test_stock_list_.front = product_stock_node_a_;
     test_stock_list_.back = product_stock_node_c_;

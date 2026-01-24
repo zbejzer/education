@@ -241,32 +241,15 @@ TEST(ParseUpdateTest, UpdateEntry)
 TEST(ParseInitEntryTest, EmptySubcategory)
 {
     const Product test_data[] = {
-        {.id = "AB123",
-         .name = "ProdWithNoSpaces",
-         .category = 10,
-         .subcategory = SUBCATEGORY_WILDCARD,
-         .flammability = 0},
-        {.id = "CD356",
-         .name = "ProdWith1Number",
-         .category = 6,
-         .subcategory = SUBCATEGORY_WILDCARD,
-         .flammability = 3},
-        {.id = "EF789",
-         .name = "Prod With Spaces",
-         .category = 4,
-         .subcategory = SUBCATEGORY_WILDCARD,
-         .flammability = 7},
-        {.id = "GH112",
-         .name = "Prod With Spaces And 1 Number",
-         .category = 0,
-         .subcategory = SUBCATEGORY_WILDCARD,
-         .flammability = 10},
+        {"AB123", "ProdWithNoSpaces", 10, SUBCATEGORY_WILDCARD, 0},
+        {"CD356", "ProdWith1Number", 6, SUBCATEGORY_WILDCARD, 3},
+        {"EF789", "Prod With Spaces", 4, SUBCATEGORY_WILDCARD, 7},
+        {"GH112", "Prod With Spaces And 1 Number", 0, SUBCATEGORY_WILDCARD, 10},
     };
 
     for (auto &i : test_data)
     {
-        Product result_product = {
-            .id = "", .name = "", .category = UINT_MAX, .subcategory = 0, .flammability = UINT_MAX};
+        Product result_product = {"", "", UINT_MAX, 0, UINT_MAX};
         const std::string built_data = build_init_entry(i.id, i.name, i.category, i.subcategory, i.flammability);
 
         ParseInitEntry(built_data.c_str(), &result_product);
@@ -281,16 +264,15 @@ TEST(ParseInitEntryTest, EmptySubcategory)
 TEST(ParseInitEntryTest, CategoryAndSubcategory)
 {
     const Product test_data[] = {
-        {.id = "AB123", .name = "ProdWithNoSpaces", .category = 10, .subcategory = 5, .flammability = 0},
-        {.id = "CD356", .name = "ProdWith1Number", .category = 6, .subcategory = 4, .flammability = 3},
-        {.id = "EF789", .name = "Prod With Spaces", .category = 4, .subcategory = 0, .flammability = 7},
-        {.id = "GH112", .name = "Prod With Spaces And 1 Number", .category = 0, .subcategory = 4, .flammability = 10},
+        {"AB123", "ProdWithNoSpaces", 10, 5, 0},
+        {"CD356", "ProdWith1Number", 6, 4, 3},
+        {"EF789", "Prod With Spaces", 4, 0, 7},
+        {"GH112", "Prod With Spaces And 1 Number", 0, 4, 10},
     };
 
     for (auto &i : test_data)
     {
-        Product result_product = {
-            .id = "", .name = "", .category = UINT_MAX, .subcategory = 0, .flammability = UINT_MAX};
+        Product result_product = {"", "", UINT_MAX, 0, UINT_MAX};
         const std::string built_data = build_init_entry(i.id, i.name, i.category, i.subcategory, i.flammability);
 
         ParseInitEntry(built_data.c_str(), &result_product);
@@ -343,20 +325,20 @@ TEST(ParseJointCategoryTest, CategoryAndSubcategory)
 TEST(ParseCreateHeaderTest, CreateHeader)
 {
     const Warehouse test_data[] = {
-        {.id = "AB123", .name = "WhsWithNoSpaces", .stock_max = 100, .flammability_max = 0},
-        {.id = "CD356", .name = "WhsWith1Number", .stock_max = 6, .flammability_max = 3},
-        {.id = "EF789", .name = "Whs With Spaces", .stock_max = 40, .flammability_max = 7},
+        {"AB123", "WhsWithNoSpaces", 100, 0},
+        {"CD356", "WhsWith1Number", 6, 3},
+        {"EF789", "Whs With Spaces", 40, 7},
         {
-            .id = "GH112",
-            .name = "Whs With Spaces And 1 Number",
-            .stock_max = 0,
-            .flammability_max = 10,
+            "GH112",
+            "Whs With Spaces And 1 Number",
+            0,
+            10,
         },
     };
 
     for (auto &i : test_data)
     {
-        Warehouse res_warehouse = {.id = "", .name = "", .stock_max = UINT_MAX, .flammability_max = UINT_MAX};
+        Warehouse res_warehouse = {"", "", UINT_MAX, UINT_MAX};
         const std::string built_data = build_create_header(i.id, i.stock_max, i.flammability_max, i.name);
 
         ParseCreateHeader(built_data.c_str(), &res_warehouse);
@@ -371,16 +353,15 @@ TEST(ParseCreateHeaderTest, CreateHeader)
 TEST(ParseCreateTest, EmptySubcategory)
 {
     const WarehouseSection test_data[] = {
-        {.stock_max = 100, .stock_min_threshold = 18, .category = 4, .subcategory = UINT_MAX},
-        {.stock_max = 6, .stock_min_threshold = 3, .category = 7, .subcategory = UINT_MAX},
-        {.stock_max = 40, .stock_min_threshold = 23, .category = 9, .subcategory = UINT_MAX},
-        {.stock_max = 0, .stock_min_threshold = 0, .category = 0, .subcategory = UINT_MAX},
+        {100, 18, 4, UINT_MAX},
+        {6, 3, 7, UINT_MAX},
+        {40, 23, 9, UINT_MAX},
+        {0, 0, 0, UINT_MAX},
     };
 
     for (auto &i : test_data)
     {
-        WarehouseSection res_section = {
-            .stock_max = UINT_MAX, .stock_min_threshold = UINT_MAX, .category = UINT_MAX, .subcategory = 0};
+        WarehouseSection res_section = {UINT_MAX, UINT_MAX, UINT_MAX, 0};
         const std::string built_data =
             build_create_entry(i.category, i.subcategory, i.stock_max, i.stock_min_threshold);
 
@@ -396,16 +377,15 @@ TEST(ParseCreateTest, EmptySubcategory)
 TEST(ParseCreateTest, CategoryAndSubcategory)
 {
     const WarehouseSection test_data[] = {
-        {.stock_max = 100, .stock_min_threshold = 18, .category = 4, .subcategory = 7},
-        {.stock_max = 6, .stock_min_threshold = 3, .category = 7, .subcategory = 5},
-        {.stock_max = 40, .stock_min_threshold = 23, .category = 9, .subcategory = 9},
-        {.stock_max = 0, .stock_min_threshold = 0, .category = 0, .subcategory = 0},
+        {100, 18, 4, 7},
+        {6, 3, 7, 5},
+        {40, 23, 9, 9},
+        {0, 0, 0, 0},
     };
 
     for (auto &i : test_data)
     {
-        WarehouseSection res_section = {
-            .stock_max = UINT_MAX, .stock_min_threshold = UINT_MAX, .category = UINT_MAX, .subcategory = UINT_MAX};
+        WarehouseSection res_section = {UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX};
         const std::string built_data =
             build_create_entry(i.category, i.subcategory, i.stock_max, i.stock_min_threshold);
 
