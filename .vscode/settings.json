@@ -1,19 +1,16 @@
 {
-    "editor.tabSize": 4,
-    "editor.detectIndentation": false,
-    "editor.formatOnSave": true,
-    "cmake.useCMakePresets": "never",
-    "cmake.options.statusBarVisibility": "hidden",
-    "C_Cpp.clang_format_sortIncludes": true,
-    "explorer.autoRevealExclude": {
-        "**/external": true
-    },
-    "search.exclude": {
-        "**/external": true
-    },
-    "cmake.ctest.allowParallelJobs": true,
-    "cSpell.words": [
-        "STREQ",
-        "STRNE"
-    ]
+  "editor.tabSize": 4,
+  "editor.detectIndentation": false,
+  "editor.formatOnSave": true,
+  "cmake.useCMakePresets": "never",
+  "cmake.options.statusBarVisibility": "hidden",
+  "C_Cpp.clang_format_sortIncludes": true,
+  "explorer.autoRevealExclude": {
+    "**/external": true
+  },
+  "search.exclude": {
+    "**/external": true
+  },
+  "cmake.ctest.allowParallelJobs": true,
+  "cSpell.words": ["gtest", "STREQ", "STRNE"]
 }
