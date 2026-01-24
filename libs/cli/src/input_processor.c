@@ -52,7 +52,7 @@ void ParseInitEntry(const char *str, Product *product)
 
     sscanf(str,
            "%" XSTR(JOINT_CATEGORY_LEN_MAX) "s %u %" XSTR(PRODUCT_ID_LEN_MAX) "s %" XSTR(PRODUCT_NAME_LEN_MAX) "[^\n]",
-           joint_category_buffer, &product->flammability, &product->id, &product->name);
+           joint_category_buffer, &product->flammability, product->id, product->name);
 
     ParseJointCategory(joint_category_buffer, &product->category, &product->subcategory);
 }
@@ -95,11 +95,13 @@ void ParseTransferHeader(const char *str, char *dst_warehouse_id, char *src_ware
 
 void ParseTransferEntry(const char *str, char *product_id, unsigned int *stock_change)
 {
-    sscanf(str, "%s %d", product_id, stock_change);
+    sscanf(str, "%s %u", product_id, stock_change);
 }
 
 // TODO: Handle flags parsing
 void ParsePrintArgs(const char *str, char *filename, char *flags)
 {
+    // supress unused parameter warning
+    (void)flags;
     sscanf(str, "%s", filename);
 }

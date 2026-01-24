@@ -325,20 +325,15 @@ TEST(ParseJointCategoryTest, CategoryAndSubcategory)
 TEST(ParseCreateHeaderTest, CreateHeader)
 {
     const Warehouse test_data[] = {
-        {"AB123", "WhsWithNoSpaces", 100, 0},
-        {"CD356", "WhsWith1Number", 6, 3},
-        {"EF789", "Whs With Spaces", 40, 7},
-        {
-            "GH112",
-            "Whs With Spaces And 1 Number",
-            0,
-            10,
-        },
+        {"AB123", "WhsWithNoSpaces", 100, 0, WarehouseSectionList(), ProductStockList()},
+        {"CD356", "WhsWith1Number", 6, 3, WarehouseSectionList(), ProductStockList()},
+        {"EF789", "Whs With Spaces", 40, 7, WarehouseSectionList(), ProductStockList()},
+        {"GH112", "Whs With Spaces And 1 Number", 0, 10, WarehouseSectionList(), ProductStockList()},
     };
 
     for (auto &i : test_data)
     {
-        Warehouse res_warehouse = {"", "", UINT_MAX, UINT_MAX};
+        Warehouse res_warehouse = {"", "", UINT_MAX, UINT_MAX, WarehouseSectionList(), ProductStockList()};
         const std::string built_data = build_create_header(i.id, i.stock_max, i.flammability_max, i.name);
 
         ParseCreateHeader(built_data.c_str(), &res_warehouse);

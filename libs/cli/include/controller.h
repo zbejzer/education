@@ -6,7 +6,7 @@
 int RouteCommand(const char *command, const char *args);
 
 int HandleCommandInit();
-int HandleCommandCreate(const char *args);
+int HandleCommandCreate();
 int HandleCommandUpdate();
 int HandleCommandTransfer();
 int HandleCommandPrint(const char *args);

@@ -26,7 +26,7 @@ int RouteCommand(const char *cmd, const char *args)
     else if (strcmp(cmd, "create") == 0)
     {
         ret = ret || InputStreamDetect(args, "r");
-        ret = ret || HandleCommandCreate(args);
+        ret = ret || HandleCommandCreate();
         ret = ret || StateSave(&kProducts, &kWarehouses);
     }
     else if (strcmp(cmd, "update") == 0)
@@ -77,13 +77,13 @@ int HandleCommandInit()
         return 1;
     }
 
-    if (ProductListReserve(&kProducts, products_count))
+    if (ProductListReserve(&kProducts, (size_t)products_count))
     {
         fprintf(stderr, "Failed to allocate memory for %d products!\n", products_count);
         return 1;
     }
 
-    for (size_t i = 0; i < products_count; i++)
+    for (size_t i = 0; i < (size_t)products_count; i++)
     {
         line_buffer[0] = '\0';
         Product new_product;
@@ -120,7 +120,7 @@ int HandleCommandInit()
     return 0;
 }
 
-int HandleCommandCreate(const char *args)
+int HandleCommandCreate()
 {
     char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
     int section_count = 0;
@@ -146,13 +146,13 @@ int HandleCommandCreate(const char *args)
         return 1;
     }
 
-    if (WarehouseSectionListReserve(section_list, section_count))
+    if (WarehouseSectionListReserve(section_list, (size_t)section_count))
     {
         fprintf(stderr, "Failed to allocate memory for %d warehouse sections!\n", section_count);
         return 1;
     }
 
-    for (size_t i = 0; i < section_count; i++)
+    for (size_t i = 0; i < (size_t)section_count; i++)
     {
         // TODO: Postopone changing data until after validation
         WarehouseSection *section = &section_list->data[i];
@@ -187,7 +187,7 @@ int HandleCommandUpdate()
 {
     char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
     char warehouse_id[WAREHOUSE_ID_LEN + 1] = "";
-    unsigned int products_count = 0;
+    int products_count = 0;
     Warehouse *warehouse = NULL;
 
     if (ProductListIsClear(&kProducts))
@@ -224,7 +224,7 @@ int HandleCommandUpdate()
     SanitizeRawLine(line_buffer);
     ParseLineCount(line_buffer, &products_count);
 
-    for (int i = 0; i < products_count; i++)
+    for (size_t i = 0; i < (size_t)products_count; i++)
     {
         char product_id[PRODUCT_ID_LEN_MAX + 1] = "";
         Product *product = NULL;
@@ -268,7 +268,7 @@ int HandleCommandTransfer()
     char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
     char dst_warehouse_id[WAREHOUSE_ID_LEN + 1] = "";
     char src_warehouse_id[WAREHOUSE_ID_LEN + 1] = "";
-    unsigned int products_count = 0;
+    int products_count = 0;
     Warehouse *dst_warehouse = NULL;
     Warehouse *src_warehouse = NULL;
 
@@ -320,7 +320,7 @@ int HandleCommandTransfer()
     SanitizeRawLine(line_buffer);
     ParseLineCount(line_buffer, &products_count);
 
-    for (int i = 0; i < products_count; i++)
+    for (size_t i = 0; i < (size_t)products_count; i++)
     {
         char product_id[PRODUCT_ID_LEN_MAX + 1] = "";
         Product *product = NULL;

@@ -126,30 +126,6 @@ int WarehouseUpdateProduct(Warehouse *warehouse, Product *product, const int sto
     return 0;
 }
 
-// TODO : Update to new architecture
-int WarehouseSave(Warehouse *obj)
-{
-    // FILE *file = fopen(SAVE_FILENAME, "w");
-
-    // if (file == NULL)
-    // {
-    //    fprintf(stderr, "Failed to save warehouse!\n");
-    //     return 1;
-    // }
-
-    // ProductNode *node = kProductsRegistry;
-    // while (node != NULL)
-    // {
-    //     fprintf(file, "%s;\t%s;\t%d\n", node->product->id, node->product->name, node->product->stock);
-    //     node = node->next;
-    // }
-
-    // fclose(file);
-    // return 0;
-
-    return 0;
-}
-
 int WarehouseClear(Warehouse *obj)
 {
     int ret = 0;
