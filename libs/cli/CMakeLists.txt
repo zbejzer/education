@@ -20,8 +20,6 @@ add_executable(warehouse_cli)
 
 set_target_properties(warehouse_cli PROPERTIES 
     OUTPUT_NAME "warehouse"
-    C_STANDARD  11
-    C_STANDARD_REQUIRED ON
 )
 
 target_sources(warehouse_cli
