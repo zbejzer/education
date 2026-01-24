@@ -2,11 +2,12 @@
 
 ## Completed non-mandatory elements
 
-| Code | Punctuation | Description            |
-|------|-------------|------------------------|
-| RD   | 1           | Readme file            |
-| L1   | 1           | Using library          |
-| EC   | 2           | Handling subcategories |
+| Code | Punctuation | Description                             |
+| ---- | ----------- | --------------------------------------- |
+| RD   | 1           | Readme file                             |
+| L1   | 1           | Using library                           |
+| L2   | 1           | Using both static and dynamic libraries |
+| EC   | 2           | Handling subcategories                  |
 
 ## Prerequisites
 
