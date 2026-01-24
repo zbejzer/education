@@ -357,11 +357,17 @@ int HandleCommandTransfer()
 int HandleCommandPrint(const char *args)
 {
     FILE *file = NULL;
-    char base_filename[FILENAME_MAX] = "";
-    char filename[FILENAME_MAX] = "";
+    char base_filename[BASE_FILENAME_BUFFER_LEN_MAX + 1] = "";
+    char filename[FILENAME_LEN_MAX + 5] = ""; // base filename + extension
 
     // TODO: Replace null when args handling added
     ParsePrintArgs(args, base_filename, NULL);
+
+    if (ValidatePrintFilename(base_filename))
+    {
+        fprintf(stderr, "Invalid filename: %s\n", base_filename);
+        return 1;
+    }
 
     if (ProductListIsClear(&kProducts))
     {
@@ -377,11 +383,11 @@ int HandleCommandPrint(const char *args)
 
     if (kPdfMode)
     {
-        sprintf(filename, "%s.tex", base_filename);
+        sprintf(filename, "%." XSTR(FILENAME_LEN_MAX) "s.tex", base_filename);
     }
     else
     {
-        sprintf(filename, "%s.txt", base_filename);
+        sprintf(filename, "%." XSTR(FILENAME_LEN_MAX) "s.txt", base_filename);
     }
 
     if ((file = fopen(filename, "w")) == NULL)

@@ -5,15 +5,19 @@
 #include <stdio.h>
 
 // Memory limits
+
 #define LINE_BUFFER_LEN_MAX 384
 #define COMMAND_LEN_MAX 32
+#define COMMAND_ARGS_LEN_MAX 352
 #define PRODUCT_ID_LEN_MAX 5
 #define PRODUCT_NAME_LEN_MAX 127
 #define WAREHOUSE_ID_LEN_MAX PRODUCT_ID_LEN_MAX
 #define WAREHOUSE_NAME_LEN_MAX PRODUCT_NAME_LEN_MAX
 #define JOINT_CATEGORY_LEN_MAX 5
+#define BASE_FILENAME_BUFFER_LEN_MAX 256 // FILENAME_MAX(260) - extension(4)
 
 // Customary limits
+
 #define PRODUCTS_COUNT_MIN 1
 #define PRODUCTS_COUNT_MAX 1000
 #define PRODUCT_ID_LEN 5
@@ -27,10 +31,12 @@
 #define FILENAME_LEN_MAX 10
 
 // Conventions
+
 #define SAVE_FILENAME "store.txt"
 #define SUBCATEGORY_WILDCARD UINT_MAX
 
 // Macros
+
 #define XSTR(s) STR(s)
 #define STR(s) #s
 

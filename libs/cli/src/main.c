@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 {
     char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
     char command[COMMAND_LEN_MAX + 1] = "";
-    char args[FILENAME_MAX + 1] = "";
+    char args[COMMAND_ARGS_LEN_MAX + 1] = "";
     int error = 0;
 
     ProductListInit(&kProducts);
