@@ -1,6 +1,9 @@
 #include <string.h>
 
+#include "config.h"
 #include "input_processor.h"
+#include "product.h"
+#include "warehouse.h"
 
 void SanitizeRawLine(char *str)
 {

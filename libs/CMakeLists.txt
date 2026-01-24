@@ -4,5 +4,5 @@ add_subdirectory(validation)
 add_subdirectory(config)
 
 if(BUILD_TESTING)
-    add_subdirectory(tests)
+    add_subdirectory(unit_test_runner)
 endif()
