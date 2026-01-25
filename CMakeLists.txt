@@ -10,6 +10,10 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 include(CTest)
 
 if(BUILD_TESTING)
@@ -21,14 +25,14 @@ if(BUILD_TESTING)
     )
 endif()
 
-add_subdirectory(libs)
+add_subdirectory(libs modules)
 
 get_property(
     WAREHOUSE_BUILD_DIR
     TARGET
         warehouse_cli
     PROPERTY
-        BINARY_DIR
+        RUNTIME_OUTPUT_DIRECTORY
 )
 
 configure_file(
