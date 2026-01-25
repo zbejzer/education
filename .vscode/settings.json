@@ -12,5 +12,8 @@
     "**/external": true
   },
   "cmake.ctest.allowParallelJobs": true,
-  "cSpell.words": ["gtest", "STREQ", "STRNE"]
+  "cSpell.words": ["gtest", "STREQ", "STRNE"],
+  "C_Cpp.formatting": "clangFormat",
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true
 }

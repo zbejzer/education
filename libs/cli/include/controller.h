@@ -5,10 +5,10 @@
 
 int RouteCommand(const char *command, const char *args);
 
-int HandleCommandInit();
-int HandleCommandCreate();
-int HandleCommandUpdate();
-int HandleCommandTransfer();
+int HandleCommandInit(void);
+int HandleCommandCreate(void);
+int HandleCommandUpdate(void);
+int HandleCommandTransfer(void);
 int HandleCommandPrint(const char *args);
 
 #endif

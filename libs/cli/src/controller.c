@@ -55,7 +55,7 @@ int RouteCommand(const char *cmd, const char *args)
     return InputStreamSwitch(stdin) || ret;
 }
 
-int HandleCommandInit()
+int HandleCommandInit(void)
 {
     int products_count = 0;
     char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
@@ -120,7 +120,7 @@ int HandleCommandInit()
     return 0;
 }
 
-int HandleCommandCreate()
+int HandleCommandCreate(void)
 {
     char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
     int section_count = 0;
@@ -183,7 +183,7 @@ int HandleCommandCreate()
     return ret;
 }
 
-int HandleCommandUpdate()
+int HandleCommandUpdate(void)
 {
     char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
     char warehouse_id[WAREHOUSE_ID_LEN + 1] = "";
@@ -263,7 +263,7 @@ int HandleCommandUpdate()
     return 0;
 }
 
-int HandleCommandTransfer()
+int HandleCommandTransfer(void)
 {
     char line_buffer[LINE_BUFFER_LEN_MAX + 1] = "";
     char dst_warehouse_id[WAREHOUSE_ID_LEN + 1] = "";
