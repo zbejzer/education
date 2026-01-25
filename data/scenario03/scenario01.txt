@@ -1,0 +1,7 @@
+init init.txt
+create create_mg251.txt
+create create_mg252.txt
+update update.txt
+print out01
+transfer transfer.txt
+print out02
