@@ -344,9 +344,15 @@ int HandleCommandTransfer(void)
             return 1;
         }
 
-        if (WarehouseUpdateProduct(dst_warehouse, product, stock_change) ||
-            WarehouseUpdateProduct(src_warehouse, product, -((int)stock_change)))
+        if (WarehouseUpdateProduct(dst_warehouse, product, stock_change))
         {
+            fprintf(stderr, "Failed to update product in warehouse: %s\n", dst_warehouse->id);
+            return 1;
+        }
+
+        if (WarehouseUpdateProduct(src_warehouse, product, -((int)stock_change)))
+        {
+            fprintf(stderr, "Failed to update product in warehouse: %s\n", src_warehouse->id);
             return 1;
         };
     }
