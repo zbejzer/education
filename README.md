@@ -53,7 +53,7 @@ cmake --build build
 ## Running
 
 ```bash
- ./scripts/run_scenario.sh <pdf|txt>
+run_scenario.sh <pdf|txt> <input file> <output directory>
 ```
 
 ## Running tests
