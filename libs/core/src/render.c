@@ -103,7 +103,7 @@ void RenderPdfWarehouse(FILE *stream, const Warehouse *warehouse)
 
 void RenderPdfProductStock(FILE *stream, const ProductStock *stock)
 {
-    fprintf(stream, "%s & %u & %s \\\\", stock->product->id, stock->stock, stock->product->name);
+    fprintf(stream, "%s & %u & %s \\\\\n", stock->product->id, stock->stock, stock->product->name);
 }
 
 void RenderJointCategory(char *buffer, unsigned int category, unsigned int subcategory)
