@@ -43,7 +43,7 @@ output_dir="$(realpath $output_dir)"
 
 cd "$scenario_dir"
 
-"$warehouse_bin" "$mode" < "$scenario_file" | while read -r filename; do
+while read -r filename; do
     cd "$scenario_dir"
     mv "./$filename" "$output_dir"
     cd "$output_dir"
@@ -54,11 +54,13 @@ cd "$scenario_dir"
     fi
     echo "Creating $output_dir/$out_filename"
     if [ "$mode" = "pdf" ]; then
-        pdflatex -interaction=nonstopmode "$output_dir/$filename" >/dev/null || (echo "Error creating $output_dir/$filename" && exit_code=73)
+        pdflatex -interaction=nonstopmode "$output_dir/$filename" >/dev/null || { echo "Error creating $output_dir/$out_filename"; exit_code=73; }
     fi
-done
+done < <("$warehouse_bin" "$mode" < "$scenario_file")
 
-exit_code=${PIPESTATUS[0]}
+if [ "$exit_code" -eq "0" ]; then
+    exit_code=${PIPESTATUS[0]}
+fi
 
 mv "$scenario_dir/store.txt" "$output_dir"
 
