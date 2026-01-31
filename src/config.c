@@ -33,7 +33,7 @@ void configInit(Config *_config)
     strcpy(_config->car_sprite, "###"
                                 "###");
 
-    _config->player_speed = 1.0f;
+    _config->player_speed = 10.0f;
 
     _config->cars_count = 5;
 }

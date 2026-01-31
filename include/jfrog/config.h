@@ -10,7 +10,6 @@ typedef struct Config
     unsigned int area_width, area_game_height, area_ui_height;
 
     unsigned int player_width, player_height;
-    int player_color;
     char *player_sprite;
     float player_speed;
 

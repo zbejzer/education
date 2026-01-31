@@ -26,6 +26,7 @@ void renderCreateUi(Screen *_screen);
 void renderCreateBorders(Screen *const _screen);
 void renderPutTextUi(Screen *const _screen, const char *_str, size_t _x, size_t _y);
 void renderPutTextGame(Screen *const _screen, const char *_str, size_t _x, size_t _y);
+void renderPutCharGame(Screen *const _screen, const char _ch, size_t _x, size_t _y);
 void renderClearBuffer(Screen *const _screen);
 void renderDrawBuffer(Screen *const _screen);
 

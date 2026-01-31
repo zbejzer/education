@@ -30,35 +30,29 @@ int main()
     {
         appUpdateDeltaTime(&app);
         app.t_accumulator += app.t_delta;
-        game.time_left -= app.t_delta;
 
-        // while (app.t_accumulator > TICK_DURATION) {
-        //   // inputPoll(&app.input, app.game_window);
-        //   // appHandleInput(&app);
+        while (app.t_accumulator > TICK_DURATION)
+        {
+            inputPoll(&app.input);
+            appHandleInput(&app);
 
-        //   // if (!game.is_paused) {
-        //   //   game.time_left -= TICK_DURATION / 1000.0f;
-        //   //   gameDoPlayerMovement(&game, app.input);
-        //   // }
+            game.time_left -= TICK_DURATION / 1000.0f;
+            gameDoPlayerMovement(&game, &app.input);
 
-        //   // // clear one-time flags
-        //   // inputSetPressedState(&app.input, false);
-        //   // inputSetReleasedState(&app.input, false);
+            app.t_accumulator -= TICK_DURATION;
 
-        //   // app.t_accumulator -= TICK_DURATION;
-        // }
-
-        inputPoll(&app.input);
-        appHandleInput(&app);
+            if (game.time_left <= 0.0)
+            {
+                app.is_active = false;
+            }
+        }
 
         renderClearBuffer(&app.screen);
         renderCreateUi(&app.screen);
-        renderDrawBuffer(&app.screen);
 
-        if (game.time_left <= 0.0)
-        {
-            app.is_active = false;
-        }
+        gameRenderEntities(&game, &app.screen);
+
+        renderDrawBuffer(&app.screen);
     }
 
     renderShowCursor();

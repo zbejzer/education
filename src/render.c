@@ -107,6 +107,12 @@ void renderPutTextGame(Screen *const _screen, const char *_str, size_t _x, size_
     strncpy(_screen->game_buffer + offset, _str, strlen(_str));
 }
 
+void renderPutCharGame(Screen *const _screen, const char _ch, size_t _x, size_t _y)
+{
+    size_t offset = (_y + _screen->border_size) * _screen->width + _x + _screen->border_size;
+    _screen->game_buffer[offset] = _ch;
+}
+
 void renderClearBuffer(Screen *const _screen)
 {
     memset(_screen->game_buffer, ' ', _screen->game_buffer_size);

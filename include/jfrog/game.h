@@ -20,6 +20,7 @@ typedef struct Game
 void gameInit(Game *_game);
 void gameDeinit(Game *_game);
 void gameDoPlayerMovement(Game *_game, Input *input);
+void gameRenderEntities(Game *_game, Screen *const _screen);
 
 extern Game *k_game;
 
