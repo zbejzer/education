@@ -21,7 +21,7 @@ void configInit(Config *_config)
     _config->player_width = 3;
     _config->car_height = 2;
     _config->car_width = 3;
-    _config->time_limit = 30;
+    _config->time_limit = 0;
 
     _config->player_sprite = (char *)malloc(sizeof(char) * (_config->player_height * _config->player_width + 1));
     _config->car_sprite = (char *)malloc(sizeof(char) * (_config->car_height * _config->car_width + 1));

@@ -41,10 +41,10 @@ int main()
 
             app.t_accumulator -= TICK_DURATION;
 
-            if (game.time_left <= 0.0)
-            {
-                app.is_active = false;
-            }
+            // if (game.time_left <= 0.0)
+            // {
+            //     app.is_active = false;
+            // }
         }
 
         renderClearBuffer(&app.screen);
