@@ -9,8 +9,9 @@
 
 typedef struct Game
 {
-    bool is_paused;
     float time_left;
+    unsigned int board_offset;
+    unsigned int score;
 
     Entity *player;
     Entity *cars;
@@ -18,7 +19,6 @@ typedef struct Game
 
 void gameInit(Game *_game);
 void gameDeinit(Game *_game);
-void gameRestart(Game *_game);
 void gameDoPlayerMovement(Game *_game, Input *input);
 
 extern Game *k_game;

@@ -9,9 +9,10 @@
 
 void gameInit(Game *_game)
 {
-    _game->is_paused = true;
-
     _game->time_left = k_config->time_limit;
+    _game->board_offset = 0;
+    _game->score = 0;
+
     _game->player = (Entity *)malloc(sizeof(Entity));
     _game->cars = (Entity *)malloc(sizeof(Entity) * k_config->cars_count);
 
@@ -29,12 +30,6 @@ void gameDeinit(Game *_game)
 
     free(_game->player);
     free(_game->cars);
-}
-
-void gameRestart(Game *_game)
-{
-    // _game->is_paused = false;
-    // _game->time_left = _game->config->time_limit;
 }
 
 void gameDoPlayerMovement(Game *_game, Input *input)
