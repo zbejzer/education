@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <time.h>
+
 #include "jfrog/app.h"
 #include "jfrog/config.h"
 #include "jfrog/game.h"
@@ -6,6 +9,11 @@
 
 int main()
 {
+    srand(time(NULL));
+
+    unsigned int score_tick_accumulator = 0;
+    unsigned int game_speedup_tick_accumulator = 0;
+
     Config config;
     configInit(&config);
     k_config = &config;
@@ -36,15 +44,30 @@ int main()
             inputPoll(&app.input);
             appHandleInput(&app);
 
-            game.time_left -= TICK_DURATION / 1000.0f;
+            game.time_passed += TICK_DURATION / 1000.0f;
+            score_tick_accumulator++;
+            game_speedup_tick_accumulator++;
+
+            if (score_tick_accumulator >= TICKRATE)
+            {
+                game.score += 10;
+                score_tick_accumulator -= TICKRATE;
+            }
+            if (game_speedup_tick_accumulator >= 5 * TICKRATE)
+            {
+                game.board_scroll_speed += 0.2;
+                game_speedup_tick_accumulator -= 5 * TICKRATE;
+            }
+
             gameDoPlayerMovement(&game, &app.input);
+            gameDoCarRowsMovement(&game);
+
+            if (gameCheckPlayerCollision(&game))
+            {
+                app.is_active = false;
+            }
 
             app.t_accumulator -= TICK_DURATION;
-
-            // if (game.time_left <= 0.0)
-            // {
-            //     app.is_active = false;
-            // }
         }
 
         renderClearBuffer(&app.screen);

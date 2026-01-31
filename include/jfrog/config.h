@@ -14,13 +14,12 @@ typedef struct Config
     float player_speed;
 
     unsigned int car_width, car_height;
-    int car_color;
     char *car_sprite;
-    float car_speed_1;
-    float car_speed_2;
+    float car_speed;
 
     unsigned int time_limit;
-    unsigned int cars_count;
+    unsigned int car_row_break;
+    unsigned int car_inrow_break;
 } Config;
 
 void configInit(Config *_config);
