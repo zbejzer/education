@@ -10,8 +10,8 @@
 
 typedef struct App
 {
-    double delta_time; // measured in milliseconds
-    double time_accumulator;
+    double delta_time;       // measured in milliseconds
+    double time_accumulator; // measured in milliseconds
     bool is_active;
     Input input;
     Screen screen;
