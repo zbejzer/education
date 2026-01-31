@@ -10,6 +10,9 @@ const unsigned int MAX_STRING_SIZE = 100;
 
 void appInit(App *_app)
 {
+renderInit(&_app->screen);
+    inputInit(&_app->input);
+
     _app->delta_time = 0.0f;
     _app->time_accumulator = 0.0f;
     _app->is_active = true;

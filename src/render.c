@@ -131,5 +131,3 @@ void renderDrawBuffer(Screen *const _screen)
 
     fflush(stdout);
 }
-
-Screen *k_screen = NULL;

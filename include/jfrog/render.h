@@ -29,6 +29,4 @@ void renderPutTextGame(Screen *const _screen, const char *_str, size_t _x, size_
 void renderClearBuffer(Screen *const _screen);
 void renderDrawBuffer(Screen *const _screen);
 
-extern Screen *k_screen;
-
 #endif
