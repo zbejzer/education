@@ -13,9 +13,6 @@ int main()
     App app;
     appInit(&app);
     k_app = &app;
-    // appCreateInterface(&app);
-    // set starting values for static variables
-    // appUpdateDeltaTime(&app.delta_time);
 
     Game game;
     gameInit(&game);
@@ -25,17 +22,17 @@ int main()
     renderClearConsole();
     renderClearBuffer(&app.screen);
 
-    // inputSetDownState(&app.input, false);
-    // inputSetPressedState(&app.input, false);
-    // inputSetReleasedState(&app.input, false);
+    // acts as initialization of internal time var
+    appUpdateDeltaTime(&app);
 
     // main game loop
-    while (k_app->is_active)
+    while (app.is_active)
     {
-        // appUpdateDeltaTime(&app.delta_time);
-        // app.time_accumulator += app.delta_time;
+        appUpdateDeltaTime(&app);
+        app.t_accumulator += app.t_delta;
+        game.time_left -= app.t_delta;
 
-        // while (app.time_accumulator > TICK_DURATION) {
+        // while (app.t_accumulator > TICK_DURATION) {
         //   // inputPoll(&app.input, app.game_window);
         //   // appHandleInput(&app);
 
@@ -48,11 +45,20 @@ int main()
         //   // inputSetPressedState(&app.input, false);
         //   // inputSetReleasedState(&app.input, false);
 
-        //   // app.time_accumulator -= TICK_DURATION;
+        //   // app.t_accumulator -= TICK_DURATION;
         // }
+
+        inputPoll(&app.input);
+        appHandleInput(&app);
+
         renderClearBuffer(&app.screen);
         renderCreateUi(&app.screen);
         renderDrawBuffer(&app.screen);
+
+        if (game.time_left <= 0.0f)
+        {
+            app.is_active = false;
+        }
     }
 
     renderShowCursor();

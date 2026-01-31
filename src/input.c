@@ -1,110 +1,79 @@
 #include "jfrog/input.h"
 
+#include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
+
+#ifdef _WIN32
+#include <conio.h>
+#endif
 
 #include "jfrog/app.h"
 
+void inputInit(Input *_input)
+{
+    inputSetState(_input, 0);
+
+    return;
+}
+
+void inputDeinit(Input *_input)
+{
+    return;
+}
+
 void inputPoll(Input *_input)
 {
-    // _input->skipped_ticks++;
+    unsigned char pressed_key_index = UCHAR_MAX;
 
-    // if (_input->skipped_ticks < TICKRATE / INPUT_TICKRATE) {
-    //   return;
-    // }
+#ifdef _WIN32
+    pressed_key_index = inputGetPressedKeyWindows();
+#else
+    exit(1); // not implemented for other platforms
+#endif
 
-    // _input->skipped_ticks = 0;
-
-    // inputTryRelease(_input);
-
-    // int ch;
-    // while ((ch = wgetch(window)) != ERR) {
-    //   switch (ch) {
-    //     case KEY_F(1):
-    //       inputRegisterKeyDown(_input->keys[_input->kF1]);
-    //       break;
-    //     case KEY_F(2):
-    //       inputRegisterKeyDown(_input->keys[_input->kF2]);
-    //       break;
-    //     case 'w':
-    //     case 'W':
-    //       inputRegisterKeyDown(_input->keys[_input->kUp]);
-    //       break;
-    //     case 'a':
-    //     case 'A':
-    //       inputRegisterKeyDown(_input->keys[_input->kLeft]);
-    //       break;
-    //     case 's':
-    //     case 'S':
-    //       inputRegisterKeyDown(_input->keys[_input->kDown]);
-    //       break;
-    //     case 'd':
-    //     case 'D':
-    //       inputRegisterKeyDown(_input->keys[_input->kRight]);
-    //       break;
-    //   }
-    // }
-
-    // inputVerifyDownState(_input);
-    // // inputPrintDebugInfo(_input);
-}
-
-void inputRegisterKeyDown(Key *_key)
-{
-    if (!_key->is_down)
+    inputSetState(_input, 0);
+    if (pressed_key_index != UCHAR_MAX)
     {
-        _key->is_pressed = true;
+        _input->keys[pressed_key_index] = true;
     }
-    _key->is_down = true;
-    _key->is_released = false;
+
+    return;
 }
 
-void inputSetDownState(Input *_input, bool state)
+void inputSetState(Input *_input, unsigned char state)
 {
-    for (size_t i = 0; i < sizeof(_input->keys) / sizeof(_input->keys[0]); i++)
-    {
-        _input->keys[i].is_down = state;
-    }
+    memset(_input->keys, state, sizeof _input->keys);
 }
 
-void inputSetReleasedState(Input *_input, bool state)
+unsigned char inputGetPressedKeyWindows()
 {
-    for (size_t i = 0; i < sizeof(_input->keys) / sizeof(_input->keys[0]); i++)
+    if (_kbhit())
     {
-        _input->keys[i].is_released = state;
-    }
-}
+        char ch = _getch();
 
-void inputSetPressedState(Input *_input, bool state)
-{
-    for (size_t i = 0; i < sizeof(_input->keys) / sizeof(_input->keys[0]); i++)
-    {
-        _input->keys[i].is_pressed = state;
-    }
-}
-
-// Set is_released flags to see which keys are still down
-void inputTryRelease(Input *_input)
-{
-    for (size_t i = 0; i < sizeof(_input->keys) / sizeof(_input->keys[0]); i++)
-    {
-        if (_input->keys[i].is_down)
+        if (ch == 'w' || ch == 'W')
         {
-            _input->keys[i].is_released = true;
+            return (unsigned char)JFROG_KEY_UP;
+        }
+        if (ch == 's' || ch == 'S')
+        {
+            return (unsigned char)JFROG_KEY_DOWN;
+        }
+        if (ch == 'a' || ch == 'A')
+        {
+            return (unsigned char)JFROG_KEY_LEFT;
+        }
+        if (ch == 'd' || ch == 'D')
+        {
+            return (unsigned char)JFROG_KEY_RIGHT;
+        }
+        if (ch == 'q' || ch == 'Q')
+        {
+            return (unsigned char)JFROG_KEY_QUIT;
         }
     }
-}
 
-// Clear is_down flags for keys which have is_released state
-void inputVerifyDownState(Input *_input)
-{
-    for (size_t i = 0; i < sizeof(_input->keys) / sizeof(_input->keys[0]); i++)
-    {
-        if (_input->keys[i].is_released)
-        {
-            _input->keys[i].is_down = false;
-        }
-    }
+    return UCHAR_MAX;
 }
-
-const unsigned int INPUT_TICKRATE = 16;

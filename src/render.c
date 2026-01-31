@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "jfrog/config.h"
+#include "jfrog/game.h"
 
 void renderHideCursor(void)
 {
@@ -51,9 +52,17 @@ void renderDeinit(Screen *_screen)
 
 void renderCreateUi(Screen *_screen)
 {
-    renderPutTextUi(k_screen, "Sterowanie", 1, 0);
-    renderPutTextUi(k_screen, "W S A D - Sterowanie postacia", 1, 1);
-    renderPutTextUi(k_screen, "Q - Wyjscie", 1, 2);
+    char time_left_buff[32] = "";
+    char score_buff[32] = "";
+
+    sprintf(time_left_buff, "Czas do konca: %d", (int)k_game->time_left);
+    sprintf(score_buff, "Wynik: %d", (int)k_game->score);
+
+    renderPutTextUi(_screen, "Sterowanie", 1, 0);
+    renderPutTextUi(_screen, "W S A D - Sterowanie postacia", 1, 1);
+    renderPutTextUi(_screen, "Q - Wyjscie", 1, 2);
+    renderPutTextUi(_screen, time_left_buff, 41, 1);
+    renderPutTextUi(_screen, score_buff, 41, 2);
     renderCreateBorders(_screen);
 }
 

@@ -2,39 +2,23 @@
 #define JFROG_INPUT_H
 
 #include <stdbool.h>
+#include <stdint.h>
 
-typedef struct Key
-{
-    bool is_down;
-    bool is_released;
-    bool is_pressed;
-} Key;
+#define JFROG_KEY_UP 0
+#define JFROG_KEY_DOWN 1
+#define JFROG_KEY_RIGHT 2
+#define JFROG_KEY_LEFT 3
+#define JFROG_KEY_QUIT 4
 
 typedef struct Input
 {
-    enum KeyCodes
-    {
-        kUp = 0,
-        kDown = 1,
-        kRight = 2,
-        kLeft = 3,
-        kF1 = 4,
-        kF2 = 5
-    };
-
-    unsigned int skipped_ticks;
-    Key keys[6];
+    bool keys[5];
 } Input;
 
+void inputInit(Input *_input);
+void inputDeinit(Input *_input);
 void inputPoll(Input *_input);
-void inputRegisterKeyDown(Key *_key);
-void inputSetDownState(Input *_input, bool state);
-void inputSetReleasedState(Input *_input, bool state);
-void inputSetPressedState(Input *_input, bool state);
-void inputTryRelease(Input *_input);
-void inputVerifyDownState(Input *_input);
-
-// frequency of ticks per second
-extern const unsigned int INPUT_TICKRATE;
+void inputSetState(Input *_input, unsigned char state);
+unsigned char inputGetPressedKeyWindows();
 
 #endif

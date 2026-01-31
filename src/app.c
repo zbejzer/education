@@ -10,48 +10,42 @@ const unsigned int MAX_STRING_SIZE = 100;
 
 void appInit(App *_app)
 {
+    _app->t_accumulator = 0.0f;
+    _app->is_active = true;
+
     renderInit(&_app->screen);
     inputInit(&_app->input);
 
-    _app->delta_time = 0.0f;
-    _app->time_accumulator = 0.0f;
-    _app->is_active = true;
+    return;
 }
 
 void appDeinit(App *_app)
 {
-    // clear();
-    // delwin(_app->game_window);
-    // delwin(_app->ui_window);
-    // endwin();
-    // configDeinit(_app->config);
+    renderDeinit(&_app->screen);
+    inputDeinit(&_app->input);
+
+    return;
 }
 
-// calculate time since last invocation of function in milliseconds
+// calculate time since last invocation of function
 // intended to use to measure time between generated frames
-void appUpdateDeltaTime(double *delta_time)
+void appUpdateDeltaTime(App *_app)
 {
-    // // TODO: Replace STL
-    // static std::chrono::time_point<std::chrono::steady_clock> last_update;
-    // static std::chrono::time_point<std::chrono::steady_clock> now;
-    // now = std::chrono::steady_clock::now();
+    timespec_get(&_app->t_now, TIME_UTC);
+    double s = (double)(_app->t_now.tv_sec - _app->t_last_update.tv_sec);
+    double ns = (double)(_app->t_now.tv_nsec - _app->t_last_update.tv_nsec);
 
-    // delta_time =
-    //     std::chrono::duration_cast<std::chrono::nanoseconds>(now - last_update)
-    //         .count() /
-    //     1000000.0f;
+    _app->t_delta = s + (ns / 1000000000.0f);
 
-    // last_update = now;
+    _app->t_last_update = _app->t_now;
 }
 
 void appHandleInput(App *_app)
 {
-    // if (_app->input.keys[_app->input.kF1].is_pressed) {
-    //   _app->is_active = false;
-    // }
-    // if (_app->input.keys[_app->input.kF2].is_pressed) {
-    //   gameRestart(*_app->game);
-    // }
+    if (_app->input.keys[JFROG_KEY_QUIT])
+    {
+        _app->is_active = false;
+    }
 }
 
 App *k_app = NULL;

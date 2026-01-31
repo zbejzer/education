@@ -9,7 +9,7 @@
 
 typedef struct Game
 {
-    float time_left;
+    double time_left;
     unsigned int board_offset;
     unsigned int score;
 

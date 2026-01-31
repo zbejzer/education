@@ -9,7 +9,7 @@
 
 void gameInit(Game *_game)
 {
-    _game->time_left = k_config->time_limit;
+    _game->time_left = (double)k_config->time_limit;
     _game->board_offset = 0;
     _game->score = 0;
 
