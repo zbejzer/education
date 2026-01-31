@@ -10,7 +10,7 @@ const unsigned int MAX_STRING_SIZE = 100;
 
 void appInit(App *_app)
 {
-    _app->t_accumulator = 0.0f;
+    _app->t_accumulator = 0.0;
     _app->is_active = true;
 
     renderInit(&_app->screen);
@@ -35,7 +35,7 @@ void appUpdateDeltaTime(App *_app)
     double s = (double)(_app->t_now.tv_sec - _app->t_last_update.tv_sec);
     double ns = (double)(_app->t_now.tv_nsec - _app->t_last_update.tv_nsec);
 
-    _app->t_delta = s + (ns / 1000000000.0f);
+    _app->t_delta = s + (ns / 1000000000.0);
 
     _app->t_last_update = _app->t_now;
 }
@@ -50,4 +50,4 @@ void appHandleInput(App *_app)
 
 App *k_app = NULL;
 const unsigned int TICKRATE = 64;
-const double TICK_DURATION = 1000.0f / TICKRATE;
+const double TICK_DURATION = 1000.0 / TICKRATE;

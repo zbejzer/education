@@ -55,7 +55,7 @@ int main()
         renderCreateUi(&app.screen);
         renderDrawBuffer(&app.screen);
 
-        if (game.time_left <= 0.0f)
+        if (game.time_left <= 0.0)
         {
             app.is_active = false;
         }
