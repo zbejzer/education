@@ -51,3 +51,23 @@ def get_leftover_of_bills(amount: float, denomination: int) -> float:
     """
 
     return amount % denomination
+
+
+def exchangeable_value(
+    budget: float, exchange_rate: float, spread: int, denomination: int
+) -> int:
+    """
+
+    :param budget: float - the amount of your money you are planning to exchange.
+    :param exchange_rate: float - the unit value of the foreign currency.
+    :param spread: int - percentage that is taken as an exchange fee.
+    :param denomination: int - the value of a single bill.
+    :return: int - maximum value you can get.
+    """
+
+    spread_multiplier: float = 1 + (spread / 100.0)
+    exchanged_value = exchange_money(budget, exchange_rate * spread_multiplier)
+
+    return get_value_of_bills(
+        get_number_of_bills(exchanged_value, denomination), denomination
+    )
