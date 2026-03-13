@@ -10,7 +10,7 @@ def exchange_money(budget: float, exchange_rate: float) -> float:
 
 
 def get_change(budget: float, exchanging_value: float) -> float:
-    """
+    """w
 
     :param budget: float - amount of money you own.
     :param exchanging_value: float - amount of your money you want to exchange now.
@@ -39,7 +39,7 @@ def get_number_of_bills(amount: float, denomination: int) -> int:
     :return: int - number of bills that can be obtained from the amount.
     """
 
-    return amount // denomination
+    return int(amount // denomination)
 
 
 def get_leftover_of_bills(amount: float, denomination: int) -> float:
