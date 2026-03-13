@@ -10,7 +10,7 @@ def exchange_money(budget: float, exchange_rate: float) -> float:
 
 
 def get_change(budget: float, exchanging_value: float) -> float:
-    """w
+    """
 
     :param budget: float - amount of money you own.
     :param exchanging_value: float - amount of your money you want to exchange now.
