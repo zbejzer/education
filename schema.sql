@@ -98,12 +98,172 @@ CREATE TABLE historia_wydruk (
     drukarka_id INT NOT NULL REFERENCES drukarka(id),
     szpula_id INT NOT NULL REFERENCES filament_szpula(id),
     sukces BOOLEAN,
-    rozpoczecie TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    rozpoczecie TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     zakonczenie TIMESTAMP WITH TIME ZONE,
     masa REAL,
     CONSTRAINT chk_historia_wydruk_times CHECK (zakonczenie >= rozpoczecie),
     CONSTRAINT chk_historia_wydruk_masa CHECK (masa >= 0)
 );
+
+-- ==========================================
+-- Funkcje
+-- ==========================================
+
+CREATE
+OR REPLACE FUNCTION fn_get_szpula_pozostala_masa (p_szpula_id INT) RETURNS REAL LANGUAGE plpgsql AS $$
+DECLARE
+    v_poczatkowa_masa REAL;
+    v_zuzyta_masa REAL;
+BEGIN
+    SELECT COALESCE(f.masa, 0) INTO v_poczatkowa_masa
+    FROM filament_szpula fs
+    JOIN filament f ON fs.filament_id = f.id
+    WHERE fs.id = p_szpula_id;
+
+    SELECT COALESCE(SUM(hw.masa), 0) INTO v_zuzyta_masa
+    FROM historia_wydruk hw
+    WHERE hw.szpula_id = p_szpula_id;
+
+    RETURN v_poczatkowa_masa - v_zuzyta_masa;
+END;
+$$;
+
+CREATE
+OR REPLACE FUNCTION fn_is_model_pasuje_do_drukarki (p_model_id INT, p_drukarka_model_id INT) RETURNS BOOLEAN LANGUAGE plpgsql AS $$
+DECLARE
+    v_model_wymiary INT[];
+    v_drukarka_wymiary INT[];
+BEGIN
+    SELECT ARRAY[wysokosc, szerokosc, dlugosc] INTO v_model_wymiary
+    FROM model WHERE id = p_model_id;
+
+    SELECT ARRAY[dm.pole_wysokosc, dm.pole_szerokosc, dm.pole_dlugosc] INTO v_drukarka_wymiary
+    FROM drukarka_model dm
+    WHERE dm.id = p_drukarka_model_id;
+
+    RETURN v_model_wymiary[1] <= v_drukarka_wymiary[1] AND 
+           v_model_wymiary[2] <= v_drukarka_wymiary[2] AND 
+           v_model_wymiary[3] <= v_drukarka_wymiary[3];
+END;
+$$;
+
+-- ==========================================
+-- Procedury
+-- ==========================================
+
+CREATE
+OR REPLACE PROCEDURE sp_wyczysc_nieuzyte_modele () LANGUAGE plpgsql AS $$
+BEGIN
+    UPDATE model
+    SET plik = NULL
+    WHERE plik IS NOT NULL
+      AND id NOT IN (SELECT model_id FROM zlecenie);
+END;
+$$;
+
+CREATE
+OR REPLACE PROCEDURE sp_przydziel_oczekujace_zlecenie () LANGUAGE plpgsql AS $$
+DECLARE
+    v_zlecenie_id INT;
+    v_model_id INT;
+    v_filament_id INT;
+    v_drukarka_id INT;
+    v_szpula_id INT;
+BEGIN
+    SELECT z.id, z.model_id, z.filament_id 
+    INTO v_zlecenie_id, v_model_id, v_filament_id
+    FROM zlecenie z
+    LEFT JOIN historia_wydruk hw ON z.id = hw.zlecenie_id
+    WHERE hw.zlecenie_id IS NULL
+    ORDER BY z.wplyniecie ASC
+    LIMIT 1;
+
+    SELECT d.id INTO v_drukarka_id
+    FROM drukarka d
+    LEFT JOIN historia_wydruk hw ON d.id = hw.drukarka_id AND hw.zakonczenie IS NULL
+    WHERE hw.drukarka_id IS NULL
+      AND fn_is_model_pasuje_do_drukarki(v_model_id, d.model_id) = TRUE
+    LIMIT 1;
+
+    SELECT fs.id INTO v_szpula_id
+    FROM filament_szpula fs
+    WHERE fs.filament_id = v_filament_id
+    LIMIT 1;
+
+    INSERT INTO historia_wydruk (zlecenie_id, drukarka_id, szpula_id, sukces, rozpoczecie, zakonczenie, masa)
+    VALUES (v_zlecenie_id, v_drukarka_id, v_szpula_id, NULL, CURRENT_TIMESTAMP, NULL, NULL);
+END;
+$$;
+
+-- ==========================================
+-- Widoki
+-- ==========================================
+
+CREATE OR REPLACE VIEW v_aktywne_wydruki AS
+SELECT
+  hw.id AS historia_id,
+  hw.drukarka_id,
+  dm.nazwa AS drukarka_model,
+  m.nazwa AS model_nazwa,
+  CONCAT(k.imie, ' ', k.nazwisko) AS klient,
+  hw.rozpoczecie,
+  CURRENT_TIMESTAMP - hw.rozpoczecie AS czas_trwania
+FROM
+  historia_wydruk hw
+  JOIN zlecenie z ON hw.zlecenie_id = z.id
+  JOIN model m ON z.model_id = m.id
+  JOIN klient k ON z.klient_id = k.id
+  JOIN drukarka d ON hw.drukarka_id = d.id
+  JOIN drukarka_model dm ON d.model_id = dm.id
+WHERE
+  hw.zakonczenie IS NULL;
+
+CREATE OR REPLACE VIEW v_pozostale_filamenty AS
+SELECT
+  f.id AS filament_id,
+  fm.nazwa AS material,
+  p.nazwa AS producent,
+  fk.nazwa AS kolor,
+  fk.ral,
+  COUNT(fs.id) AS liczba_szpul,
+  COALESCE(SUM(fn_get_szpula_pozostala_masa (fs.id)), 0) AS pozostala_masa_total
+FROM
+  filament f
+  JOIN filament_material fm ON f.material_id = fm.id
+  JOIN filament_kolor fk ON f.kolor_id = fk.id
+  JOIN producent p ON fk.producent_id = p.id
+  LEFT JOIN filament_szpula fs ON f.id = fs.filament_id
+GROUP BY
+  f.id,
+  fm.nazwa,
+  p.nazwa,
+  fk.nazwa,
+  fk.ral;
+
+-- ==========================================
+-- Triggery
+-- ==========================================
+
+CREATE
+OR REPLACE FUNCTION fn_wystarczajaco_filamentu_na_wydruk () RETURNS TRIGGER LANGUAGE plpgsql AS $$
+DECLARE
+    v_pozostala_masa REAL;
+    v_wymagany_zapas REAL := 50.0;
+BEGIN
+    v_pozostala_masa := fn_get_szpula_pozostala_masa(NEW.szpula_id);
+
+    IF v_pozostala_masa < v_wymagany_zapas THEN
+        RETURN NULL; 
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_wystarczajaco_filamentu_na_wydruk
+BEFORE INSERT ON historia_wydruk
+FOR EACH ROW
+EXECUTE FUNCTION fn_wystarczajaco_filamentu_na_wydruk();
 
 -- ==========================================
 -- Wprowadzenie Danych
@@ -178,9 +338,9 @@ INSERT INTO drukarka (model_id) VALUES (5);
 INSERT INTO filament_szpula (filament_id) VALUES (1);
 INSERT INTO filament_szpula (filament_id) VALUES (2);
 INSERT INTO filament_szpula (filament_id) VALUES (3);
-INSERT INTO filament_szpula ( filament_id) VALUES (4);
-INSERT INTO filament_szpula ( filament_id) VALUES (5);
-INSERT INTO filament_szpula ( filament_id) VALUES (4);
+INSERT INTO filament_szpula (filament_id) VALUES (4);
+INSERT INTO filament_szpula (filament_id) VALUES (5);
+INSERT INTO filament_szpula (filament_id) VALUES (4);
 INSERT INTO filament_szpula (filament_id) VALUES (2);
 INSERT INTO filament_szpula (filament_id) VALUES (2);
 
