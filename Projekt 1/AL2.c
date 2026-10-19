@@ -1,10 +1,11 @@
-#include <bits/time.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <bits/time.h>
 
 #define ALG_COUNT 4
+#define M_INITIAL_SIZE 2
 
 typedef struct TcType
 {
@@ -14,15 +15,23 @@ typedef struct TcType
 
 typedef struct AlgType
 {
-    int (*alg)(int n, int **M);
+    int (*func)(int n, int **M);
     char name[64];
-    const TcType tc_type;
 } AlgType;
 
-double measureAlgorithm(int n, int (*alg)(int n, int **M));
+typedef struct GenType
+{
+    void (*func)(int n, int ***M);
+    char name[64];
+} GenType;
+
+double measureAlgorithm(int n, void(* gen)(int n, int ***M), int (*alg)(int n, int **M));
+void testAlgorithm(const GenType *gen, const TcType *tc, const AlgType *alg);
 
 // PROCEDURY POMOCNICZE
 void utworz_MACIERZ(int n, int ***M);
+void utworz_MACIERZ_ZERO(int n, int ***M);
+void utworz_MACIERZ_JEDEN(int n, int ***M);
 void utworz_MACIERZ_x(int n, int ***M, int x);
 void wypisz_MACIERZ(int n, int **M);
 void zwolnij_MACIERZ(int n, int **M);
@@ -48,8 +57,6 @@ double tcNLog(int n);
 
 int main()
 {
-    const int initial_size = 2; // wymiar macierzy/
-
     const TcType tc_fact = {tcFact, "n!"};
     const TcType tc_exp = {tcExp, "2^n"};
     const TcType tc_quad = {tcQuad, "n^2"};
@@ -59,61 +66,24 @@ int main()
     const TcType tc_pow_six = {tcPowSix, "n^6"};
     const TcType tc_n_log = {tcNLog, "n * log(n)"};
 
-    const AlgType algorithms[ALG_COUNT] = {{ALGO_NAIWNY, "Naiwny", tc_pow_six},
-                                           {ALGO_REKURENCYJNY, "Rekurencyjny", tc_pow_six},
-                                           {ALGO_DYNAMICZNY, "Dynamiczny", tc_cubic},
-                                           {ALGO_CZULY, "Czuly", tc_quad}};
+    const AlgType algo_naiwny = {ALGO_NAIWNY, "Naiwny"};
+    const AlgType algo_rekurencyjny = {ALGO_REKURENCYJNY, "Rekurencyjny"};
+    const AlgType algo_dynamiczny = {ALGO_DYNAMICZNY, "Dynamiczny"};
+    const AlgType algo_czuly = {ALGO_CZULY, "Czuly"};
+
+    const GenType gen_macierz_rand = {utworz_MACIERZ, "Losowo"};
+    const GenType gen_macierz_zero = {utworz_MACIERZ_ZERO, "Zero"};
+    const GenType gen_macierz_jeden = {utworz_MACIERZ_JEDEN, "Jeden"};
+
 
     srand(time(NULL));
 
-    for (size_t i = 0; i < ALG_COUNT; i++)
-    {
-        int is_progress_exp = 1;
-        double time_measured = 1;
-        double last_time = time_measured;
-        double time_limit = 15.0;
-        double cumulative_time_limit = 40.0;
-        double cumulative_time = 0;
-        double time_complexity = 1.0;
-        int m_size = initial_size;
-        int m_size_step = m_size;
-
-        double ref_tc_ratio = 0;
-        for (size_t k = 0; k < 3; k++)
-        {
-            ref_tc_ratio += algorithms[i].tc_type.func(16) / measureAlgorithm(16, algorithms[i].alg);
-        }
-        ref_tc_ratio /= 3;
-
-        printf("Typ algorytmu: %s\n", algorithms[i].name);
-        printf("Oszacowana zlozonosc czasowa: %s\n", algorithms[i].tc_type.name);
-        printf("Wspolczynnik dla n=16: %lf\n", ref_tc_ratio);
-
-        while (time_measured < time_limit && cumulative_time < cumulative_time_limit)
-        {
-            last_time = time_measured;
-            time_measured = measureAlgorithm(m_size, algorithms[i].alg);
-            time_complexity = algorithms[i].tc_type.func(m_size);
-            cumulative_time += time_measured;
-            printf("n=%-6d", m_size);
-            printf("\tt=%-3.6lf", time_measured);
-            printf("\tf=%-16.0lf", time_complexity);
-            printf("\tf/t ratio=%-20.3lf", time_complexity / time_measured);
-            printf("\tadj_rat=%-10.6lf", time_complexity / (ref_tc_ratio * time_measured));
-            printf("\n");
-
-            if ((time_measured / last_time < 2.0 || time_measured - last_time < 0.01) && is_progress_exp)
-            {
-                m_size_step = m_size / 2;
-                m_size = m_size * 2;
-            }
-            else
-            {
-                is_progress_exp = 0;
-                m_size = m_size + m_size_step;
-            }
-        }
-    }
+    testAlgorithm(&gen_macierz_rand, &tc_pow_six, &algo_naiwny);
+    testAlgorithm(&gen_macierz_rand, &tc_pow_six, &algo_rekurencyjny);
+    testAlgorithm(&gen_macierz_rand, &tc_cubic, &algo_dynamiczny);
+    testAlgorithm(&gen_macierz_rand, &tc_quad, &algo_czuly);
+    testAlgorithm(&gen_macierz_zero, &tc_quad, &algo_czuly);
+    testAlgorithm(&gen_macierz_jeden, &tc_quart, &algo_czuly);
 
     return 0;
 }
@@ -122,10 +92,10 @@ int main()
 //   PROCEDURY POMOCNICZE                  //
 /////////////////////////////////////////////
 
-double measureAlgorithm(int n, int (*alg)(int n, int **M))
+double measureAlgorithm(int n, void(* gen)(int n, int ***M), int (*alg)(int n, int **M))
 {
     int **Macierz;
-    utworz_MACIERZ(n, &Macierz);
+    gen(n, &Macierz);
 
     struct timespec start, end;
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
@@ -139,6 +109,57 @@ double measureAlgorithm(int n, int (*alg)(int n, int **M))
     return posix_dur;
 }
 
+void testAlgorithm(const GenType *gen, const TcType  *tc, const AlgType  *alg)
+{
+    int is_progress_exp = 1;
+    double time_measured = 1;
+    double last_time = time_measured;
+    double time_limit = 15.0;
+    double cumulative_time_limit = 40.0;
+    double cumulative_time = 0;
+    double time_complexity = 1.0;
+    int m_size = M_INITIAL_SIZE;
+    int m_size_step = m_size;
+
+    double ref_tc_ratio = 0;
+    for (size_t k = 0; k < 3; k++)
+    {
+        ref_tc_ratio += tc->func(16) / measureAlgorithm(16, gen->func, alg->func);
+    }
+    ref_tc_ratio /= 3;
+
+    printf("Typ algorytmu: %s\n", alg->name);
+    printf("Generowanie macierzy: %s\n", gen->name);
+    printf("Oszacowana zlozonosc czasowa: %s\n", tc->name);
+    printf("Wspolczynnik dla n=16: %lf\n", ref_tc_ratio);
+
+    while (time_measured < time_limit && cumulative_time < cumulative_time_limit)
+    {
+        last_time = time_measured;
+        time_measured = measureAlgorithm(m_size, gen->func, alg->func);
+        time_complexity = tc->func(m_size);
+        cumulative_time += time_measured;
+        printf("n=%-6d", m_size);
+        printf("\tt=%09.6lf", time_measured);
+        printf("\tf=%-16.0lf", time_complexity);
+        printf("\tf/t_ratio=%-20.3lf", time_complexity / time_measured);
+        printf("\tnorm_ratio=%-10.6lf", time_complexity / (ref_tc_ratio * time_measured));
+        printf("\n");
+
+        if ((time_measured / last_time < 2.0 || time_measured - last_time < 0.01) && is_progress_exp)
+        {
+            m_size_step = m_size / 2;
+            m_size = m_size * 2;
+        }
+        else
+        {
+            is_progress_exp = 0;
+            m_size = m_size + m_size_step;
+        }
+    }
+}
+
+
 // alokuje pamięć na tablicę rozmiaru nxn i wpisuje losowe wartości 0/1
 void utworz_MACIERZ(int n, int ***M)
 {
@@ -149,6 +170,28 @@ void utworz_MACIERZ(int n, int ***M)
     for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++)
             (*M)[i][j] = rand() % 2;
+}
+
+void utworz_MACIERZ_ZERO(int n, int ***M)
+{
+    (*M) = (int **)malloc(n * sizeof(int *));
+    for (int i = 0; i < n; i++)
+        (*M)[i] = (int *)malloc(n * sizeof(int));
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            (*M)[i][j] = 0;
+}
+
+void utworz_MACIERZ_JEDEN(int n, int ***M)
+{
+    (*M) = (int **)malloc(n * sizeof(int *));
+    for (int i = 0; i < n; i++)
+        (*M)[i] = (int *)malloc(n * sizeof(int));
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            (*M)[i][j] = 1;
 }
 
 // alokuje pamięć na tablicę rozmiaru nxn i wpisuje wszędzie wartość x
