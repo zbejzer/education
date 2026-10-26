@@ -16,7 +16,7 @@ Zaimplementuj zmodyfikowany algorytm sortowania przez kopcowanie `n` elementowej
 
 **Wejście:** `n+2` liczb zapisanych w kolejnych wierszach pliku tekstowego, z czego dwie pierwsze `x` i `y` spełniają zależność `1 ≤ x ≤ y ≤ n`, a kolejne są elementami tablicy A, czyli `A[1], A[2], ... ,A[n]`.
 
-**Wyjście:** Ciąg liczb `A\[1\], A\[2\], ... ,A\[n\]` zapisany w kolejnych wierszach pliku wyjściowego, gdzie pozycje `A[x], A[x+1], ... ,A[y]` są posortowane a pozostałe są bez zmiany.
+**Wyjście:** Ciąg liczb `A[1], A[2], ... ,A[n]` zapisany w kolejnych wierszach pliku wyjściowego, gdzie pozycje `A[x], A[x+1], ... ,A[y]` są posortowane a pozostałe są bez zmiany.
 
 * * *
 
