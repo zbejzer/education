@@ -16,6 +16,7 @@ void FreeHSD(HeapSortData *obj);
 void LoadInput(HeapSortData *obj, unsigned int *x, unsigned int *y);
 void PrintHSD(HeapSortData *obj);
 void PrintRangeHSD(HeapSortData *obj, const unsigned int start, const unsigned int end);
+void PrintFinalOutputHSD(HeapSortData *obj);
 void HeapSortRange(HeapSortData *obj, const size_t start, const size_t end);
 void Heapify(HeapSortData *obj, size_t i);
 
@@ -27,18 +28,20 @@ int main(int argc, char *argv[])
     InitHSD(&heap_data);
     LoadInput(&heap_data, &x, &y);
 
-    printf("x = %u\n", x);
-    printf("y = %u\n", y);
-    printf("Stan przed sortowaniem:\n");
-    PrintHSD(&heap_data);
+    // printf("x = %u\n", x);
+    // printf("y = %u\n", y);
+    // printf("Stan przed sortowaniem:\n");
+    // PrintHSD(&heap_data);
 
-    printf("Zakres do posortowania:\n");
-    PrintRangeHSD(&heap_data, x - 1, y - 1);
+    // printf("Zakres do posortowania:\n");
+    // PrintRangeHSD(&heap_data, x - 1, y - 1);
 
     HeapSortRange(&heap_data, x - 1, y - 1);
 
-    printf("Stan po sortowaniu:\n");
-    PrintHSD(&heap_data);
+    // printf("Stan po sortowaniu:\n");
+    // PrintHSD(&heap_data);
+
+    PrintFinalOutputHSD(&heap_data);
 
     FreeHSD(&heap_data);
     return EXIT_SUCCESS;
@@ -107,6 +110,14 @@ void PrintRangeHSD(HeapSortData *obj, const unsigned int start, const unsigned i
         printf("%3u ", obj->data[i]);
     }
     printf("\n");
+}
+
+void PrintFinalOutputHSD(HeapSortData *obj)
+{
+    for (size_t i = 0; i < obj->size; i++)
+    {
+        printf("%u\n", obj->data[i]);
+    }
 }
 
 void HeapSortRange(HeapSortData *heap_data, const size_t start, const size_t end)
