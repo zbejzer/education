@@ -12,13 +12,14 @@ public abstract class AbstractDataStruct<T, S extends AbstractDataStruct<T, S>> 
     protected abstract T doRemove();
 
     public final void add(T item) {
-        size++;
         doAdd(item);
+        size++;
+
     }
 
     public final void add(S other) {
-        size += other.size();
         doAdd(other);
+        size += other.size();
     }
 
     public final T remove() {
