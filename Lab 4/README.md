@@ -9,3 +9,5 @@
 4. Wykorzystaj do modelowania długości życia rozkład wykładniczy. Średnia długość życia na podstawie tablic życia z roku 2018 wynosi dla mężczyzn 73 lata, dla kobiet 81 lat.
 a) Narysuj na jednym rysunku gęstości rozkładów wykładniczych $\text{Exp}(\frac{1}{73})$ i $\text{Exp}(\frac{1}{81})$ oraz na drugim funkcje przeżycia tych rozkładów.
 b) Oblicz wartości oczekiwane i odchylenia standardowe.
+c) Oblicz prawdopodobieństwo, że losowo wybrana osoba z każdej populacji przeżyje 70 lat.
+d) Sprawdź w Tablicach Życia na rok 2024 średnią długość zycia kobiet i mężczyzn i zrób podobne analizy.
