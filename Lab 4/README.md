@@ -11,3 +11,7 @@ a) Narysuj na jednym rysunku gęstości rozkładów wykładniczych $\text{Exp}(\
 b) Oblicz wartości oczekiwane i odchylenia standardowe.
 c) Oblicz prawdopodobieństwo, że losowo wybrana osoba z każdej populacji przeżyje 70 lat.
 d) Sprawdź w Tablicach Życia na rok 2024 średnią długość zycia kobiet i mężczyzn i zrób podobne analizy.
+
+5. Wygeneruj 1000 prób 10-elementowych: $x_1, \dots, x_{10}$ z rozkładu wykładniczego $\operatorname{Exp}(2)$. Oblicz dla każdej z nich sumę $y = x_1 + \dots + x_{10}$. Narysuj na jednym rysunku histogram danych $y_1, \dots, y_{1000}$ oraz gęstość rozkładu Erlanga.
+
+6. (Dodatkowe) Wygeneruj 1000-elementową próbę $\lambda_1, \dots, \lambda_{1000}$ z rozkładu $\Gamma(10, 1)$ (rozkład $\operatorname{Erlanga}(10)$). Następnie wygeneruj po jednym elemencie z rozkładu wykładniczego o wylosowanej wcześniej lambdzie. Zrób histogram uzyskanej próby. Narysuj na tym samym wykresie odpowiedni rozkład Pareto.
