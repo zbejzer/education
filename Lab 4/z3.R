@@ -11,7 +11,6 @@ kolory <- c("red", "orange", "darkgreen", "blue", "purple")
 # Wykres
 curve(dnorm(x), from = -5, to = 5, n = 500,
       col = "black", lwd = 3,
-      ylim = c(0, 0.42),
       main = "Gęstości N(0,1) i t-Studenta t(n)",
       xlab = "x", ylab = "gęstość")
 
