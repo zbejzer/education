@@ -10,16 +10,14 @@ class CommandTypeTest {
     void getKeywordReturnsLowercaseName() {
         assertAll(
                 () -> assertEquals("help", CommandType.HELP.getKeyword()),
-                () -> assertEquals("exit", CommandType.EXIT.getKeyword())
-        );
+                () -> assertEquals("exit", CommandType.EXIT.getKeyword()));
     }
 
     @Test
     void getDescriptionReturnsCommandDescription() {
         assertAll(
                 () -> assertEquals("Show available commands", CommandType.HELP.getDescription()),
-                () -> assertEquals("Exit the application", CommandType.EXIT.getDescription())
-        );
+                () -> assertEquals("Exit the application", CommandType.EXIT.getDescription()));
     }
 
     @Test
@@ -31,11 +29,22 @@ class CommandTypeTest {
     }
 
     @Test
-    void allCommandsTargetTui() {
-        for (CommandType command : CommandType.values()) {
-            assertEquals(CommandTarget.TUI, command.getTarget(),
-                    command.getKeyword() + " should target TUI");
-        }
+    void getKeywordReturnsCustomKeywordWhenSet() {
+        assertEquals("add", CommandType.ADD_PRODUCT.getKeyword());
+    }
+
+    @Test
+    void getSyntaxPrefixesCustomKeywordWithDeclaredSyntax() {
+        assertEquals("add <code> <name> <price>", CommandType.ADD_PRODUCT.getSyntax());
+    }
+
+    @Test
+    void fromKeywordResolvesCustomKeywordCaseInsensitively() {
+        assertAll(
+                () -> assertEquals(CommandType.ADD_PRODUCT, CommandType.fromKeyword("add")),
+                () -> assertEquals(CommandType.ADD_PRODUCT, CommandType.fromKeyword("ADD")),
+                () -> assertEquals(CommandType.ADD_PRODUCT, CommandType.fromKeyword("Add"))
+        );
     }
 
     @Test
@@ -43,8 +52,7 @@ class CommandTypeTest {
         assertAll(
                 () -> assertEquals(CommandTarget.TUI, CommandTarget.valueOf("TUI")),
                 () -> assertEquals(CommandTarget.CORE, CommandTarget.valueOf("CORE")),
-                () -> assertEquals(2, CommandTarget.values().length)
-        );
+                () -> assertEquals(2, CommandTarget.values().length));
     }
 
     @Test
@@ -54,16 +62,14 @@ class CommandTypeTest {
                 () -> assertEquals(CommandType.HELP, CommandType.fromKeyword("HELP")),
                 () -> assertEquals(CommandType.HELP, CommandType.fromKeyword("HeLp")),
                 () -> assertEquals(CommandType.EXIT, CommandType.fromKeyword("exit")),
-                () -> assertEquals(CommandType.EXIT, CommandType.fromKeyword("EXIT"))
-        );
+                () -> assertEquals(CommandType.EXIT, CommandType.fromKeyword("EXIT")));
     }
 
     @Test
     void fromKeywordThrowsOnUnknownCommand() {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> CommandType.fromKeyword("invalid")
-        );
+                () -> CommandType.fromKeyword("invalid"));
         assertEquals("Unknown command: invalid", exception.getMessage());
     }
 

@@ -13,7 +13,7 @@ public class GenericCommand {
         return cmd;
     }
 
-    public String getArguments() {
+    public String getRawArguments() {
         return args;
     }
 }

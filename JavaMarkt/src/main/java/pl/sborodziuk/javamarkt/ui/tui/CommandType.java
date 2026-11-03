@@ -2,16 +2,23 @@ package pl.sborodziuk.javamarkt.ui.tui;
 
 public enum CommandType {
     HELP(CommandTarget.TUI, "Show available commands"),
-    EXIT(CommandTarget.TUI, "Exit the application");
+    EXIT(CommandTarget.TUI, "Exit the application"),
+    ADD_PRODUCT(CommandTarget.CORE, "add", "Add product to cart", "<code> <name> <price>");
 
+    private final String keyword;
     private final String description;
     private final String syntax;
     private final CommandTarget target;
 
-    CommandType(CommandTarget target, String description, String syntax) {
+    CommandType(CommandTarget target, String keyword, String description, String syntax) {
+        this.target = target;
+        this.keyword = keyword;
         this.description = description;
         this.syntax = syntax;
-        this.target = target;
+    }
+
+    CommandType(CommandTarget target, String description, String syntax) {
+        this(target, null, description, syntax);
     }
 
     CommandType(CommandTarget target, String description) {
@@ -19,7 +26,7 @@ public enum CommandType {
     }
 
     public String getKeyword() {
-        return name().toLowerCase();
+        return keyword != null ? keyword : name().toLowerCase();
     }
 
     public String getDescription() {
@@ -27,7 +34,7 @@ public enum CommandType {
     }
 
     public String getSyntax() {
-        return syntax != null ? syntax : getKeyword();
+        return syntax != null ? getKeyword() + " " + syntax : getKeyword();
     }
 
     public CommandTarget getTarget() {
@@ -35,13 +42,14 @@ public enum CommandType {
     }
 
     public static CommandType fromKeyword(String keyword) {
-        String normalizedKeyword = keyword.toUpperCase().replace(' ', '_');
+        String normalizedKeyword = keyword.toLowerCase().replace(' ', '_');
 
         for (CommandType cmd : values()) {
-            if (cmd.toString().equals(normalizedKeyword)) {
+            if (cmd.getKeyword().equals(normalizedKeyword)) {
                 return cmd;
             }
         }
+
         throw new IllegalArgumentException("Unknown command: " + keyword);
     }
 }

@@ -12,21 +12,20 @@ class GenericCommandTest {
 
         assertAll(
                 () -> assertEquals(CommandType.HELP, command.getCommandType()),
-                () -> assertEquals("some args", command.getArguments())
-        );
+                () -> assertEquals("some args", command.getRawArguments()));
     }
 
     @Test
     void argumentsMayBeEmptyString() {
         GenericCommand command = new GenericCommand(CommandType.EXIT, "");
 
-        assertEquals("", command.getArguments());
+        assertEquals("", command.getRawArguments());
     }
 
     @Test
     void argumentsMayBeNull() {
         GenericCommand command = new GenericCommand(CommandType.EXIT, null);
 
-        assertNull(command.getArguments());
+        assertNull(command.getRawArguments());
     }
 }

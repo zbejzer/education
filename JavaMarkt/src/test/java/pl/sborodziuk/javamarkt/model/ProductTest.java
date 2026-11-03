@@ -18,18 +18,10 @@ class ProductTest {
     }
 
     @Test
-    void constructorInitializesDiscountPriceToPrice() {
-        Product product = new Product("P002", "Keyboard", 149.50);
-
-        assertEquals(product.getPrice(), product.getDiscountPrice());
-    }
-
-    @Test
     void constructorAcceptsZeroPrice() {
         Product product = new Product("P003", "Free sample", 0.0);
 
         assertEquals(0.0, product.getPrice());
-        assertEquals(0.0, product.getDiscountPrice());
     }
 
     @Test
@@ -38,37 +30,43 @@ class ProductTest {
                 IllegalArgumentException.class,
                 () -> new Product("P004", "Invalid", -10.0)
         );
-        assertEquals("Price cannot be negative", exception.getMessage());
+        assertEquals("Price cannot be negative or infinite", exception.getMessage());
     }
 
     @Test
-    void setDiscountPriceUpdatesDiscountPrice() {
-        Product product = new Product("P005", "Mouse", 100.0);
-
-        product.setDiscountPrice(79.99);
-
-        assertEquals(79.99, product.getDiscountPrice());
-        assertEquals(100.0, product.getPrice());
-    }
-
-    @Test
-    void setDiscountPriceAcceptsZero() {
-        Product product = new Product("P006", "Promo item", 50.0);
-
-        product.setDiscountPrice(0.0);
-
-        assertEquals(0.0, product.getDiscountPrice());
-    }
-
-    @Test
-    void setDiscountPriceRejectsNegativeValue() {
-        Product product = new Product("P007", "Headphones", 200.0);
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> product.setDiscountPrice(-1.0)
+    void constructorRejectsNonFinitePrice() {
+        assertAll(
+                () -> assertThrows(IllegalArgumentException.class,
+                        () -> new Product("P004", "NaN item", Double.NaN)),
+                () -> assertThrows(IllegalArgumentException.class,
+                        () -> new Product("P004", "Infinite item", Double.POSITIVE_INFINITY))
         );
-        assertEquals("Price cannot be negative", exception.getMessage());
-        assertEquals(200.0, product.getDiscountPrice());
+    }
+
+    @Test
+    void constructorRejectsBlankCode() {
+        assertAll(
+                () -> assertThrows(IllegalArgumentException.class, () -> new Product(null, "Monitor", 1.0)),
+                () -> assertThrows(IllegalArgumentException.class, () -> new Product("", "Monitor", 1.0)),
+                () -> assertThrows(IllegalArgumentException.class, () -> new Product("   ", "Monitor", 1.0))
+        );
+    }
+
+    @Test
+    void constructorRejectsBlankName() {
+        assertAll(
+                () -> assertThrows(IllegalArgumentException.class, () -> new Product("P001", null, 1.0)),
+                () -> assertThrows(IllegalArgumentException.class, () -> new Product("P001", "", 1.0)),
+                () -> assertThrows(IllegalArgumentException.class, () -> new Product("P001", "   ", 1.0))
+        );
+    }
+
+    @Test
+    void constructorTrimsSurroundingWhitespaceFromCodeAndName() {
+        Product product = new Product("  P001  ", "  Monitor  ", 100.0);
+
+        assertAll(
+                () -> assertEquals("P001", product.getCode()),
+                () -> assertEquals("Monitor", product.getName()));
     }
 }

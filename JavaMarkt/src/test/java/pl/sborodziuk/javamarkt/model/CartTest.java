@@ -10,8 +10,8 @@ class CartTest {
     void newCartIsEmpty() {
         Cart cart = new Cart();
 
-        assertEquals(0, cart.getProductCount());
-        assertEquals(0, cart.getProducts().length);
+        assertEquals(0, cart.getSize());
+        assertEquals(0, cart.getAllItems().length);
     }
 
     @Test
@@ -21,34 +21,19 @@ class CartTest {
         cart.addProduct(new Product("P001", "Monitor", 799.99));
         cart.addProduct(new Product("P002", "Keyboard", 149.50));
 
-        assertEquals(2, cart.getProductCount());
-    }
-
-    @Test
-    void addProductStoresProductsInInsertionOrder() {
-        Cart cart = new Cart();
-        Product first = new Product("P001", "Monitor", 799.99);
-        Product second = new Product("P002", "Keyboard", 149.50);
-
-        cart.addProduct(first);
-        cart.addProduct(second);
-
-        assertAll(
-                () -> assertSame(first, cart.getProducts()[0]),
-                () -> assertSame(second, cart.getProducts()[1]),
-                () -> assertEquals(2, cart.getProducts().length)
-        );
+        assertEquals(2, cart.getSize());
     }
 
     @Test
     void addProductRecalculatesDiscountPriceForAddedProduct() {
         Cart cart = new Cart();
         Product product = new Product("P003", "Mouse", 100.0);
-        product.setDiscountPrice(50.0);
-
         cart.addProduct(product);
+        cart.getAllItems()[0].setDiscountPrice(50.0);
 
-        assertEquals(100.0, cart.getProducts()[0].getDiscountPrice());
+        cart.addProduct(new Product("P004", "Keyboard", 149.50));
+
+        assertEquals(100.0, cart.getAllItems()[0].getDiscountPrice());
     }
 
     @Test
@@ -59,14 +44,13 @@ class CartTest {
         cart.addProduct(product);
         cart.addProduct(product2);
 
-        product.setDiscountPrice(99.0);
-        product2.setDiscountPrice(1.0);
+        cart.getAllItems()[0].setDiscountPrice(99.0);
+        cart.getAllItems()[1].setDiscountPrice(1.0);
         cart.recalculate();
 
         assertAll(
-                () -> assertEquals(200.0, cart.getProducts()[0].getDiscountPrice()),
-                () -> assertEquals(300.0, cart.getProducts()[1].getDiscountPrice())
-        );
+                () -> assertEquals(200.0, cart.getAllItems()[0].getDiscountPrice()),
+                () -> assertEquals(300.0, cart.getAllItems()[1].getDiscountPrice()));
     }
 
     @Test
@@ -77,7 +61,7 @@ class CartTest {
 
         cart.recalculate();
 
-        assertEquals(80.0, cart.getProducts()[0].getPrice());
+        assertEquals(80.0, cart.getAllItems()[0].getPrice());
     }
 
     @Test

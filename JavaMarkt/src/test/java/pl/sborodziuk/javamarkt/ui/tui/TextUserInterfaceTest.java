@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import pl.sborodziuk.javamarkt.session.SessionManager;
+import pl.sborodziuk.javamarkt.session.UserSession;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,7 +37,7 @@ class TextUserInterfaceTest {
 
     private TextUserInterface newInterfaceWithInput(String simulatedInput) {
         System.setIn(new ByteArrayInputStream(simulatedInput.getBytes(StandardCharsets.UTF_8)));
-        return new TextUserInterface(new SessionManager());
+        return new TextUserInterface(new UserSession());
     }
 
     private String output() {
@@ -48,7 +48,7 @@ class TextUserInterfaceTest {
     void interfaceIsNotRunningBeforeStart() {
         System.setIn(new ByteArrayInputStream(new byte[0]));
 
-        TextUserInterface tui = new TextUserInterface(new SessionManager());
+        TextUserInterface tui = new TextUserInterface(new UserSession());
 
         assertFalse(tui.isRunning());
     }
@@ -76,8 +76,7 @@ class TextUserInterfaceTest {
                     () -> assertTrue(output.contains(command.getDescription()),
                             "Help output should contain description: " + command.getDescription()),
                     () -> assertTrue(output.contains("(Syntax: " + command.getSyntax() + ")"),
-                            "Help output should contain syntax for: " + command.getKeyword())
-            );
+                            "Help output should contain syntax for: " + command.getKeyword()));
         }
     }
 
@@ -112,8 +111,7 @@ class TextUserInterfaceTest {
                 () -> assertTrue(output.contains("Show available commands"), "HELP listing expected"),
                 () -> assertTrue(output.contains(EXIT_MESSAGE)),
                 () -> assertFalse(tui.isRunning()),
-                () -> assertEquals(2, countPrompts(output), "Expected exactly two prompts")
-        );
+                () -> assertEquals(2, countPrompts(output), "Expected exactly two prompts"));
     }
 
     @Test
@@ -127,8 +125,7 @@ class TextUserInterfaceTest {
                 () -> assertTrue(output.contains(EXIT_MESSAGE)),
                 () -> assertFalse(output.contains("Show available commands"),
                         "Commands after EXIT must not be processed"),
-                () -> assertEquals(1, countPrompts(output), "Loop should end after EXIT")
-        );
+                () -> assertEquals(1, countPrompts(output), "Loop should end after EXIT"));
     }
 
     @Test
@@ -141,12 +138,11 @@ class TextUserInterfaceTest {
         assertAll(
                 () -> assertTrue(output.contains(EXIT_MESSAGE)),
                 () -> assertEquals(3, countPrompts(output), "Each blank line should re-prompt"),
-                () -> assertEquals(1, countOccurrences(output, WELCOME))
-        );
+                () -> assertEquals(1, countOccurrences(output, WELCOME)));
     }
 
     @Test
-    void startTerminatesWithoutTrailingPromptWhenInputEndsWithoutExitCommand() {
+    void startTerminatesAfterEofWhenInputEndsWithoutExitCommand() {
         TextUserInterface tui = newInterfaceWithInput("help\n");
 
         tui.start();
@@ -157,13 +153,12 @@ class TextUserInterfaceTest {
                 () -> assertFalse(output.contains(EXIT_MESSAGE)),
                 () -> assertFalse(tui.isRunning(),
                         "EOF must terminate the interface, never quit with running == true"),
-                () -> assertEquals(1, countPrompts(output),
-                        "No prompt may be printed when EOF is reached")
-        );
+                () -> assertEquals(2, countPrompts(output),
+                        "Prompt is displayed before EOF is reached"));
     }
 
     @Test
-    void startOnEmptyInputTerminatesWithoutAnyPrompt() {
+    void startOnEmptyInputPrintsSinglePromptBeforeEof() {
         TextUserInterface tui = newInterfaceWithInput("");
 
         tui.start();
@@ -173,12 +168,28 @@ class TextUserInterfaceTest {
                 () -> assertTrue(output.contains(WELCOME)),
                 () -> assertFalse(output.contains(EXIT_MESSAGE)),
                 () -> assertFalse(tui.isRunning()),
-                () -> assertEquals(0, countPrompts(output))
-        );
+                () -> assertEquals(1, countPrompts(output),
+                        "Prompt is displayed once before EOF is reached"));
+    }
+
+    @Test
+    void startProcessesAddProductCommandAgainstSessionCart() {
+        UserSession session = new UserSession();
+        System.setIn(new ByteArrayInputStream("add P001 Monitor 799.99\nexit\n".getBytes(StandardCharsets.UTF_8)));
+        TextUserInterface tui = new TextUserInterface(session);
+
+        tui.start();
+
+        String output = output();
+        assertAll(
+                () -> assertEquals(1, session.getCart().getSize(), "ADD should add one item to the cart"),
+                () -> assertEquals("P001", session.getCart().getAllItems()[0].getProduct().getCode()),
+                () -> assertEquals(799.99, session.getCart().getAllItems()[0].getProduct().getPrice()),
+                () -> assertTrue(output.contains(EXIT_MESSAGE), "Loop should continue to EXIT after ADD"));
     }
 
     private static int countPrompts(String output) {
-        return countOccurrences(output, "> ");
+        return countOccurrences(output, "\n> ");
     }
 
     private static int countOccurrences(String text, String needle) {

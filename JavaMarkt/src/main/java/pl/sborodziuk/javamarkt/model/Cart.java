@@ -3,31 +3,31 @@ package pl.sborodziuk.javamarkt.model;
 import static java.util.Arrays.copyOf;
 
 public class Cart {
-    private Product[] products;
-    private int productCount;
+    private CartItem[] items;
+    private int size;
 
     public Cart() {
-        this.products = new Product[0];
-        this.productCount = 0;
+        this.items = new CartItem[0];
+        this.size = 0;
     }
 
-    public Product[] getProducts() {
-        return products;
+    public CartItem[] getAllItems() {
+        return items;
     }
 
     public void addProduct(Product product) {
-        products = copyOf(products, productCount + 1);
-        products[productCount] = product;
-        productCount++;
+        items = copyOf(items, size + 1);
+        items[size] = new CartItem(product);
+        size++;
         recalculate();
     }
 
-    public int getProductCount() {
-        return productCount;
+    public int getSize() {
+        return size;
     }
 
     public void recalculate() {
-        for (Product p : products) {
+        for (CartItem p : items) {
             p.setDiscountPrice(p.getPrice());
         }
     }
