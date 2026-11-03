@@ -24,12 +24,12 @@ public class TextUserInterface {
         printWelcome();
 
         while (isRunning()) {
-            System.out.print("\n> ");
-
             if (!scanner.hasNextLine()) {
+                terminate();
                 break;
             }
 
+            System.out.print("\n> ");
             String input = scanner.nextLine().trim();
 
             processInput(input);
