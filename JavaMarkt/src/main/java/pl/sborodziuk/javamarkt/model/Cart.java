@@ -1,6 +1,5 @@
 package pl.sborodziuk.javamarkt.model;
 
-import pl.sborodziuk.javamarkt.model.Product;
 import static java.util.Arrays.copyOf;
 
 public class Cart {

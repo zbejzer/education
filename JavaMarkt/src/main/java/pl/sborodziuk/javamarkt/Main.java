@@ -1,15 +1,13 @@
 package pl.sborodziuk.javamarkt;
 
 import pl.sborodziuk.javamarkt.session.SessionManager;
-import pl.sborodziuk.javamarkt.ui.CommandParser;
-import pl.sborodziuk.javamarkt.ui.TextUserInterface;
+import pl.sborodziuk.javamarkt.ui.tui.TextUserInterface;
 
 public class Main {
     public static void main(String[] args) {
         SessionManager sessionManager = new SessionManager();
-        CommandParser parser = new CommandParser();
 
-        TextUserInterface tui = new TextUserInterface(parser, sessionManager);
+        TextUserInterface tui = new TextUserInterface(sessionManager);
         tui.start();
     }
 }
