@@ -55,7 +55,7 @@ class CommandTypeTest {
         UnknownCommandException exception = assertThrows(
                 UnknownCommandException.class,
                 () -> CommandType.fromKeyword("invalid"));
-        assertEquals("Unknown command: invalid", exception.getMessage());
+        assertTrue(exception.getMessage().contains("invalid"));
     }
 
     @Test

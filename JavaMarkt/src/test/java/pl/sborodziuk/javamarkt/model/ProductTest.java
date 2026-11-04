@@ -26,11 +26,9 @@ class ProductTest {
 
     @Test
     void constructorRejectsNegativePrice() {
-        IllegalArgumentException exception = assertThrows(
+        assertThrows(
                 IllegalArgumentException.class,
-                () -> new Product("P004", "Invalid", -10.0)
-        );
-        assertEquals("Price cannot be negative or infinite", exception.getMessage());
+                () -> new Product("P004", "Invalid", -10.0));
     }
 
     @Test

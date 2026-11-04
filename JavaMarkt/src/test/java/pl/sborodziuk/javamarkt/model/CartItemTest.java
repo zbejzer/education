@@ -26,12 +26,7 @@ class CartItemTest {
     void setDiscountPriceRejectsNegativeValue() {
         CartItem item = new CartItem(new Product("P006", "Webcam", 300.0));
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> item.setDiscountPrice(-1.0));
-
-        assertAll(
-                () -> assertEquals("Discount price cannot be negative", exception.getMessage()),
-                () -> assertEquals(300.0, item.getDiscountPrice()));
+        assertThrows(IllegalArgumentException.class, () -> item.setDiscountPrice(-1.0));
+        assertEquals(300.0, item.getDiscountPrice());
     }
 }

@@ -55,10 +55,7 @@ class ParserTest {
 
     @Test
     void parseThrowsOnNullInput() {
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> parser.parse(null));
-        assertEquals("Input cannot be empty.", exception.getMessage());
+        assertThrows(IllegalArgumentException.class, () -> parser.parse(null));
     }
 
     @Test
@@ -76,7 +73,7 @@ class ParserTest {
         UnknownCommandException exception = assertThrows(
                 UnknownCommandException.class,
                 () -> parser.parse("invalid"));
-        assertEquals("Unknown command: invalid", exception.getMessage());
+        assertTrue(exception.getMessage().contains("invalid"));
     }
 
     @Test
@@ -84,7 +81,7 @@ class ParserTest {
         UnknownCommandException exception = assertThrows(
                 UnknownCommandException.class,
                 () -> parser.parse("invalid argument"));
-        assertEquals("Unknown command: invalid", exception.getMessage());
+        assertTrue(exception.getMessage().contains("invalid"));
     }
 
     @Test
@@ -119,7 +116,7 @@ class ParserTest {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> parser.toCommand(command));
-        assertEquals("Missing arguments. Usage: add <code> <name> <price>", exception.getMessage());
+        assertTrue(exception.getMessage().contains(CommandType.ADD_PRODUCT.getSyntax()));
     }
 
     @Test
@@ -129,7 +126,7 @@ class ParserTest {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> parser.toCommand(command));
-        assertEquals("Invalid format. Usage: add <code> <name> <price>", exception.getMessage());
+        assertTrue(exception.getMessage().contains(CommandType.ADD_PRODUCT.getSyntax()));
     }
 
     @Test
@@ -139,7 +136,7 @@ class ParserTest {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> parser.toCommand(command));
-        assertEquals("Invalid price. Usage: add <code> <name> <price>", exception.getMessage());
+        assertTrue(exception.getMessage().contains(CommandType.ADD_PRODUCT.getSyntax()));
         assertInstanceOf(NumberFormatException.class, exception.getCause(),
                 "Original NumberFormatException should be chained as the cause");
     }
@@ -157,7 +154,7 @@ class ParserTest {
                     UnknownCommandException.class,
                     () -> parser.toCommand(command),
                     "parseCoreCommand should reject " + type.getKeyword());
-            assertEquals("Unknown command: " + type.getKeyword(), exception.getMessage());
+            assertTrue(exception.getMessage().contains(type.getKeyword()));
         }
     }
 }

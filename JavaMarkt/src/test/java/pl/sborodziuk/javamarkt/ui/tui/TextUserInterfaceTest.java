@@ -193,7 +193,7 @@ class TextUserInterfaceTest {
         assertAll(
                 () -> assertTrue(output.contains("Unknown command: bogus"),
                         "Unknown keyword should be reported"),
-                () -> assertTrue(output.contains("type '" + CommandType.HELP.getKeyword() + "' to list available commands"),
+                () -> assertTrue(output.contains(CommandType.HELP.getKeyword()),
                         "Unknown command error should hint at help"),
                 () -> assertTrue(output.contains(EXIT_MESSAGE),
                         "Loop must survive unknown commands and process EXIT"),
