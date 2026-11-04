@@ -57,4 +57,12 @@ class CommandTypeTest {
                 () -> CommandType.fromKeyword("invalid"));
         assertEquals("Unknown command: invalid", exception.getMessage());
     }
+
+    @Test
+    void getTargetClassifiesTuiAndCoreCommands() {
+        assertAll(
+                () -> assertEquals(CommandType.Target.TUI, CommandType.HELP.getTarget()),
+                () -> assertEquals(CommandType.Target.TUI, CommandType.EXIT.getTarget()),
+                () -> assertEquals(CommandType.Target.CORE, CommandType.ADD_PRODUCT.getTarget()));
+    }
 }

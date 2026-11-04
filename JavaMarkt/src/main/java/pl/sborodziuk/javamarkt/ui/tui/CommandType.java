@@ -1,27 +1,32 @@
 package pl.sborodziuk.javamarkt.ui.tui;
 
 public enum CommandType {
-    HELP(CommandTarget.TUI, "Show available commands"),
-    EXIT(CommandTarget.TUI, "Exit the application"),
-    ADD_PRODUCT(CommandTarget.CORE, "add", "Add product to cart", "<code> <name> <price>");
+    HELP(Target.TUI, "Show available commands"),
+    EXIT(Target.TUI, "Exit the application"),
+    ADD_PRODUCT(Target.CORE, "add", "Add product to cart", "<code> <name> <price>");
+
+    public enum Target {
+        TUI,
+        CORE
+    }
 
     private final String keyword;
     private final String description;
     private final String syntax;
-    private final CommandTarget target;
+    private final Target target;
 
-    CommandType(CommandTarget target, String keyword, String description, String syntax) {
+    CommandType(Target target, String keyword, String description, String syntax) {
         this.target = target;
         this.keyword = keyword;
         this.description = description;
         this.syntax = syntax;
     }
 
-    CommandType(CommandTarget target, String description, String syntax) {
+    CommandType(Target target, String description, String syntax) {
         this(target, null, description, syntax);
     }
 
-    CommandType(CommandTarget target, String description) {
+    CommandType(Target target, String description) {
         this(target, description, null);
     }
 
@@ -37,7 +42,7 @@ public enum CommandType {
         return syntax != null ? getKeyword() + " " + syntax : getKeyword();
     }
 
-    public CommandTarget getTarget() {
+    public Target getTarget() {
         return target;
     }
 

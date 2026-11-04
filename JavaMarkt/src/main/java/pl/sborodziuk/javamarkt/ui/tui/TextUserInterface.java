@@ -42,18 +42,18 @@ public class TextUserInterface {
             return;
         }
 
-        GenericCommand structuredCommand = parser.slice(input);
-        if (structuredCommand.getCommandType().getTarget().equals(CommandTarget.TUI)) {
+        ParsedInput structuredCommand = parser.parse(input);
+        if (structuredCommand.commandType().getTarget() == CommandType.Target.TUI) {
             handleCommand(structuredCommand);
             return;
         }
 
-        Command command = parser.parseCoreCommand(structuredCommand);
+        Command command = parser.toCommand(structuredCommand);
         session.executeCommand(command);
     }
 
-    public void handleCommand(GenericCommand command) {
-        switch (command.getCommandType()) {
+    public void handleCommand(ParsedInput command) {
+        switch (command.commandType()) {
             case HELP:
                 printHelp();
                 return;
@@ -64,7 +64,7 @@ public class TextUserInterface {
                 return;
 
             default:
-                throw new IllegalStateException("Unhandled command type: " + command.getCommandType().getKeyword());
+                throw new IllegalStateException("Unhandled command type: " + command.commandType().getKeyword());
         }
     }
 

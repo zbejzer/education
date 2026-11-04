@@ -3,7 +3,6 @@ package pl.sborodziuk.javamarkt.command;
 import org.junit.jupiter.api.Test;
 
 import pl.sborodziuk.javamarkt.model.CartItem;
-import pl.sborodziuk.javamarkt.model.Product;
 import pl.sborodziuk.javamarkt.session.UserSession;
 
 import static org.junit.jupiter.api.Assertions.*;

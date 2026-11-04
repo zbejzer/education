@@ -66,7 +66,7 @@ class TextUserInterfaceTest {
     void handleHelpCommandPrintsCommandListing() {
         TextUserInterface tui = newInterfaceWithInput("");
 
-        assertDoesNotThrow(() -> tui.handleCommand(new GenericCommand(CommandType.HELP, "")));
+        assertDoesNotThrow(() -> tui.handleCommand(new ParsedInput(CommandType.HELP, "")));
 
         String output = output();
         for (CommandType command : CommandType.values()) {
@@ -84,7 +84,7 @@ class TextUserInterfaceTest {
     void handleHelpCommandKeepsInterfaceRunning() {
         TextUserInterface tui = newInterfaceWithInput("");
 
-        tui.handleCommand(new GenericCommand(CommandType.HELP, ""));
+        tui.handleCommand(new ParsedInput(CommandType.HELP, ""));
 
         assertFalse(tui.isRunning(),
                 "HELP should not terminate the interface, but it must not start it either");
@@ -94,7 +94,7 @@ class TextUserInterfaceTest {
     void handleExitCommandPrintsExitMessage() {
         TextUserInterface tui = newInterfaceWithInput("");
 
-        assertDoesNotThrow(() -> tui.handleCommand(new GenericCommand(CommandType.EXIT, "")));
+        assertDoesNotThrow(() -> tui.handleCommand(new ParsedInput(CommandType.EXIT, "")));
 
         assertTrue(output().contains(EXIT_MESSAGE));
     }
@@ -104,7 +104,7 @@ class TextUserInterfaceTest {
         TextUserInterface tui = newInterfaceWithInput("");
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> tui.handleCommand(new GenericCommand(CommandType.ADD_PRODUCT, "P001 Monitor 799.99")));
+                () -> tui.handleCommand(new ParsedInput(CommandType.ADD_PRODUCT, "P001 Monitor 799.99")));
 
         assertTrue(exception.getMessage().contains(CommandType.ADD_PRODUCT.getKeyword()),
                 "Exception should identify the unrecognized command type");

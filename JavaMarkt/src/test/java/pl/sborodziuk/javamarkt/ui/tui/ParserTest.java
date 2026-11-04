@@ -15,67 +15,67 @@ class ParserTest {
 
     @Test
     void parseResolvesKeywordWithoutArguments() {
-        GenericCommand command = parser.slice("help");
+        ParsedInput command = parser.parse("help");
 
         assertAll(
-                () -> assertEquals(CommandType.HELP, command.getCommandType()),
-                () -> assertEquals("", command.getRawArguments()));
+                () -> assertEquals(CommandType.HELP, command.commandType()),
+                () -> assertEquals("", command.arguments()));
     }
 
     @Test
     void parseIsCaseInsensitive() {
         assertAll(
-                () -> assertEquals(CommandType.HELP, parser.slice("HELP").getCommandType()),
-                () -> assertEquals(CommandType.HELP, parser.slice("Help").getCommandType()),
-                () -> assertEquals(CommandType.EXIT, parser.slice("EXIT").getCommandType()));
+                () -> assertEquals(CommandType.HELP, parser.parse("HELP").commandType()),
+                () -> assertEquals(CommandType.HELP, parser.parse("Help").commandType()),
+                () -> assertEquals(CommandType.EXIT, parser.parse("EXIT").commandType()));
     }
 
     @Test
     void parseTrimsSurroundingWhitespace() {
-        GenericCommand command = parser.slice("   exit   ");
+        ParsedInput command = parser.parse("   exit   ");
 
-        assertEquals(CommandType.EXIT, command.getCommandType());
+        assertEquals(CommandType.EXIT, command.commandType());
     }
 
     @Test
     void parseExtractsArgumentsAfterFirstWhitespace() {
-        GenericCommand command = parser.slice("help   extra arguments");
+        ParsedInput command = parser.parse("help   extra arguments");
 
         assertAll(
-                () -> assertEquals(CommandType.HELP, command.getCommandType()),
-                () -> assertEquals("extra arguments", command.getRawArguments()));
+                () -> assertEquals(CommandType.HELP, command.commandType()),
+                () -> assertEquals("extra arguments", command.arguments()));
     }
 
     @Test
     void parsePreservesInnerArgumentSpacing() {
-        GenericCommand command = parser.slice("help a  b");
+        ParsedInput command = parser.parse("help a  b");
 
-        assertEquals("a  b", command.getRawArguments());
+        assertEquals("a  b", command.arguments());
     }
 
     @Test
     void parseThrowsOnNullInput() {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> parser.slice(null));
+                () -> parser.parse(null));
         assertEquals("Input cannot be empty.", exception.getMessage());
     }
 
     @Test
     void parseThrowsOnEmptyInput() {
-        assertThrows(IllegalArgumentException.class, () -> parser.slice(""));
+        assertThrows(IllegalArgumentException.class, () -> parser.parse(""));
     }
 
     @Test
     void parseThrowsOnBlankInput() {
-        assertThrows(IllegalArgumentException.class, () -> parser.slice("   \t  "));
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("   \t  "));
     }
 
     @Test
     void parseThrowsOnUnknownKeyword() {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> parser.slice("invalid"));
+                () -> parser.parse("invalid"));
         assertEquals("Unknown command: invalid", exception.getMessage());
     }
 
@@ -83,24 +83,24 @@ class ParserTest {
     void parseThrowsOnUnknownKeywordWithArguments() {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> parser.slice("invalid argument"));
+                () -> parser.parse("invalid argument"));
         assertEquals("Unknown command: invalid", exception.getMessage());
     }
 
     @Test
     void sliceResolvesAddProductKeywordWithArguments() {
-        GenericCommand command = parser.slice("add P001 Monitor 799.99");
+        ParsedInput command = parser.parse("add P001 Monitor 799.99");
 
         assertAll(
-                () -> assertEquals(CommandType.ADD_PRODUCT, command.getCommandType()),
-                () -> assertEquals("P001 Monitor 799.99", command.getRawArguments()));
+                () -> assertEquals(CommandType.ADD_PRODUCT, command.commandType()),
+                () -> assertEquals("P001 Monitor 799.99", command.arguments()));
     }
 
     @Test
     void parseCoreCommandBuildsAddProductCommand() {
         UserSession session = new UserSession();
 
-        Command command = parser.parseCoreCommand(parser.slice("add P001 Monitor 799.99"));
+        Command command = parser.toCommand(parser.parse("add P001 Monitor 799.99"));
         command.execute(session);
 
         Product added = session.getCart().getAllItems()[0].getProduct();
@@ -114,43 +114,43 @@ class ParserTest {
 
     @Test
     void parseCoreCommandThrowsOnMissingArguments() {
-        GenericCommand command = new GenericCommand(CommandType.ADD_PRODUCT, "");
+        ParsedInput command = new ParsedInput(CommandType.ADD_PRODUCT, "");
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> parser.parseCoreCommand(command));
+                () -> parser.toCommand(command));
         assertEquals("Missing arguments. Usage: add <code> <name> <price>", exception.getMessage());
     }
 
     @Test
     void parseCoreCommandThrowsOnIncompleteArguments() {
-        GenericCommand command = new GenericCommand(CommandType.ADD_PRODUCT, "P001 Monitor");
+        ParsedInput command = new ParsedInput(CommandType.ADD_PRODUCT, "P001 Monitor");
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> parser.parseCoreCommand(command));
+                () -> parser.toCommand(command));
         assertEquals("Invalid format. Usage: add <code> <name> <price>", exception.getMessage());
     }
 
     @Test
     void parseCoreCommandThrowsOnNonNumericPrice() {
-        GenericCommand command = new GenericCommand(CommandType.ADD_PRODUCT, "P001 Monitor abc");
+        ParsedInput command = new ParsedInput(CommandType.ADD_PRODUCT, "P001 Monitor abc");
 
-        assertThrows(NumberFormatException.class, () -> parser.parseCoreCommand(command));
+        assertThrows(NumberFormatException.class, () -> parser.toCommand(command));
     }
 
     @Test
     void parseCoreCommandThrowsForTuiCommandTypes() {
         for (CommandType type : CommandType.values()) {
-            if (type.getTarget() != CommandTarget.TUI) {
+            if (type.getTarget() != CommandType.Target.TUI) {
                 continue;
             }
 
-            GenericCommand command = new GenericCommand(type, "");
+            ParsedInput command = new ParsedInput(type, "");
 
             IllegalArgumentException exception = assertThrows(
                     IllegalArgumentException.class,
-                    () -> parser.parseCoreCommand(command),
+                    () -> parser.toCommand(command),
                     "parseCoreCommand should reject " + type.getKeyword());
             assertEquals("Unknown command: " + type.getKeyword(), exception.getMessage());
         }
