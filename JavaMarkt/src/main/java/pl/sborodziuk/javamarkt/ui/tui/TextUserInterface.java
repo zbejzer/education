@@ -33,7 +33,14 @@ public class TextUserInterface {
 
             String input = scanner.nextLine().trim();
 
-            processInput(input);
+            try {
+                processInput(input);
+            } catch (UnknownCommandException e) {
+                System.out.println(e.getMessage() + " — type '"
+                        + CommandType.HELP.getKeyword() + "' to list available commands.");
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
         }
     }
 

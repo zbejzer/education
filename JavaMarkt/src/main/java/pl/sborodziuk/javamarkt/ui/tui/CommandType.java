@@ -55,6 +55,6 @@ public enum CommandType {
             }
         }
 
-        throw new IllegalArgumentException("Unknown command: " + keyword);
+        throw new UnknownCommandException(keyword);
     }
 }

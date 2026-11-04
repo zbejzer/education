@@ -23,7 +23,7 @@ public class Parser {
             case ADD_PRODUCT:
                 return parseAddProduct(command);
             default:
-                throw new IllegalArgumentException("Unknown command: " + command.commandType().getKeyword());
+                throw new UnknownCommandException(command.commandType().getKeyword());
         }
     }
 
@@ -39,7 +39,12 @@ public class Parser {
 
         String code = productParts[0];
         String name = productParts[1];
-        Double price = Double.parseDouble(productParts[2]);
+        Double price;
+        try {
+            price = Double.parseDouble(productParts[2]);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid price. Usage: " + command.commandType().getSyntax(), e);
+        }
 
         return new AddProductCommand(code, name, price);
     }

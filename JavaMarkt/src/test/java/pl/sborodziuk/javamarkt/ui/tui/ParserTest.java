@@ -73,16 +73,16 @@ class ParserTest {
 
     @Test
     void parseThrowsOnUnknownKeyword() {
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        UnknownCommandException exception = assertThrows(
+                UnknownCommandException.class,
                 () -> parser.parse("invalid"));
         assertEquals("Unknown command: invalid", exception.getMessage());
     }
 
     @Test
     void parseThrowsOnUnknownKeywordWithArguments() {
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        UnknownCommandException exception = assertThrows(
+                UnknownCommandException.class,
                 () -> parser.parse("invalid argument"));
         assertEquals("Unknown command: invalid", exception.getMessage());
     }
@@ -136,7 +136,12 @@ class ParserTest {
     void parseCoreCommandThrowsOnNonNumericPrice() {
         ParsedInput command = new ParsedInput(CommandType.ADD_PRODUCT, "P001 Monitor abc");
 
-        assertThrows(NumberFormatException.class, () -> parser.toCommand(command));
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> parser.toCommand(command));
+        assertEquals("Invalid price. Usage: add <code> <name> <price>", exception.getMessage());
+        assertInstanceOf(NumberFormatException.class, exception.getCause(),
+                "Original NumberFormatException should be chained as the cause");
     }
 
     @Test
@@ -148,8 +153,8 @@ class ParserTest {
 
             ParsedInput command = new ParsedInput(type, "");
 
-            IllegalArgumentException exception = assertThrows(
-                    IllegalArgumentException.class,
+            UnknownCommandException exception = assertThrows(
+                    UnknownCommandException.class,
                     () -> parser.toCommand(command),
                     "parseCoreCommand should reject " + type.getKeyword());
             assertEquals("Unknown command: " + type.getKeyword(), exception.getMessage());

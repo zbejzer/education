@@ -184,6 +184,23 @@ class TextUserInterfaceTest {
     }
 
     @Test
+    void startReportsUnknownCommandWithHelpHintAndContinuesLoop() {
+        TextUserInterface tui = newInterfaceWithInput("bogus\nexit\n");
+
+        tui.start();
+
+        String output = output();
+        assertAll(
+                () -> assertTrue(output.contains("Unknown command: bogus"),
+                        "Unknown keyword should be reported"),
+                () -> assertTrue(output.contains("type '" + CommandType.HELP.getKeyword() + "' to list available commands"),
+                        "Unknown command error should hint at help"),
+                () -> assertTrue(output.contains(EXIT_MESSAGE),
+                        "Loop must survive unknown commands and process EXIT"),
+                () -> assertFalse(tui.isRunning()));
+    }
+
+    @Test
     void startProcessesAddProductCommandAgainstSessionCart() {
         UserSession session = new UserSession();
         System.setIn(new ByteArrayInputStream("add P001 Monitor 799.99\nexit\n".getBytes(StandardCharsets.UTF_8)));
