@@ -45,11 +45,10 @@ public class TextUserInterface {
         ParsedInput structuredCommand = parser.parse(input);
         if (structuredCommand.commandType().getTarget() == CommandType.Target.TUI) {
             handleCommand(structuredCommand);
-            return;
+        } else {
+            Command command = parser.toCommand(structuredCommand);
+            session.executeCommand(command);
         }
-
-        Command command = parser.toCommand(structuredCommand);
-        session.executeCommand(command);
     }
 
     public void handleCommand(ParsedInput command) {
