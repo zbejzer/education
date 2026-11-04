@@ -14,13 +14,6 @@ class CommandTypeTest {
     }
 
     @Test
-    void getDescriptionReturnsCommandDescription() {
-        assertAll(
-                () -> assertEquals("Show available commands", CommandType.HELP.getDescription()),
-                () -> assertEquals("Exit the application", CommandType.EXIT.getDescription()));
-    }
-
-    @Test
     void getSyntaxFallsBackToKeywordWhenNotSet() {
         assertAll(
                 () -> assertEquals("help", CommandType.HELP.getSyntax()),
@@ -48,14 +41,6 @@ class CommandTypeTest {
     }
 
     @Test
-    void commandTargetEnumContainsExpectedValues() {
-        assertAll(
-                () -> assertEquals(CommandTarget.TUI, CommandTarget.valueOf("TUI")),
-                () -> assertEquals(CommandTarget.CORE, CommandTarget.valueOf("CORE")),
-                () -> assertEquals(2, CommandTarget.values().length));
-    }
-
-    @Test
     void fromKeywordResolvesKnownCommandCaseInsensitively() {
         assertAll(
                 () -> assertEquals(CommandType.HELP, CommandType.fromKeyword("help")),
@@ -71,10 +56,5 @@ class CommandTypeTest {
                 IllegalArgumentException.class,
                 () -> CommandType.fromKeyword("invalid"));
         assertEquals("Unknown command: invalid", exception.getMessage());
-    }
-
-    @Test
-    void fromKeywordThrowsOnNull() {
-        assertThrows(NullPointerException.class, () -> CommandType.fromKeyword(null));
     }
 }

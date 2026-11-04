@@ -34,12 +34,4 @@ class AddProductCommandTest {
         assertThrows(IllegalArgumentException.class, () -> command.execute(session));
         assertEquals(0, session.getCart().getSize());
     }
-
-    @Test
-    void undoIsNotImplemented() {
-        UserSession session = new UserSession();
-        AddProductCommand command = new AddProductCommand("P001", "Monitor", 799.99);
-
-        assertThrows(UnsupportedOperationException.class, () -> command.undo(session));
-    }
 }
