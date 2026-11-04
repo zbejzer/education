@@ -26,11 +26,26 @@ class AddProductCommandTest {
     }
 
     @Test
-    void executeRejectsInvalidProductAndLeavesCartUnchanged() {
-        UserSession session = new UserSession();
-        AddProductCommand command = new AddProductCommand("P001", "Monitor", -10.0);
+    void constructionRejectsInvalidProductArguments() {
+        assertAll(
+                () -> assertThrows(IllegalArgumentException.class,
+                        () -> new AddProductCommand(null, "Monitor", 1.0)),
+                () -> assertThrows(IllegalArgumentException.class,
+                        () -> new AddProductCommand("P001", "   ", 1.0)),
+                () -> assertThrows(IllegalArgumentException.class,
+                        () -> new AddProductCommand("P001", "Monitor", -10.0)),
+                () -> assertThrows(IllegalArgumentException.class,
+                        () -> new AddProductCommand("P001", "Monitor", Double.NaN)));
+    }
 
-        assertThrows(IllegalArgumentException.class, () -> command.execute(session));
-        assertEquals(0, session.getCart().getSize());
+    @Test
+    void invalidCommandsNeverReachTheSessionCart() {
+        UserSession session = new UserSession();
+
+        assertThrows(IllegalArgumentException.class,
+                () -> new AddProductCommand("P001", "Monitor", -10.0));
+
+        assertEquals(0, session.getCart().getSize(),
+                "Rejected commands must never modify the cart");
     }
 }

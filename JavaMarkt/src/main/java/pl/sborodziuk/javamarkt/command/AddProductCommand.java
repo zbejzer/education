@@ -4,19 +4,14 @@ import pl.sborodziuk.javamarkt.model.Product;
 import pl.sborodziuk.javamarkt.session.UserSession;
 
 public class AddProductCommand implements Command {
-    private final String code;
-    private final String name;
-    private final Double price;
+    private final Product product;
 
     public AddProductCommand(String code, String name, Double price) {
-        this.code = code;
-        this.name = name;
-        this.price = price;
+        this.product = new Product(code, name, price);
     }
 
     @Override
     public void execute(UserSession session) {
-        Product product = new Product(code, name, price);
         session.getCart().addProduct(product);
     }
 
