@@ -100,6 +100,17 @@ class TextUserInterfaceTest {
     }
 
     @Test
+    void handleUnrecognizedCommandTypeThrowsIllegalState() {
+        TextUserInterface tui = newInterfaceWithInput("");
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> tui.handleCommand(new GenericCommand(CommandType.ADD_PRODUCT, "P001 Monitor 799.99")));
+
+        assertTrue(exception.getMessage().contains(CommandType.ADD_PRODUCT.getKeyword()),
+                "Exception should identify the unrecognized command type");
+    }
+
+    @Test
     void startPrintsWelcomeAndProcessesCommandsUntilExit() {
         TextUserInterface tui = newInterfaceWithInput("help\nexit\n");
 
