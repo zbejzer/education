@@ -2,6 +2,8 @@ package pl.sborodziuk.javamarkt.ui.tui;
 
 import pl.sborodziuk.javamarkt.command.AddProductCommand;
 import pl.sborodziuk.javamarkt.command.Command;
+import pl.sborodziuk.javamarkt.command.RegisterProductCommand;
+import pl.sborodziuk.javamarkt.command.UnregisterProductCommand;
 
 public class Parser {
     public ParsedInput parse(String rawInput) {
@@ -22,6 +24,10 @@ public class Parser {
         switch (command.commandType()) {
             case ADD_PRODUCT:
                 return parseAddProduct(command);
+            case REGISTER_PRODUCT:
+                return parseRegisterProduct(command);
+            case UNREGISTER_PRODUCT:
+                return parseUnregisterProduct(command);
             default:
                 throw new UnknownCommandException(command.commandType().getKeyword());
         }
@@ -31,6 +37,18 @@ public class Parser {
         String[] arguments = parseTokens(command);
         requireExactTokenCount(command, arguments);
         return new AddProductCommand(arguments[0], arguments[1], parsePrice(command, arguments[2]));
+    }
+
+    private Command parseRegisterProduct(ParsedInput command) {
+        String[] arguments = parseTokens(command);
+        requireExactTokenCount(command, arguments);
+        return new RegisterProductCommand(arguments[0], arguments[1], parsePrice(command, arguments[2]));
+    }
+
+    private Command parseUnregisterProduct(ParsedInput command) {
+        String[] arguments = parseTokens(command);
+        requireExactTokenCount(command, arguments);
+        return new UnregisterProductCommand(arguments[0]);
     }
 
     private String[] parseTokens(ParsedInput command) {

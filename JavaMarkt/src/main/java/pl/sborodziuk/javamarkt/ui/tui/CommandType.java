@@ -3,7 +3,9 @@ package pl.sborodziuk.javamarkt.ui.tui;
 public enum CommandType {
     HELP(Target.TUI, "Show available commands"),
     EXIT(Target.TUI, "Exit the application"),
-    ADD_PRODUCT(Target.CORE, "add", "Add product to cart", "<code> <name> <price>");
+    ADD_PRODUCT(Target.CORE, "add", "Add product to cart", "<code> <name> <price>"),
+    REGISTER_PRODUCT(Target.CORE, "register", "Register product in catalog", "<code> <name> <price>"),
+    UNREGISTER_PRODUCT(Target.CORE, "unregister", "Remove product from catalog", "<code>");
 
     public enum Target {
         TUI,

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import pl.sborodziuk.javamarkt.model.Product;
 import pl.sborodziuk.javamarkt.model.ProductCatalog;
 import pl.sborodziuk.javamarkt.session.UserSession;
 
@@ -217,6 +218,56 @@ class TextUserInterfaceTest {
                 () -> assertTrue(output.contains(EXIT_MESSAGE), "Loop should continue to EXIT after ADD"));
     }
 
+    @Test
+    void startProcessesRegisterProductCommandAgainstCatalog() {
+        ProductCatalog catalog = new ProductCatalog();
+        UserSession session = new UserSession(catalog);
+        System.setIn(new ByteArrayInputStream("register PRG5 Speakers 199.99\nexit\n".getBytes(StandardCharsets.UTF_8)));
+        TextUserInterface tui = new TextUserInterface(session);
+
+        tui.start();
+
+        Product registered = catalog.findByCode("PRG5");
+        assertAll(
+                () -> assertEquals("Speakers", registered.getName()),
+                () -> assertEquals(199.99, registered.getPrice()),
+                () -> assertTrue(output().contains(EXIT_MESSAGE), "Loop should continue to EXIT after REGISTER"));
+    }
+
+    @Test
+    void startProcessesUnregisterProductCommandAgainstCatalog() {
+        ProductCatalog catalog = new ProductCatalog();
+        UserSession session = new UserSession(catalog);
+        catalog.addProduct(new Product("PRU6", "Removable", 5.0));
+        System.setIn(new ByteArrayInputStream("unregister PRU6\nexit\n".getBytes(StandardCharsets.UTF_8)));
+        TextUserInterface tui = new TextUserInterface(session);
+
+        tui.start();
+
+        assertAll(
+                () -> assertNull(catalog.findByCode("PRU6")),
+                () -> assertTrue(output().contains(EXIT_MESSAGE), "Loop should continue to EXIT after UNREGISTER"));
+    }
+
+    @Test
+    void startReportsErrorWhenRegisteringDuplicateCodeAndContinuesLoop() {
+        ProductCatalog catalog = new ProductCatalog();
+        UserSession session = new UserSession(catalog);
+        System.setIn(new ByteArrayInputStream(
+                "register PRG9 DupOnce 10.0\nregister PRG9 DupTwice 20.0\nexit\n".getBytes(StandardCharsets.UTF_8)));
+        TextUserInterface tui = new TextUserInterface(session);
+
+        tui.start();
+
+        String output = output();
+        assertAll(
+                () -> assertTrue(output.contains("Error: Product with code PRG9 already exists."),
+                        "Duplicate registration should be reported as an error"),
+                () -> assertEquals("DupOnce", catalog.findByCode("PRG9").getName(),
+                        "Original product must be kept"),
+                () -> assertTrue(output.contains(EXIT_MESSAGE),
+                        "Loop must survive a rejected command and process EXIT"));
+    }
 
     private static int countPrompts(String output) {
         return countOccurrences(output, "\n> ");

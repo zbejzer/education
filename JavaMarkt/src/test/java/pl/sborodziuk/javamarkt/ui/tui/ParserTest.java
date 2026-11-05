@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import pl.sborodziuk.javamarkt.command.AddProductCommand;
 import pl.sborodziuk.javamarkt.command.Command;
+import pl.sborodziuk.javamarkt.command.RegisterProductCommand;
+import pl.sborodziuk.javamarkt.command.UnregisterProductCommand;
 import pl.sborodziuk.javamarkt.model.Product;
 import pl.sborodziuk.javamarkt.model.ProductCatalog;
 import pl.sborodziuk.javamarkt.session.UserSession;
@@ -95,6 +97,24 @@ class ParserTest {
     }
 
     @Test
+    void parseResolvesRegisterProductKeywordWithArguments() {
+        ParsedInput command = parser.parse("register R001 Keyboard 149.99");
+
+        assertAll(
+                () -> assertEquals(CommandType.REGISTER_PRODUCT, command.commandType()),
+                () -> assertEquals("R001 Keyboard 149.99", command.arguments()));
+    }
+
+    @Test
+    void parseResolvesUnregisterProductKeyword() {
+        ParsedInput command = parser.parse("unregister R001");
+
+        assertAll(
+                () -> assertEquals(CommandType.UNREGISTER_PRODUCT, command.commandType()),
+                () -> assertEquals("R001", command.arguments()));
+    }
+
+    @Test
     void parseCoreCommandBuildsAddProductCommand() {
         UserSession session = new UserSession(new ProductCatalog());
 
@@ -140,6 +160,87 @@ class ParserTest {
         assertTrue(exception.getMessage().contains(CommandType.ADD_PRODUCT.getSyntax()));
         assertInstanceOf(NumberFormatException.class, exception.getCause(),
                 "Original NumberFormatException should be chained as the cause");
+    }
+
+    @Test
+    void parseCoreCommandBuildsRegisterProductCommand() {
+        UserSession session = new UserSession(new ProductCatalog());
+
+        Command command = parser.toCommand(parser.parse("register PRG7 Keyboard 149.99"));
+        command.execute(session);
+
+        Product registered = session.getProductCatalog().findByCode("PRG7");
+        assertAll(
+                () -> assertTrue(command instanceof RegisterProductCommand,
+                        "parseCoreCommand should build a RegisterProductCommand"),
+                () -> assertEquals("Keyboard", registered.getName()),
+                () -> assertEquals(149.99, registered.getPrice()));
+    }
+
+    @Test
+    void parseCoreCommandBuildsUnregisterProductCommand() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.getProductCatalog().addProduct(new Product("PRU7", "Removable", 5.0));
+
+        Command command = parser.toCommand(parser.parse("unregister PRU7"));
+        command.execute(session);
+
+        assertAll(
+                () -> assertTrue(command instanceof UnregisterProductCommand,
+                        "parseCoreCommand should build an UnregisterProductCommand"),
+                () -> assertNull(session.getProductCatalog().findByCode("PRU7")));
+    }
+
+    @Test
+    void parseCoreCommandThrowsOnMissingArgumentsForRegister() {
+        ParsedInput command = new ParsedInput(CommandType.REGISTER_PRODUCT, "");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> parser.toCommand(command));
+        assertTrue(exception.getMessage().contains(CommandType.REGISTER_PRODUCT.getSyntax()));
+    }
+
+    @Test
+    void parseCoreCommandThrowsOnIncompleteArgumentsForRegister() {
+        ParsedInput command = new ParsedInput(CommandType.REGISTER_PRODUCT, "R001 Keyboard");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> parser.toCommand(command));
+        assertTrue(exception.getMessage().contains(CommandType.REGISTER_PRODUCT.getSyntax()));
+    }
+
+    @Test
+    void parseCoreCommandThrowsOnNonNumericPriceForRegister() {
+        ParsedInput command = new ParsedInput(CommandType.REGISTER_PRODUCT, "R001 Keyboard abc");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> parser.toCommand(command));
+        assertTrue(exception.getMessage().contains(CommandType.REGISTER_PRODUCT.getSyntax()));
+        assertInstanceOf(NumberFormatException.class, exception.getCause(),
+                "Original NumberFormatException should be chained as the cause");
+    }
+
+    @Test
+    void parseCoreCommandThrowsOnMissingArgumentsForUnregister() {
+        ParsedInput command = new ParsedInput(CommandType.UNREGISTER_PRODUCT, "");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> parser.toCommand(command));
+        assertTrue(exception.getMessage().contains(CommandType.UNREGISTER_PRODUCT.getSyntax()));
+    }
+
+    @Test
+    void parseCoreCommandThrowsOnExtraArgumentsForUnregister() {
+        ParsedInput command = new ParsedInput(CommandType.UNREGISTER_PRODUCT, "R001 extra");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> parser.toCommand(command));
+        assertTrue(exception.getMessage().contains(CommandType.UNREGISTER_PRODUCT.getSyntax()));
     }
 
     @Test

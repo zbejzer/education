@@ -111,6 +111,16 @@ class ProductCatalogTest {
     }
 
     @Test
+    void findByCodeReturnsNullForNullOrBlankCode() {
+        ProductCatalog catalog = new ProductCatalog();
+
+        assertAll(
+                () -> assertNull(catalog.findByCode(null)),
+                () -> assertNull(catalog.findByCode("")),
+                () -> assertNull(catalog.findByCode("   ")));
+    }
+
+    @Test
     void getAllProductsReturnsEveryRegisteredProduct() {
         ProductCatalog catalog = new ProductCatalog();
         catalog.addProduct(new Product("PCT3", "Third", 3.0));
