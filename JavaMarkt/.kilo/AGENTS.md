@@ -26,3 +26,9 @@ Results after the run:
 To analyze, parse `jacoco.xml` (bundle counter = root `<counter>` elements,
 method coverage = `<class>/<method>` counters, missed lines = `<line mi="...">`).
 
+## Scratch files and artifacts
+
+Place any produced artifacts or non-code files (reports, backups, generated
+files, scratch output) only in `.kilo/tmp/` — never in the repository tree,
+system temp directories, or other locations. `.kilo/tmp/` is git-ignored.
+
