@@ -1,17 +1,16 @@
 package pl.sborodziuk.javamarkt.model;
 
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Map;
 
 public class ProductCatalog implements Iterable<Product> {
     private static ProductCatalog instance;
 
-    private final Set<Product> products;
+    private final Map<String, Product> products;
 
     private ProductCatalog() {
-        this.products = new TreeSet<>(Comparator.comparing(Product::getCode));
+        this.products = new HashMap<>();
     }
 
     public static ProductCatalog getInstance() {
@@ -25,9 +24,19 @@ public class ProductCatalog implements Iterable<Product> {
         if (product == null) {
             throw new IllegalArgumentException("Product cannot be null.");
         }
-        if (!products.add(product)) {
+        if (products.putIfAbsent(product.getCode(), product) != null) {
             throw new IllegalArgumentException(
                     "Product with code " + product.getCode() + " already exists.");
+        }
+    }
+
+    public void updateProduct(Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException("Product cannot be null.");
+        }
+        if (products.replace(product.getCode(), product) == null) {
+            throw new IllegalArgumentException(
+                    "Product with code " + product.getCode() + " does not exist.");
         }
     }
 
@@ -35,24 +44,18 @@ public class ProductCatalog implements Iterable<Product> {
         if (code == null || code.isBlank()) {
             throw new IllegalArgumentException("Product code cannot be blank.");
         }
-        Product product = findByCode(code);
-        return product != null && products.remove(product);
+        return products.remove(code) != null;
     }
 
     public Product findByCode(String code) {
         if (code == null || code.isBlank()) {
             return null;
         }
-        for (Product product : products) {
-            if (product.getCode().equals(code.trim())) {
-                return product;
-            }
-        }
-        return null;
+        return products.get(code);
     }
 
     public Product[] getAllProducts() {
-        return products.toArray(new Product[0]);
+        return products.values().toArray(new Product[0]);
     }
 
     public int getSize() {
@@ -65,6 +68,6 @@ public class ProductCatalog implements Iterable<Product> {
 
     @Override
     public Iterator<Product> iterator() {
-        return products.iterator();
+        return products.values().iterator();
     }
 }

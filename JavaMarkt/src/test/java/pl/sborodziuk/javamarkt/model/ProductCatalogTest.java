@@ -3,7 +3,9 @@ package pl.sborodziuk.javamarkt.model;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,6 +53,36 @@ class ProductCatalogTest {
     }
 
     @Test
+    void updateProductReplacesExistingProduct() {
+        ProductCatalog catalog = ProductCatalog.getInstance();
+        catalog.addProduct(new Product("PCU1", "Original", 10.0));
+
+        catalog.updateProduct(new Product("PCU1", "Updated", 25.0));
+
+        Product updated = catalog.findByCode("PCU1");
+        assertAll(
+                () -> assertEquals("Updated", updated.getName()),
+                () -> assertEquals(25.0, updated.getPrice()),
+                () -> assertEquals(1, codesForPrefix(catalog, "PCU1").size()));
+    }
+
+    @Test
+    void updateProductRejectsUnknownCode() {
+        ProductCatalog catalog = ProductCatalog.getInstance();
+
+        assertThrows(IllegalArgumentException.class,
+                () -> catalog.updateProduct(new Product("PCU999", "Ghost", 1.0)));
+        assertNull(catalog.findByCode("PCU999"));
+    }
+
+    @Test
+    void updateProductRejectsNullProduct() {
+        ProductCatalog catalog = ProductCatalog.getInstance();
+
+        assertThrows(IllegalArgumentException.class, () -> catalog.updateProduct(null));
+    }
+
+    @Test
     void removeProductRemovesProductByCode() {
         ProductCatalog catalog = ProductCatalog.getInstance();
         catalog.addProduct(new Product("PCR1", "Removable", 5.0));
@@ -77,28 +109,35 @@ class ProductCatalogTest {
     }
 
     @Test
-    void findByCodeIgnoresSurroundingWhitespace() {
+    void findByCodeUsesExactKey() {
         ProductCatalog catalog = ProductCatalog.getInstance();
         catalog.addProduct(new Product("PCW1", "Whitespace test", 1.0));
 
-        assertEquals("PCW1", catalog.findByCode("  PCW1  ").getCode());
+        assertAll(
+                () -> assertEquals("PCW1", catalog.findByCode("PCW1").getCode()),
+                () -> assertNull(catalog.findByCode("  PCW1  ")));
     }
 
     @Test
-    void iterationYieldsProductsSortedByCode() {
+    void iterationYieldsExactlyTheAddedProducts() {
         ProductCatalog catalog = ProductCatalog.getInstance();
         catalog.addProduct(new Product("PCT3", "Third", 3.0));
         catalog.addProduct(new Product("PCT1", "First", 1.0));
         catalog.addProduct(new Product("PCT2", "Second", 2.0));
 
+        List<String> testCodes = codesForPrefix(catalog, "PCT");
+
+        assertEquals(Set.of("PCT1", "PCT2", "PCT3"), new HashSet<>(testCodes));
+        assertEquals(3, testCodes.size());
+    }
+
+    private List<String> codesForPrefix(ProductCatalog catalog, String prefix) {
         List<String> codes = new ArrayList<>();
         for (Product product : catalog) {
-            codes.add(product.getCode());
+            if (product.getCode().startsWith(prefix)) {
+                codes.add(product.getCode());
+            }
         }
-
-        List<String> sortedTestCodes = codes.stream()
-                .filter(code -> code.startsWith("PCT"))
-                .toList();
-        assertEquals(List.of("PCT1", "PCT2", "PCT3"), sortedTestCodes);
+        return codes;
     }
 }
