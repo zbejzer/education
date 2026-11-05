@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import pl.sborodziuk.javamarkt.command.AddProductCommand;
 import pl.sborodziuk.javamarkt.command.Command;
+import pl.sborodziuk.javamarkt.model.ProductCatalog;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -13,14 +14,27 @@ class UserSessionTest {
 
     @Test
     void getCartReturnsSameInstanceEachCall() {
-        UserSession session = new UserSession();
+        UserSession session = new UserSession(new ProductCatalog());
 
         assertSame(session.getCart(), session.getCart());
     }
 
     @Test
+    void getCatalogReturnsProvidedCatalogInstance() {
+        ProductCatalog catalog = new ProductCatalog();
+        UserSession session = new UserSession(catalog);
+
+        assertSame(catalog, session.getProductCatalog());
+    }
+
+    @Test
+    void constructorRejectsNullCatalog() {
+        assertThrows(IllegalArgumentException.class, () -> new UserSession(null));
+    }
+
+    @Test
     void executeCommandRunsCommandAgainstThisSession() {
-        UserSession session = new UserSession();
+        UserSession session = new UserSession(new ProductCatalog());
         AtomicReference<UserSession> captured = new AtomicReference<>();
 
         session.executeCommand(new Command() {
@@ -39,7 +53,7 @@ class UserSessionTest {
 
     @Test
     void executeCommandAppliesCommandEffectToCart() {
-        UserSession session = new UserSession();
+        UserSession session = new UserSession(new ProductCatalog());
 
         session.executeCommand(new AddProductCommand("P001", "Monitor", 799.99));
 

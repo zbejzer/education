@@ -12,16 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductCatalogTest {
 
     @Test
-    void getInstanceReturnsSameInstanceOnEveryCall() {
-        ProductCatalog first = ProductCatalog.getInstance();
-        ProductCatalog second = ProductCatalog.getInstance();
-
-        assertSame(first, second);
-    }
-
-    @Test
     void addProductRejectsDuplicateCodeRegardlessOfOtherFields() {
-        ProductCatalog catalog = ProductCatalog.getInstance();
+        ProductCatalog catalog = new ProductCatalog();
         catalog.addProduct(new Product("PCD1", "Original name", 10.0));
 
         assertThrows(IllegalArgumentException.class,
@@ -35,7 +27,7 @@ class ProductCatalogTest {
 
     @Test
     void addProductAcceptsSameNameAndPriceWithDifferentCode() {
-        ProductCatalog catalog = ProductCatalog.getInstance();
+        ProductCatalog catalog = new ProductCatalog();
 
         catalog.addProduct(new Product("PCA1", "Same product", 42.0));
         catalog.addProduct(new Product("PCA2", "Same product", 42.0));
@@ -47,14 +39,14 @@ class ProductCatalogTest {
 
     @Test
     void addProductRejectsNullProduct() {
-        ProductCatalog catalog = ProductCatalog.getInstance();
+        ProductCatalog catalog = new ProductCatalog();
 
         assertThrows(IllegalArgumentException.class, () -> catalog.addProduct(null));
     }
 
     @Test
     void updateProductReplacesExistingProduct() {
-        ProductCatalog catalog = ProductCatalog.getInstance();
+        ProductCatalog catalog = new ProductCatalog();
         catalog.addProduct(new Product("PCU1", "Original", 10.0));
 
         catalog.updateProduct(new Product("PCU1", "Updated", 25.0));
@@ -63,12 +55,12 @@ class ProductCatalogTest {
         assertAll(
                 () -> assertEquals("Updated", updated.getName()),
                 () -> assertEquals(25.0, updated.getPrice()),
-                () -> assertEquals(1, codesForPrefix(catalog, "PCU1").size()));
+                () -> assertEquals(1, catalog.getSize()));
     }
 
     @Test
     void updateProductRejectsUnknownCode() {
-        ProductCatalog catalog = ProductCatalog.getInstance();
+        ProductCatalog catalog = new ProductCatalog();
 
         assertThrows(IllegalArgumentException.class,
                 () -> catalog.updateProduct(new Product("PCU999", "Ghost", 1.0)));
@@ -77,14 +69,14 @@ class ProductCatalogTest {
 
     @Test
     void updateProductRejectsNullProduct() {
-        ProductCatalog catalog = ProductCatalog.getInstance();
+        ProductCatalog catalog = new ProductCatalog();
 
         assertThrows(IllegalArgumentException.class, () -> catalog.updateProduct(null));
     }
 
     @Test
     void removeProductRemovesProductByCode() {
-        ProductCatalog catalog = ProductCatalog.getInstance();
+        ProductCatalog catalog = new ProductCatalog();
         catalog.addProduct(new Product("PCR1", "Removable", 5.0));
 
         assertTrue(catalog.removeProduct("PCR1"));
@@ -93,14 +85,14 @@ class ProductCatalogTest {
 
     @Test
     void removeProductReturnsFalseForUnknownCode() {
-        ProductCatalog catalog = ProductCatalog.getInstance();
+        ProductCatalog catalog = new ProductCatalog();
 
         assertFalse(catalog.removeProduct("PCX999"));
     }
 
     @Test
     void removeProductRejectsBlankCode() {
-        ProductCatalog catalog = ProductCatalog.getInstance();
+        ProductCatalog catalog = new ProductCatalog();
 
         assertAll(
                 () -> assertThrows(IllegalArgumentException.class, () -> catalog.removeProduct("")),
@@ -110,7 +102,7 @@ class ProductCatalogTest {
 
     @Test
     void findByCodeUsesExactKey() {
-        ProductCatalog catalog = ProductCatalog.getInstance();
+        ProductCatalog catalog = new ProductCatalog();
         catalog.addProduct(new Product("PCW1", "Whitespace test", 1.0));
 
         assertAll(
@@ -119,25 +111,50 @@ class ProductCatalogTest {
     }
 
     @Test
-    void iterationYieldsExactlyTheAddedProducts() {
-        ProductCatalog catalog = ProductCatalog.getInstance();
+    void getAllProductsReturnsEveryRegisteredProduct() {
+        ProductCatalog catalog = new ProductCatalog();
         catalog.addProduct(new Product("PCT3", "Third", 3.0));
         catalog.addProduct(new Product("PCT1", "First", 1.0));
         catalog.addProduct(new Product("PCT2", "Second", 2.0));
 
-        List<String> testCodes = codesForPrefix(catalog, "PCT");
+        Product[] all = catalog.getAllProducts();
+        List<String> codes = new ArrayList<>();
+        for (Product product : all) {
+            codes.add(product.getCode());
+        }
 
-        assertEquals(Set.of("PCT1", "PCT2", "PCT3"), new HashSet<>(testCodes));
-        assertEquals(3, testCodes.size());
+        assertAll(
+                () -> assertEquals(3, all.length),
+                () -> assertEquals(Set.of("PCT1", "PCT2", "PCT3"), new HashSet<>(codes)));
     }
 
-    private List<String> codesForPrefix(ProductCatalog catalog, String prefix) {
+    @Test
+    void iterationYieldsExactlyTheAddedProducts() {
+        ProductCatalog catalog = new ProductCatalog();
+        catalog.addProduct(new Product("PCT3", "Third", 3.0));
+        catalog.addProduct(new Product("PCT1", "First", 1.0));
+        catalog.addProduct(new Product("PCT2", "Second", 2.0));
+
         List<String> codes = new ArrayList<>();
         for (Product product : catalog) {
-            if (product.getCode().startsWith(prefix)) {
-                codes.add(product.getCode());
-            }
+            codes.add(product.getCode());
         }
-        return codes;
+
+        assertAll(
+                () -> assertEquals(3, codes.size()),
+                () -> assertEquals(Set.of("PCT1", "PCT2", "PCT3"), new HashSet<>(codes)));
+    }
+
+    @Test
+    void isEmptyAndGetSizeReflectCatalogContent() {
+        ProductCatalog catalog = new ProductCatalog();
+
+        assertTrue(catalog.isEmpty());
+        assertEquals(0, catalog.getSize());
+
+        catalog.addProduct(new Product("PCS1", "Single", 1.0));
+
+        assertFalse(catalog.isEmpty());
+        assertEquals(1, catalog.getSize());
     }
 }

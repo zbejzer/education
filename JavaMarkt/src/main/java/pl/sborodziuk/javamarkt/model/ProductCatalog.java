@@ -5,19 +5,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ProductCatalog implements Iterable<Product> {
-    private static ProductCatalog instance;
-
     private final Map<String, Product> products;
 
-    private ProductCatalog() {
+    public ProductCatalog() {
         this.products = new HashMap<>();
-    }
-
-    public static ProductCatalog getInstance() {
-        if (instance == null) {
-            instance = new ProductCatalog();
-        }
-        return instance;
     }
 
     public void addProduct(Product product) {

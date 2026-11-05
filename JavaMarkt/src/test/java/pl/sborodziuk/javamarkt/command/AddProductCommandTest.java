@@ -3,6 +3,7 @@ package pl.sborodziuk.javamarkt.command;
 import org.junit.jupiter.api.Test;
 
 import pl.sborodziuk.javamarkt.model.CartItem;
+import pl.sborodziuk.javamarkt.model.ProductCatalog;
 import pl.sborodziuk.javamarkt.session.UserSession;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,7 +12,7 @@ class AddProductCommandTest {
 
     @Test
     void executeAddsProductToSessionCart() {
-        UserSession session = new UserSession();
+        UserSession session = new UserSession(new ProductCatalog());
         AddProductCommand command = new AddProductCommand("P001", "Monitor", 799.99);
 
         command.execute(session);
@@ -40,7 +41,7 @@ class AddProductCommandTest {
 
     @Test
     void invalidCommandsNeverReachTheSessionCart() {
-        UserSession session = new UserSession();
+        UserSession session = new UserSession(new ProductCatalog());
 
         assertThrows(IllegalArgumentException.class,
                 () -> new AddProductCommand("P001", "Monitor", -10.0));
