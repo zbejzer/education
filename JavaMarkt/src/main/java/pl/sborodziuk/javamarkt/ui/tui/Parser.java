@@ -27,25 +27,35 @@ public class Parser {
         }
     }
 
-    private AddProductCommand parseAddProduct(ParsedInput command) {
+    private Command parseAddProduct(ParsedInput command) {
+        String[] arguments = parseTokens(command);
+        requireExactTokenCount(command, arguments);
+        return new AddProductCommand(arguments[0], arguments[1], parsePrice(command, arguments[2]));
+    }
+
+    private String[] parseTokens(ParsedInput command) {
+        requireArguments(command);
+        return command.arguments().split("\\s+");
+    }
+
+    private void requireArguments(ParsedInput command) {
         if (command.arguments().isBlank()) {
             throw new IllegalArgumentException("Missing arguments. Usage: " + command.commandType().getSyntax());
         }
+    }
 
-        String[] productParts = command.arguments().split("\\s+", 3);
-        if (productParts.length < 3) {
+    private void requireExactTokenCount(ParsedInput command, String[] tokens) {
+        int expectedTokenCount = command.commandType().getRequiredArgumentCount();
+        if (tokens.length != expectedTokenCount) {
             throw new IllegalArgumentException("Invalid format. Usage: " + command.commandType().getSyntax());
         }
+    }
 
-        String code = productParts[0];
-        String name = productParts[1];
-        Double price;
+    private double parsePrice(ParsedInput command, String rawPrice) {
         try {
-            price = Double.parseDouble(productParts[2]);
+            return Double.parseDouble(rawPrice);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid price. Usage: " + command.commandType().getSyntax(), e);
         }
-
-        return new AddProductCommand(code, name, price);
     }
 }

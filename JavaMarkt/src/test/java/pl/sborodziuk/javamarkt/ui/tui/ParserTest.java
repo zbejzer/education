@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import pl.sborodziuk.javamarkt.command.AddProductCommand;
 import pl.sborodziuk.javamarkt.command.Command;
 import pl.sborodziuk.javamarkt.model.Product;
+import pl.sborodziuk.javamarkt.model.ProductCatalog;
 import pl.sborodziuk.javamarkt.session.UserSession;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -95,7 +96,7 @@ class ParserTest {
 
     @Test
     void parseCoreCommandBuildsAddProductCommand() {
-        UserSession session = new UserSession();
+        UserSession session = new UserSession(new ProductCatalog());
 
         Command command = parser.toCommand(parser.parse("add P001 Monitor 799.99"));
         command.execute(session);
@@ -139,6 +140,16 @@ class ParserTest {
         assertTrue(exception.getMessage().contains(CommandType.ADD_PRODUCT.getSyntax()));
         assertInstanceOf(NumberFormatException.class, exception.getCause(),
                 "Original NumberFormatException should be chained as the cause");
+    }
+
+    @Test
+    void parseCoreCommandThrowsOnExtraArguments() {
+        ParsedInput command = new ParsedInput(CommandType.ADD_PRODUCT, "P001 Monitor 799.99 extra");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> parser.toCommand(command));
+        assertTrue(exception.getMessage().contains(CommandType.ADD_PRODUCT.getSyntax()));
     }
 
     @Test

@@ -42,6 +42,20 @@ public enum CommandType {
         return syntax != null ? getKeyword() + " " + syntax : getKeyword();
     }
 
+    public int getRequiredArgumentCount() {
+        if (syntax == null) {
+            return 0;
+        }
+
+        int count = 0;
+        int index = syntax.indexOf('<');
+        while (index != -1) {
+            count++;
+            index = syntax.indexOf('<', index + 1);
+        }
+        return count;
+    }
+
     public Target getTarget() {
         return target;
     }

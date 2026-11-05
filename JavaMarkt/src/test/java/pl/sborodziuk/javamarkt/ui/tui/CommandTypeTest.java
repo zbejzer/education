@@ -65,4 +65,12 @@ class CommandTypeTest {
                 () -> assertEquals(CommandType.Target.TUI, CommandType.EXIT.getTarget()),
                 () -> assertEquals(CommandType.Target.CORE, CommandType.ADD_PRODUCT.getTarget()));
     }
+
+    @Test
+    void getRequiredArgumentCountMatchesSyntaxPlaceholders() {
+        assertAll(
+                () -> assertEquals(0, CommandType.HELP.getRequiredArgumentCount()),
+                () -> assertEquals(0, CommandType.EXIT.getRequiredArgumentCount()),
+                () -> assertEquals(3, CommandType.ADD_PRODUCT.getRequiredArgumentCount()));
+    }
 }
