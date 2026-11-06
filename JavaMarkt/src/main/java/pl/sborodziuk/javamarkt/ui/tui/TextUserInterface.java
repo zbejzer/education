@@ -7,12 +7,14 @@ import pl.sborodziuk.javamarkt.session.UserSession;
 
 public class TextUserInterface {
     private final Parser parser;
+    private final CommandDescriber describer;
     private final UserSession session;
     private final Scanner scanner;
     private boolean running;
 
     public TextUserInterface(UserSession session) {
         this.parser = new Parser();
+        this.describer = new CommandDescriber();
         this.session = session;
         this.scanner = new Scanner(System.in);
         this.running = false;
@@ -69,6 +71,10 @@ public class TextUserInterface {
                 terminate();
                 return;
 
+            case HISTORY:
+                printHistory();
+                return;
+
             default:
                 throw new IllegalStateException("Unhandled command type: " + command.commandType().getKeyword());
         }
@@ -92,6 +98,23 @@ public class TextUserInterface {
                     entry.getDescription(),
                     entry.getSyntax());
         }
+    }
+
+    private void printHistory() {
+        if (session.getHistory().isEmpty()) {
+            System.out.println("History is empty.");
+            return;
+        }
+
+        int index = 1;
+        for (Command command : session.getHistory()) {
+            System.out.printf("%d. %s%n", index, describeRecordedCommand(command));
+            index++;
+        }
+    }
+
+    private String describeRecordedCommand(Command command) {
+        return describer.describeEntry(describer.parse(command));
     }
 
     public void terminate() {

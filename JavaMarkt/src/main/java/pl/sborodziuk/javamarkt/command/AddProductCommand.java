@@ -15,6 +15,15 @@ public class AddProductCommand implements Command {
         session.getCart().addProduct(product);
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
+    @Override
+    public <T> T accept(CommandVisitor<T> visitor) {
+        return visitor.visitAddProduct(this);
+    }
+
     @Override
     public void undo(UserSession session) {
         // TODO Auto-generated method stub

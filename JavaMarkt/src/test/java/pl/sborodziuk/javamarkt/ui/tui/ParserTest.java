@@ -117,6 +117,15 @@ class ParserTest {
     }
 
     @Test
+    void parseResolvesHistoryKeyword() {
+        ParsedCommand command = parser.parse("history");
+
+        assertAll(
+                () -> assertEquals(CommandType.HISTORY, command.commandType()),
+                () -> assertEquals(List.of(), command.arguments()));
+    }
+
+    @Test
     void toCommandBuildsAddProductCommand() {
         UserSession session = new UserSession(new ProductCatalog());
 

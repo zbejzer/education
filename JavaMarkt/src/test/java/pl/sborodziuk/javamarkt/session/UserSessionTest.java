@@ -4,8 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import pl.sborodziuk.javamarkt.command.AddProductCommand;
 import pl.sborodziuk.javamarkt.command.Command;
+import pl.sborodziuk.javamarkt.command.CommandVisitor;
 import pl.sborodziuk.javamarkt.model.ProductCatalog;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,6 +48,12 @@ class UserSessionTest {
             @Override
             public void undo(UserSession target) {
             }
+
+            @Override
+            public <T> T accept(CommandVisitor<T> visitor) {
+                throw new IllegalArgumentException(
+                        "Unhandled command type: " + getClass().getSimpleName());
+            }
         });
 
         assertSame(session, captured.get());
@@ -60,5 +68,83 @@ class UserSessionTest {
         assertAll(
                 () -> assertEquals(1, session.getCart().getSize()),
                 () -> assertEquals("P001", session.getCart().getAllItems()[0].getProduct().getCode()));
+    }
+
+    @Test
+    void executeCommandRecordsCommandsInSubmissionOrder() {
+        UserSession session = new UserSession(new ProductCatalog());
+        Command first = new Command() {
+            @Override
+            public void execute(UserSession target) {
+            }
+
+            @Override
+            public void undo(UserSession target) {
+            }
+
+            @Override
+            public <T> T accept(CommandVisitor<T> visitor) {
+                throw new IllegalArgumentException(
+                        "Unhandled command type: " + getClass().getSimpleName());
+            }
+        };
+        AddProductCommand second = new AddProductCommand("PSU1", "Monitor", 799.99);
+
+        session.executeCommand(first);
+        session.executeCommand(second);
+
+        List<Command> history = session.getHistory();
+        assertAll(
+                () -> assertEquals(2, history.size()),
+                () -> assertSame(first, history.get(0)),
+                () -> assertSame(second, history.get(1)));
+    }
+
+    @Test
+    void executeCommandDoesNotRecordCommandThatThrows() {
+        UserSession session = new UserSession(new ProductCatalog());
+        Command failing = new Command() {
+            @Override
+            public void execute(UserSession target) {
+                throw new IllegalArgumentException("Rejected");
+            }
+
+            @Override
+            public void undo(UserSession target) {
+            }
+
+            @Override
+            public <T> T accept(CommandVisitor<T> visitor) {
+                throw new IllegalArgumentException(
+                        "Unhandled command type: " + getClass().getSimpleName());
+            }
+        };
+
+        assertThrows(IllegalArgumentException.class, () -> session.executeCommand(failing));
+
+        assertTrue(session.getHistory().isEmpty());
+    }
+
+    @Test
+    void getHistorySnapshotIsImmutable() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.executeCommand(new AddProductCommand("PSU2", "Monitor", 799.99));
+
+        List<Command> snapshot = session.getHistory();
+
+        assertThrows(UnsupportedOperationException.class, () -> snapshot.add(snapshot.get(0)));
+    }
+
+    @Test
+    void getHistorySnapshotIsIsolatedFromLaterExecutions() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.executeCommand(new AddProductCommand("PSU3", "Monitor", 799.99));
+
+        List<Command> snapshot = session.getHistory();
+        session.executeCommand(new AddProductCommand("PSU4", "Keyboard", 149.99));
+
+        assertAll(
+                () -> assertEquals(1, snapshot.size()),
+                () -> assertEquals(2, session.getHistory().size()));
     }
 }

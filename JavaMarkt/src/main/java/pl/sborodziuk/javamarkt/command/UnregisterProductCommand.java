@@ -12,6 +12,15 @@ public class UnregisterProductCommand implements Command {
         this.code = code;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    @Override
+    public <T> T accept(CommandVisitor<T> visitor) {
+        return visitor.visitUnregisterProduct(this);
+    }
+
     @Override
     public void execute(UserSession session) {
         if (!session.getProductCatalog().removeProduct(code)) {

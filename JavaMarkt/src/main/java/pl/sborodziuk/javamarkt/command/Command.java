@@ -6,4 +6,6 @@ public interface Command {
     public void execute(UserSession session);
 
     public void undo(UserSession session);
+
+    <T> T accept(CommandVisitor<T> visitor);
 }

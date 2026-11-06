@@ -15,6 +15,15 @@ public class RegisterProductCommand implements Command {
         session.getProductCatalog().addProduct(product);
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
+    @Override
+    public <T> T accept(CommandVisitor<T> visitor) {
+        return visitor.visitRegisterProduct(this);
+    }
+
     @Override
     public void undo(UserSession session) {
         // TODO Auto-generated method stub

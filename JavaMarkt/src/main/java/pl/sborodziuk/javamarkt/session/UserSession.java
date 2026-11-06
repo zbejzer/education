@@ -1,5 +1,9 @@
 package pl.sborodziuk.javamarkt.session;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
+
 import pl.sborodziuk.javamarkt.command.Command;
 import pl.sborodziuk.javamarkt.model.Cart;
 import pl.sborodziuk.javamarkt.model.ProductCatalog;
@@ -7,6 +11,7 @@ import pl.sborodziuk.javamarkt.model.ProductCatalog;
 public class UserSession {
     private final Cart cart = new Cart();
     private final ProductCatalog productCatalog;
+    private final Deque<Command> history = new ArrayDeque<>();
 
     public UserSession(ProductCatalog productCatalog) {
         if (productCatalog == null) {
@@ -25,5 +30,10 @@ public class UserSession {
 
     public void executeCommand(Command command) {
         command.execute(this);
+        history.addLast(command);
+    }
+
+    public List<Command> getHistory() {
+        return List.copyOf(history);
     }
 }
