@@ -46,4 +46,26 @@ class RegisterProductCommandTest {
                 () -> assertThrows(IllegalArgumentException.class,
                         () -> new RegisterProductCommand("PRG3", "Keyboard", Double.NaN)));
     }
+
+    @Test
+    void undoRemovesRegisteredProductFromCatalog() {
+        UserSession session = new UserSession(new ProductCatalog());
+        RegisterProductCommand command = new RegisterProductCommand("PRG4", "Keyboard", 149.99);
+        command.execute(session);
+
+        command.undo(session);
+
+        assertTrue(session.getProductCatalog().isEmpty());
+    }
+
+    @Test
+    void undoThrowsWhenProductIsMissingFromCatalog() {
+        UserSession session = new UserSession(new ProductCatalog());
+        RegisterProductCommand command = new RegisterProductCommand("PRG8", "Keyboard", 149.99);
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class, () -> command.undo(session));
+
+        assertTrue(exception.getMessage().contains("PRG8"));
+    }
 }

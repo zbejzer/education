@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import pl.sborodziuk.javamarkt.command.AddProductCommand;
 import pl.sborodziuk.javamarkt.command.Command;
 import pl.sborodziuk.javamarkt.command.CommandVisitor;
+import pl.sborodziuk.javamarkt.command.RegisterProductCommand;
+import pl.sborodziuk.javamarkt.command.UnregisterProductCommand;
+import pl.sborodziuk.javamarkt.model.Product;
 import pl.sborodziuk.javamarkt.model.ProductCatalog;
 
 import java.util.List;
@@ -146,5 +149,74 @@ class UserSessionTest {
         assertAll(
                 () -> assertEquals(1, snapshot.size()),
                 () -> assertEquals(2, session.getHistory().size()));
+    }
+
+    @Test
+    void undoLastCommandReturnsNullOnEmptyHistory() {
+        UserSession session = new UserSession(new ProductCatalog());
+
+        assertNull(session.undoLastCommand());
+
+        assertTrue(session.getHistory().isEmpty());
+    }
+
+    @Test
+    void undoLastCommandReversesLastRegister() {
+        UserSession session = new UserSession(new ProductCatalog());
+        RegisterProductCommand command = new RegisterProductCommand("URG1", "Keyboard", 149.99);
+        session.executeCommand(command);
+
+        Command undone = session.undoLastCommand();
+
+        assertAll(
+                () -> assertSame(command, undone),
+                () -> assertTrue(session.getProductCatalog().isEmpty()),
+                () -> assertTrue(session.getHistory().isEmpty()));
+    }
+
+    @Test
+    void undoLastCommandRestoresUnregisteredProduct() {
+        UserSession session = new UserSession(new ProductCatalog());
+        RegisterProductCommand register = new RegisterProductCommand("URG2", "Keyboard", 149.99);
+        session.executeCommand(register);
+        session.executeCommand(new UnregisterProductCommand("URG2"));
+
+        session.undoLastCommand();
+
+        Product restored = session.getProductCatalog().findByCode("URG2");
+        assertAll(
+                () -> assertEquals("Keyboard", restored.getName()),
+                () -> assertEquals(149.99, restored.getPrice()),
+                () -> assertEquals(1, session.getHistory().size()),
+                () -> assertSame(register, session.getHistory().get(0)));
+    }
+
+    @Test
+    void undoLastCommandPropagatesUnsupportedUndoAndRetainsEntry() {
+        UserSession session = new UserSession(new ProductCatalog());
+        Command blocked = new Command() {
+            @Override
+            public void execute(UserSession target) {
+            }
+
+            @Override
+            public void undo(UserSession target) {
+                throw new UnsupportedOperationException("Cannot undo");
+            }
+
+            @Override
+            public <T> T accept(CommandVisitor<T> visitor) {
+                throw new IllegalArgumentException(
+                        "Unhandled command type: " + getClass().getSimpleName());
+            }
+        };
+        session.executeCommand(blocked);
+
+        assertThrows(UnsupportedOperationException.class, () -> session.undoLastCommand());
+
+        List<Command> history = session.getHistory();
+        assertAll(
+                () -> assertEquals(1, history.size()),
+                () -> assertSame(blocked, history.get(0)));
     }
 }

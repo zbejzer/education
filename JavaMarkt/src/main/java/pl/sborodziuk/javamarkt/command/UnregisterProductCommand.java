@@ -1,9 +1,11 @@
 package pl.sborodziuk.javamarkt.command;
 
+import pl.sborodziuk.javamarkt.model.Product;
 import pl.sborodziuk.javamarkt.session.UserSession;
 
 public class UnregisterProductCommand implements Command {
     private final String code;
+    private Product removed;
 
     public UnregisterProductCommand(String code) {
         if (code == null || code.isBlank()) {
@@ -23,15 +25,17 @@ public class UnregisterProductCommand implements Command {
 
     @Override
     public void execute(UserSession session) {
-        if (!session.getProductCatalog().removeProduct(code)) {
+        Product removed = session.getProductCatalog().findByCode(code);
+        if (removed == null) {
             throw new IllegalArgumentException("Product with code " + code + " does not exist.");
         }
+        session.getProductCatalog().removeProduct(code);
+        this.removed = removed;
     }
 
     @Override
     public void undo(UserSession session) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'undo'");
+        session.getProductCatalog().addProduct(removed);
     }
 
 }

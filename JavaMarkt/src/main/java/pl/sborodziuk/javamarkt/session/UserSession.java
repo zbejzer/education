@@ -33,6 +33,17 @@ public class UserSession {
         history.addLast(command);
     }
 
+    public Command undoLastCommand() {
+        Command command = history.peekLast();
+        if (command == null) {
+            return null;
+        }
+
+        command.undo(this);
+        history.removeLast();
+        return command;
+    }
+
     public List<Command> getHistory() {
         return List.copyOf(history);
     }

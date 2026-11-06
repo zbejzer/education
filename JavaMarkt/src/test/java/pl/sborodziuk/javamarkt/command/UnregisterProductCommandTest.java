@@ -43,4 +43,34 @@ class UnregisterProductCommandTest {
                 () -> assertThrows(IllegalArgumentException.class,
                         () -> new UnregisterProductCommand("   ")));
     }
+
+    @Test
+    void undoRestoresRemovedProduct() {
+        UserSession session = new UserSession(new ProductCatalog());
+        ProductCatalog catalog = session.getProductCatalog();
+        catalog.addProduct(new Product("PRU2", "Removable", 5.0));
+        UnregisterProductCommand command = new UnregisterProductCommand("PRU2");
+        command.execute(session);
+
+        command.undo(session);
+
+        Product restored = catalog.findByCode("PRU2");
+        assertAll(
+                () -> assertEquals("Removable", restored.getName()),
+                () -> assertEquals(5.0, restored.getPrice()));
+    }
+
+    @Test
+    void undoThrowsWhenCodeWasReRegisteredWithDifferentProduct() {
+        UserSession session = new UserSession(new ProductCatalog());
+        ProductCatalog catalog = session.getProductCatalog();
+        catalog.addProduct(new Product("PRU3", "Original", 10.0));
+        UnregisterProductCommand command = new UnregisterProductCommand("PRU3");
+        command.execute(session);
+        catalog.addProduct(new Product("PRU3", "Other", 20.0));
+
+        assertThrows(IllegalArgumentException.class, () -> command.undo(session));
+
+        assertEquals("Other", catalog.findByCode("PRU3").getName());
+    }
 }

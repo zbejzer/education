@@ -126,6 +126,15 @@ class ParserTest {
     }
 
     @Test
+    void parseResolvesUndoKeyword() {
+        ParsedCommand command = parser.parse("undo");
+
+        assertAll(
+                () -> assertEquals(CommandType.UNDO, command.commandType()),
+                () -> assertEquals(List.of(), command.arguments()));
+    }
+
+    @Test
     void toCommandBuildsAddProductCommand() {
         UserSession session = new UserSession(new ProductCatalog());
 

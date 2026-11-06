@@ -26,8 +26,10 @@ public class RegisterProductCommand implements Command {
 
     @Override
     public void undo(UserSession session) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'undo'");
+        if (!session.getProductCatalog().removeProduct(product.getCode())) {
+            throw new IllegalArgumentException(
+                    "Product with code " + product.getCode() + " does not exist.");
+        }
     }
 
 }

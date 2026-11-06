@@ -353,6 +353,85 @@ class TextUserInterfaceTest {
                                 () -> assertTrue(output.contains(EXIT_MESSAGE)));
         }
 
+        @Test
+        void startUndoesLastRegisterCommandAndReportsIt() {
+                ProductCatalog catalog = new ProductCatalog();
+                UserSession session = new UserSession(catalog);
+                System.setIn(new ByteArrayInputStream(
+                                "register R001 Keyboard 149.99\nundo\nexit\n".getBytes(StandardCharsets.UTF_8)));
+                TextUserInterface tui = new TextUserInterface(session);
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains("Undone: register R001 Keyboard 149.99"),
+                                                "UNDO should describe the reversed command canonically"),
+                                () -> assertTrue(catalog.isEmpty(), "Catalog should be empty after undo"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE)),
+                                () -> assertFalse(tui.isRunning(), "Loop should end after EXIT"));
+        }
+
+        @Test
+        void startUndoesLastUnregisterCommandAndRestoresProduct() {
+                ProductCatalog catalog = new ProductCatalog();
+                UserSession session = new UserSession(catalog);
+                System.setIn(new ByteArrayInputStream(
+                                "register R001 Keyboard 149.99\nadd P001 Monitor 799.99\nunregister R001\nundo\nexit\n"
+                                                .getBytes(StandardCharsets.UTF_8)));
+                TextUserInterface tui = new TextUserInterface(session);
+
+                tui.start();
+
+                Product restored = catalog.findByCode("R001");
+                assertAll(
+                                () -> assertTrue(output().contains("Undone: unregister R001")),
+                                () -> assertEquals("Keyboard", restored.getName()),
+                                () -> assertEquals(149.99, restored.getPrice()),
+                                () -> assertEquals(1, session.getCart().getSize(),
+                                                "Cart must keep its item through catalog undo"),
+                                () -> assertEquals("P001", session.getCart().getAllItems()[0].getProduct().getCode()),
+                                () -> assertTrue(output().contains(EXIT_MESSAGE)),
+                                () -> assertFalse(tui.isRunning()));
+        }
+
+        @Test
+        void startReportsBlockedUndoWhenNonUndoableCommandIsLast() {
+                ProductCatalog catalog = new ProductCatalog();
+                UserSession session = new UserSession(catalog);
+                System.setIn(new ByteArrayInputStream(
+                                "register R001 Keyboard 149.99\nadd P001 Monitor 799.99\nundo\nexit\n"
+                                                .getBytes(StandardCharsets.UTF_8)));
+                TextUserInterface tui = new TextUserInterface(session);
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains("Cannot undo the last operation."),
+                                                "The add at the top of history must block deeper undo"),
+                                () -> assertEquals("Keyboard", catalog.findByCode("R001").getName(),
+                                                "Catalog must keep the registered product"),
+                                () -> assertEquals(1, session.getCart().getSize(),
+                                                "Cart must keep the added item"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE),
+                                                "Loop must survive a blocked undo and process EXIT"),
+                                () -> assertFalse(tui.isRunning()));
+        }
+
+        @Test
+        void startReportsNothingToUndoOnEmptyHistory() {
+                TextUserInterface tui = newInterfaceWithInput("undo\nexit\n");
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains("Nothing to undo.")),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE)),
+                                () -> assertFalse(tui.isRunning()));
+        }
+
         private static int countPrompts(String output) {
                 return countOccurrences(output, "\n> ");
         }
