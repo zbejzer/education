@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,7 +69,7 @@ class TextUserInterfaceTest {
     void handleHelpCommandPrintsCommandListing() {
         TextUserInterface tui = newInterfaceWithInput("");
 
-        assertDoesNotThrow(() -> tui.handleCommand(new ParsedInput(CommandType.HELP, "")));
+        assertDoesNotThrow(() -> tui.handleCommand(new ParsedCommand(CommandType.HELP, List.of())));
 
         String output = output();
         for (CommandType command : CommandType.values()) {
@@ -86,7 +87,7 @@ class TextUserInterfaceTest {
     void handleHelpCommandKeepsInterfaceRunning() {
         TextUserInterface tui = newInterfaceWithInput("");
 
-        tui.handleCommand(new ParsedInput(CommandType.HELP, ""));
+        tui.handleCommand(new ParsedCommand(CommandType.HELP, List.of()));
 
         assertFalse(tui.isRunning(),
                 "HELP should not terminate the interface, but it must not start it either");
@@ -96,7 +97,7 @@ class TextUserInterfaceTest {
     void handleExitCommandPrintsExitMessage() {
         TextUserInterface tui = newInterfaceWithInput("");
 
-        assertDoesNotThrow(() -> tui.handleCommand(new ParsedInput(CommandType.EXIT, "")));
+        assertDoesNotThrow(() -> tui.handleCommand(new ParsedCommand(CommandType.EXIT, List.of())));
 
         assertTrue(output().contains(EXIT_MESSAGE));
     }
@@ -106,7 +107,8 @@ class TextUserInterfaceTest {
         TextUserInterface tui = newInterfaceWithInput("");
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> tui.handleCommand(new ParsedInput(CommandType.ADD_PRODUCT, "P001 Monitor 799.99")));
+                () -> tui.handleCommand(new ParsedCommand(
+                        CommandType.ADD_PRODUCT, List.of("P001", "Monitor", "799.99"))));
 
         assertTrue(exception.getMessage().contains(CommandType.ADD_PRODUCT.getKeyword()),
                 "Exception should identify the unrecognized command type");

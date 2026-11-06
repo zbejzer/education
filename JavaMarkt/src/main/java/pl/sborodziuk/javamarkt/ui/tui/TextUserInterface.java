@@ -49,7 +49,7 @@ public class TextUserInterface {
             return;
         }
 
-        ParsedInput structuredCommand = parser.parse(input);
+        ParsedCommand structuredCommand = parser.parse(input);
         if (structuredCommand.commandType().getTarget() == CommandType.Target.TUI) {
             handleCommand(structuredCommand);
         } else {
@@ -58,7 +58,7 @@ public class TextUserInterface {
         }
     }
 
-    public void handleCommand(ParsedInput command) {
+    public void handleCommand(ParsedCommand command) {
         switch (command.commandType()) {
             case HELP:
                 printHelp();

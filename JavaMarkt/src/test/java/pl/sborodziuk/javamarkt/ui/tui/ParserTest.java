@@ -1,5 +1,7 @@
 package pl.sborodziuk.javamarkt.ui.tui;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import pl.sborodziuk.javamarkt.command.AddProductCommand;
@@ -18,11 +20,11 @@ class ParserTest {
 
     @Test
     void parseResolvesKeywordWithoutArguments() {
-        ParsedInput command = parser.parse("help");
+        ParsedCommand command = parser.parse("help");
 
         assertAll(
                 () -> assertEquals(CommandType.HELP, command.commandType()),
-                () -> assertEquals("", command.arguments()));
+                () -> assertEquals(List.of(), command.arguments()));
     }
 
     @Test
@@ -35,25 +37,25 @@ class ParserTest {
 
     @Test
     void parseTrimsSurroundingWhitespace() {
-        ParsedInput command = parser.parse("   exit   ");
+        ParsedCommand command = parser.parse("   exit   ");
 
         assertEquals(CommandType.EXIT, command.commandType());
     }
 
     @Test
     void parseExtractsArgumentsAfterFirstWhitespace() {
-        ParsedInput command = parser.parse("help   extra arguments");
+        ParsedCommand command = parser.parse("help   extra arguments");
 
         assertAll(
                 () -> assertEquals(CommandType.HELP, command.commandType()),
-                () -> assertEquals("extra arguments", command.arguments()));
+                () -> assertEquals(List.of("extra", "arguments"), command.arguments()));
     }
 
     @Test
-    void parsePreservesInnerArgumentSpacing() {
-        ParsedInput command = parser.parse("help a  b");
+    void parseTokenizesArgumentsOnWhitespace() {
+        ParsedCommand command = parser.parse("help a  b");
 
-        assertEquals("a  b", command.arguments());
+        assertEquals(List.of("a", "b"), command.arguments());
     }
 
     @Test
@@ -88,34 +90,34 @@ class ParserTest {
     }
 
     @Test
-    void sliceResolvesAddProductKeywordWithArguments() {
-        ParsedInput command = parser.parse("add P001 Monitor 799.99");
+    void parseResolvesAddProductKeywordWithArguments() {
+        ParsedCommand command = parser.parse("add P001 Monitor 799.99");
 
         assertAll(
                 () -> assertEquals(CommandType.ADD_PRODUCT, command.commandType()),
-                () -> assertEquals("P001 Monitor 799.99", command.arguments()));
+                () -> assertEquals(List.of("P001", "Monitor", "799.99"), command.arguments()));
     }
 
     @Test
     void parseResolvesRegisterProductKeywordWithArguments() {
-        ParsedInput command = parser.parse("register R001 Keyboard 149.99");
+        ParsedCommand command = parser.parse("register R001 Keyboard 149.99");
 
         assertAll(
                 () -> assertEquals(CommandType.REGISTER_PRODUCT, command.commandType()),
-                () -> assertEquals("R001 Keyboard 149.99", command.arguments()));
+                () -> assertEquals(List.of("R001", "Keyboard", "149.99"), command.arguments()));
     }
 
     @Test
     void parseResolvesUnregisterProductKeyword() {
-        ParsedInput command = parser.parse("unregister R001");
+        ParsedCommand command = parser.parse("unregister R001");
 
         assertAll(
                 () -> assertEquals(CommandType.UNREGISTER_PRODUCT, command.commandType()),
-                () -> assertEquals("R001", command.arguments()));
+                () -> assertEquals(List.of("R001"), command.arguments()));
     }
 
     @Test
-    void parseCoreCommandBuildsAddProductCommand() {
+    void toCommandBuildsAddProductCommand() {
         UserSession session = new UserSession(new ProductCatalog());
 
         Command command = parser.toCommand(parser.parse("add P001 Monitor 799.99"));
@@ -124,15 +126,15 @@ class ParserTest {
         Product added = session.getCart().getAllItems()[0].getProduct();
         assertAll(
                 () -> assertTrue(command instanceof AddProductCommand,
-                        "parseCoreCommand should build an AddProductCommand"),
+                        "toCommand should build an AddProductCommand"),
                 () -> assertEquals("P001", added.getCode()),
                 () -> assertEquals("Monitor", added.getName()),
                 () -> assertEquals(799.99, added.getPrice()));
     }
 
     @Test
-    void parseCoreCommandThrowsOnMissingArguments() {
-        ParsedInput command = new ParsedInput(CommandType.ADD_PRODUCT, "");
+    void toCommandThrowsOnMissingArguments() {
+        ParsedCommand command = new ParsedCommand(CommandType.ADD_PRODUCT, List.of());
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -141,8 +143,8 @@ class ParserTest {
     }
 
     @Test
-    void parseCoreCommandThrowsOnIncompleteArguments() {
-        ParsedInput command = new ParsedInput(CommandType.ADD_PRODUCT, "P001 Monitor");
+    void toCommandThrowsOnIncompleteArguments() {
+        ParsedCommand command = new ParsedCommand(CommandType.ADD_PRODUCT, List.of("P001", "Monitor"));
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -151,8 +153,8 @@ class ParserTest {
     }
 
     @Test
-    void parseCoreCommandThrowsOnNonNumericPrice() {
-        ParsedInput command = new ParsedInput(CommandType.ADD_PRODUCT, "P001 Monitor abc");
+    void toCommandThrowsOnNonNumericPrice() {
+        ParsedCommand command = new ParsedCommand(CommandType.ADD_PRODUCT, List.of("P001", "Monitor", "abc"));
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -163,7 +165,7 @@ class ParserTest {
     }
 
     @Test
-    void parseCoreCommandBuildsRegisterProductCommand() {
+    void toCommandBuildsRegisterProductCommand() {
         UserSession session = new UserSession(new ProductCatalog());
 
         Command command = parser.toCommand(parser.parse("register PRG7 Keyboard 149.99"));
@@ -172,13 +174,13 @@ class ParserTest {
         Product registered = session.getProductCatalog().findByCode("PRG7");
         assertAll(
                 () -> assertTrue(command instanceof RegisterProductCommand,
-                        "parseCoreCommand should build a RegisterProductCommand"),
+                        "toCommand should build a RegisterProductCommand"),
                 () -> assertEquals("Keyboard", registered.getName()),
                 () -> assertEquals(149.99, registered.getPrice()));
     }
 
     @Test
-    void parseCoreCommandBuildsUnregisterProductCommand() {
+    void toCommandBuildsUnregisterProductCommand() {
         UserSession session = new UserSession(new ProductCatalog());
         session.getProductCatalog().addProduct(new Product("PRU7", "Removable", 5.0));
 
@@ -187,13 +189,13 @@ class ParserTest {
 
         assertAll(
                 () -> assertTrue(command instanceof UnregisterProductCommand,
-                        "parseCoreCommand should build an UnregisterProductCommand"),
+                        "toCommand should build an UnregisterProductCommand"),
                 () -> assertNull(session.getProductCatalog().findByCode("PRU7")));
     }
 
     @Test
-    void parseCoreCommandThrowsOnMissingArgumentsForRegister() {
-        ParsedInput command = new ParsedInput(CommandType.REGISTER_PRODUCT, "");
+    void toCommandThrowsOnMissingArgumentsForRegister() {
+        ParsedCommand command = new ParsedCommand(CommandType.REGISTER_PRODUCT, List.of());
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -202,8 +204,8 @@ class ParserTest {
     }
 
     @Test
-    void parseCoreCommandThrowsOnIncompleteArgumentsForRegister() {
-        ParsedInput command = new ParsedInput(CommandType.REGISTER_PRODUCT, "R001 Keyboard");
+    void toCommandThrowsOnIncompleteArgumentsForRegister() {
+        ParsedCommand command = new ParsedCommand(CommandType.REGISTER_PRODUCT, List.of("R001", "Keyboard"));
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -212,8 +214,8 @@ class ParserTest {
     }
 
     @Test
-    void parseCoreCommandThrowsOnNonNumericPriceForRegister() {
-        ParsedInput command = new ParsedInput(CommandType.REGISTER_PRODUCT, "R001 Keyboard abc");
+    void toCommandThrowsOnNonNumericPriceForRegister() {
+        ParsedCommand command = new ParsedCommand(CommandType.REGISTER_PRODUCT, List.of("R001", "Keyboard", "abc"));
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -224,8 +226,8 @@ class ParserTest {
     }
 
     @Test
-    void parseCoreCommandThrowsOnMissingArgumentsForUnregister() {
-        ParsedInput command = new ParsedInput(CommandType.UNREGISTER_PRODUCT, "");
+    void toCommandThrowsOnMissingArgumentsForUnregister() {
+        ParsedCommand command = new ParsedCommand(CommandType.UNREGISTER_PRODUCT, List.of());
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -234,8 +236,8 @@ class ParserTest {
     }
 
     @Test
-    void parseCoreCommandThrowsOnExtraArgumentsForUnregister() {
-        ParsedInput command = new ParsedInput(CommandType.UNREGISTER_PRODUCT, "R001 extra");
+    void toCommandThrowsOnExtraArgumentsForUnregister() {
+        ParsedCommand command = new ParsedCommand(CommandType.UNREGISTER_PRODUCT, List.of("R001", "extra"));
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -244,8 +246,9 @@ class ParserTest {
     }
 
     @Test
-    void parseCoreCommandThrowsOnExtraArguments() {
-        ParsedInput command = new ParsedInput(CommandType.ADD_PRODUCT, "P001 Monitor 799.99 extra");
+    void toCommandThrowsOnExtraArguments() {
+        ParsedCommand command = new ParsedCommand(
+                CommandType.ADD_PRODUCT, List.of("P001", "Monitor", "799.99", "extra"));
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -254,18 +257,18 @@ class ParserTest {
     }
 
     @Test
-    void parseCoreCommandThrowsForTuiCommandTypes() {
+    void toCommandThrowsForTuiCommandTypes() {
         for (CommandType type : CommandType.values()) {
             if (type.getTarget() != CommandType.Target.TUI) {
                 continue;
             }
 
-            ParsedInput command = new ParsedInput(type, "");
+            ParsedCommand command = new ParsedCommand(type, List.of());
 
             UnknownCommandException exception = assertThrows(
                     UnknownCommandException.class,
                     () -> parser.toCommand(command),
-                    "parseCoreCommand should reject " + type.getKeyword());
+                    "toCommand should reject " + type.getKeyword());
             assertTrue(exception.getMessage().contains(type.getKeyword()));
         }
     }
