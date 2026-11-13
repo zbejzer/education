@@ -63,15 +63,15 @@ class CommandTypeTest {
     }
 
     @Test
-    void getTargetClassifiesTuiAndCoreCommands() {
+    void getTargetClassifiesCommandsByTarget() {
         assertAll(
-                () -> assertEquals(CommandType.Target.TUI, CommandType.HELP.getTarget()),
-                () -> assertEquals(CommandType.Target.TUI, CommandType.EXIT.getTarget()),
-                () -> assertEquals(CommandType.Target.TUI, CommandType.HISTORY.getTarget()),
-                () -> assertEquals(CommandType.Target.TUI, CommandType.UNDO.getTarget()),
-                () -> assertEquals(CommandType.Target.CORE, CommandType.ADD_PRODUCT.getTarget()),
-                () -> assertEquals(CommandType.Target.CORE, CommandType.REGISTER_PRODUCT.getTarget()),
-                () -> assertEquals(CommandType.Target.CORE, CommandType.UNREGISTER_PRODUCT.getTarget()));
+                () -> assertEquals(CommandType.Target.SHELL, CommandType.HELP.getTarget()),
+                () -> assertEquals(CommandType.Target.SHELL, CommandType.EXIT.getTarget()),
+                () -> assertEquals(CommandType.Target.QUERY, CommandType.HISTORY.getTarget()),
+                () -> assertEquals(CommandType.Target.SESSION, CommandType.UNDO.getTarget()),
+                () -> assertEquals(CommandType.Target.COMMAND, CommandType.ADD_PRODUCT.getTarget()),
+                () -> assertEquals(CommandType.Target.COMMAND, CommandType.REGISTER_PRODUCT.getTarget()),
+                () -> assertEquals(CommandType.Target.COMMAND, CommandType.UNREGISTER_PRODUCT.getTarget()));
     }
 
     @Test

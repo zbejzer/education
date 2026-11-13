@@ -275,9 +275,9 @@ class ParserTest {
     }
 
     @Test
-    void toCommandThrowsForTuiCommandTypes() {
+    void toCommandThrowsForNonCommandTypes() {
         for (CommandType type : CommandType.values()) {
-            if (type.getTarget() != CommandType.Target.TUI) {
+            if (type.getTarget() == CommandType.Target.COMMAND) {
                 continue;
             }
 
