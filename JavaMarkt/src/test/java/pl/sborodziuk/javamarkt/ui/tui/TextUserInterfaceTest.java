@@ -207,6 +207,40 @@ class TextUserInterfaceTest {
         }
 
         @Test
+        void startReportsErrorForHelpWithExtraArgumentsAndContinuesLoop() {
+                TextUserInterface tui = newInterfaceWithInput("help now\nexit\n");
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains("Error:"),
+                                                "Extra arguments to help should be reported as an error"),
+                                () -> assertFalse(output.contains("Show available commands"),
+                                                "HELP listing must be suppressed for invalid input"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE),
+                                                "Loop must survive a rejected command and process EXIT"),
+                                () -> assertEquals(2, countPrompts(output),
+                                                "Rejected input should re-prompt before EXIT"));
+        }
+
+        @Test
+        void startReportsErrorForExitWithExtraArgumentsAndContinuesLoop() {
+                TextUserInterface tui = newInterfaceWithInput("exit now\nexit\n");
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains("Error:"),
+                                                "Extra arguments to exit should be reported as an error"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE),
+                                                "Loop must survive a rejected command and process EXIT"),
+                                () -> assertEquals(2, countPrompts(output),
+                                                "First line must be rejected; only the second EXIT terminates"));
+        }
+
+        @Test
         void startProcessesAddProductCommandAgainstSessionCart() {
                 UserSession session = new UserSession(new ProductCatalog());
                 System.setIn(new ByteArrayInputStream(

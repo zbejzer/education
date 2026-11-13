@@ -1,5 +1,6 @@
 package pl.sborodziuk.javamarkt.ui.tui;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -44,18 +45,18 @@ class ParserTest {
 
     @Test
     void parseExtractsArgumentsAfterFirstWhitespace() {
-        ParsedCommand command = parser.parse("help   extra arguments");
+        ParsedCommand command = parser.parse("add   P001 Monitor 799.99");
 
         assertAll(
-                () -> assertEquals(CommandType.HELP, command.commandType()),
-                () -> assertEquals(List.of("extra", "arguments"), command.arguments()));
+                () -> assertEquals(CommandType.ADD_PRODUCT, command.commandType()),
+                () -> assertEquals(List.of("P001", "Monitor", "799.99"), command.arguments()));
     }
 
     @Test
     void parseTokenizesArgumentsOnWhitespace() {
-        ParsedCommand command = parser.parse("help a  b");
+        ParsedCommand command = parser.parse("add P001  Monitor   799.99");
 
-        assertEquals(List.of("a", "b"), command.arguments());
+        assertEquals(List.of("P001", "Monitor", "799.99"), command.arguments());
     }
 
     @Test
@@ -87,6 +88,54 @@ class ParserTest {
                 UnknownCommandException.class,
                 () -> parser.parse("invalid argument"));
         assertTrue(exception.getMessage().contains("invalid"));
+    }
+
+    @Test
+    void parseRejectsTooManyArgumentsForEveryCommand() {
+        for (CommandType type : CommandType.values()) {
+            String[] args = new String[type.getRequiredArgumentCount() + 1];
+            Arrays.fill(args, "x");
+            String input = type.getKeyword() + " " + String.join(" ", args);
+
+            CommandFormatException exception = assertThrows(
+                    CommandFormatException.class, () -> parser.parse(input),
+                    "parse should reject: " + input);
+            assertTrue(exception.getMessage().contains(type.getSyntax()));
+        }
+    }
+
+    @Test
+    void parseRejectsTooFewArgumentsForEveryCommand() {
+        for (CommandType type : CommandType.values()) {
+            if (type.getRequiredArgumentCount() == 0) {
+                continue;
+            }
+
+            String input = type.getKeyword();
+
+            CommandFormatException exception = assertThrows(
+                    CommandFormatException.class, () -> parser.parse(input),
+                    "parse should reject: " + input);
+            assertTrue(exception.getMessage().contains(type.getSyntax()));
+        }
+    }
+
+    @Test
+    void parseAcceptsExactArgumentCountForEveryCommand() {
+        for (CommandType type : CommandType.values()) {
+            String[] args = new String[type.getRequiredArgumentCount()];
+            Arrays.fill(args, "x");
+            String input = args.length == 0
+                    ? type.getKeyword()
+                    : type.getKeyword() + " " + String.join(" ", args);
+
+            ParsedCommand command = assertDoesNotThrow(() -> parser.parse(input),
+                    "parse should accept: " + input);
+
+            assertAll(
+                    () -> assertEquals(type, command.commandType()),
+                    () -> assertEquals(type.getRequiredArgumentCount(), command.arguments().size()));
+        }
     }
 
     @Test
