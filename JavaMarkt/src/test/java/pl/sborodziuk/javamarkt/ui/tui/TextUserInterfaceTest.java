@@ -241,6 +241,28 @@ class TextUserInterfaceTest {
         }
 
         @Test
+        void startReportsErrorForAddWithNoArgumentsAndContinuesLoop() {
+                UserSession session = new UserSession(new ProductCatalog());
+                System.setIn(new ByteArrayInputStream("add\nexit\n".getBytes(StandardCharsets.UTF_8)));
+                TextUserInterface tui = new TextUserInterface(session);
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains("Error: Missing arguments"),
+                                                "Missing arguments to add should be reported as an error"),
+                                () -> assertTrue(output.contains(CommandType.ADD_PRODUCT.getSyntax()),
+                                                "Error should show the expected usage"),
+                                () -> assertEquals(0, session.getCart().getSize(),
+                                                "Rejected command must not touch the cart"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE),
+                                                "Loop must survive a rejected command and process EXIT"),
+                                () -> assertEquals(2, countPrompts(output),
+                                                "Rejected input should re-prompt before EXIT"));
+        }
+
+        @Test
         void startProcessesAddProductCommandAgainstSessionCart() {
                 UserSession session = new UserSession(new ProductCatalog());
                 System.setIn(new ByteArrayInputStream(

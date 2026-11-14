@@ -91,50 +91,52 @@ class ParserTest {
     }
 
     @Test
-    void parseRejectsTooManyArgumentsForEveryCommand() {
+    void parseReturnsArgumentsWithoutArityValidation() {
+        ParsedCommand extraHelp = parser.parse("help now");
+        ParsedCommand extraUnregister = parser.parse("unregister a b");
+
+        assertAll(
+                () -> assertEquals(CommandType.HELP, extraHelp.commandType()),
+                () -> assertEquals(List.of("now"), extraHelp.arguments()),
+                () -> assertEquals(CommandType.UNREGISTER_PRODUCT, extraUnregister.commandType()),
+                () -> assertEquals(List.of("a", "b"), extraUnregister.arguments()));
+    }
+
+    @Test
+    void validateArgumentCountAcceptsExactArgumentCountForEveryCommand() {
+        for (CommandType type : CommandType.values()) {
+            String[] args = new String[type.getRequiredArgumentCount()];
+            Arrays.fill(args, "x");
+
+            assertDoesNotThrow(() -> parser.requireValidArgumentCount(type, Arrays.asList(args)),
+                    "validateArgumentCount should accept: " + type.getKeyword());
+        }
+    }
+
+    @Test
+    void validateArgumentCountRejectsTooManyArgumentsForEveryCommand() {
         for (CommandType type : CommandType.values()) {
             String[] args = new String[type.getRequiredArgumentCount() + 1];
             Arrays.fill(args, "x");
-            String input = type.getKeyword() + " " + String.join(" ", args);
 
             CommandFormatException exception = assertThrows(
-                    CommandFormatException.class, () -> parser.parse(input),
-                    "parse should reject: " + input);
+                    CommandFormatException.class, () -> parser.requireValidArgumentCount(type, Arrays.asList(args)),
+                    "validateArgumentCount should reject: " + type.getKeyword());
             assertTrue(exception.getMessage().contains(type.getSyntax()));
         }
     }
 
     @Test
-    void parseRejectsTooFewArgumentsForEveryCommand() {
+    void validateArgumentCountRejectsTooFewArgumentsForEveryCommand() {
         for (CommandType type : CommandType.values()) {
             if (type.getRequiredArgumentCount() == 0) {
                 continue;
             }
 
-            String input = type.getKeyword();
-
             CommandFormatException exception = assertThrows(
-                    CommandFormatException.class, () -> parser.parse(input),
-                    "parse should reject: " + input);
+                    CommandFormatException.class, () -> parser.requireValidArgumentCount(type, List.of()),
+                    "validateArgumentCount should reject: " + type.getKeyword());
             assertTrue(exception.getMessage().contains(type.getSyntax()));
-        }
-    }
-
-    @Test
-    void parseAcceptsExactArgumentCountForEveryCommand() {
-        for (CommandType type : CommandType.values()) {
-            String[] args = new String[type.getRequiredArgumentCount()];
-            Arrays.fill(args, "x");
-            String input = args.length == 0
-                    ? type.getKeyword()
-                    : type.getKeyword() + " " + String.join(" ", args);
-
-            ParsedCommand command = assertDoesNotThrow(() -> parser.parse(input),
-                    "parse should accept: " + input);
-
-            assertAll(
-                    () -> assertEquals(type, command.commandType()),
-                    () -> assertEquals(type.getRequiredArgumentCount(), command.arguments().size()));
         }
     }
 
@@ -200,26 +202,6 @@ class ParserTest {
     }
 
     @Test
-    void toCommandThrowsOnMissingArguments() {
-        ParsedCommand command = new ParsedCommand(CommandType.ADD_PRODUCT, List.of());
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> parser.toCommand(command));
-        assertTrue(exception.getMessage().contains(CommandType.ADD_PRODUCT.getSyntax()));
-    }
-
-    @Test
-    void toCommandThrowsOnIncompleteArguments() {
-        ParsedCommand command = new ParsedCommand(CommandType.ADD_PRODUCT, List.of("P001", "Monitor"));
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> parser.toCommand(command));
-        assertTrue(exception.getMessage().contains(CommandType.ADD_PRODUCT.getSyntax()));
-    }
-
-    @Test
     void toCommandThrowsOnNonNumericPrice() {
         ParsedCommand command = new ParsedCommand(CommandType.ADD_PRODUCT, List.of("P001", "Monitor", "abc"));
 
@@ -261,26 +243,6 @@ class ParserTest {
     }
 
     @Test
-    void toCommandThrowsOnMissingArgumentsForRegister() {
-        ParsedCommand command = new ParsedCommand(CommandType.REGISTER_PRODUCT, List.of());
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> parser.toCommand(command));
-        assertTrue(exception.getMessage().contains(CommandType.REGISTER_PRODUCT.getSyntax()));
-    }
-
-    @Test
-    void toCommandThrowsOnIncompleteArgumentsForRegister() {
-        ParsedCommand command = new ParsedCommand(CommandType.REGISTER_PRODUCT, List.of("R001", "Keyboard"));
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> parser.toCommand(command));
-        assertTrue(exception.getMessage().contains(CommandType.REGISTER_PRODUCT.getSyntax()));
-    }
-
-    @Test
     void toCommandThrowsOnNonNumericPriceForRegister() {
         ParsedCommand command = new ParsedCommand(CommandType.REGISTER_PRODUCT, List.of("R001", "Keyboard", "abc"));
 
@@ -290,37 +252,6 @@ class ParserTest {
         assertTrue(exception.getMessage().contains(CommandType.REGISTER_PRODUCT.getSyntax()));
         assertInstanceOf(NumberFormatException.class, exception.getCause(),
                 "Original NumberFormatException should be chained as the cause");
-    }
-
-    @Test
-    void toCommandThrowsOnMissingArgumentsForUnregister() {
-        ParsedCommand command = new ParsedCommand(CommandType.UNREGISTER_PRODUCT, List.of());
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> parser.toCommand(command));
-        assertTrue(exception.getMessage().contains(CommandType.UNREGISTER_PRODUCT.getSyntax()));
-    }
-
-    @Test
-    void toCommandThrowsOnExtraArgumentsForUnregister() {
-        ParsedCommand command = new ParsedCommand(CommandType.UNREGISTER_PRODUCT, List.of("R001", "extra"));
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> parser.toCommand(command));
-        assertTrue(exception.getMessage().contains(CommandType.UNREGISTER_PRODUCT.getSyntax()));
-    }
-
-    @Test
-    void toCommandThrowsOnExtraArguments() {
-        ParsedCommand command = new ParsedCommand(
-                CommandType.ADD_PRODUCT, List.of("P001", "Monitor", "799.99", "extra"));
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> parser.toCommand(command));
-        assertTrue(exception.getMessage().contains(CommandType.ADD_PRODUCT.getSyntax()));
     }
 
     @Test

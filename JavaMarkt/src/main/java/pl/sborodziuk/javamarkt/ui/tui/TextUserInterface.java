@@ -53,6 +53,7 @@ public class TextUserInterface {
 
         ParsedCommand structuredCommand = parser.parse(input);
         if (structuredCommand.commandType().getTarget() != CommandType.Target.COMMAND) {
+            parser.requireValidArgumentCount(structuredCommand.commandType(), structuredCommand.arguments());
             handleCommand(structuredCommand);
         } else {
             Command command = parser.toCommand(structuredCommand);
