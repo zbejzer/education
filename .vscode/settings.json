@@ -1,0 +1,13 @@
+{
+  "files.exclude": {
+    "**/.idea": true,
+    "**/.kilo": true,
+    "**/.mvn": true,
+    "**/target": true
+  },
+      "cSpell.words": [
+        "javamarkt",
+        "sborodziuk"
+    ],
+    "java.configuration.updateBuildConfiguration": "automatic"
+}
