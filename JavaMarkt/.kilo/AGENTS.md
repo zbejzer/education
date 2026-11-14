@@ -1,15 +1,41 @@
 # JavaMarkt
 
-## Build commands
+## JDK
 
-Always run Maven with Java 17 as JAVA_HOME (dependencies are cached for it):
+The preferred JDK for this project is **Eclipse Temurin 17**. Do not assume or
+hardcode its installation path — it varies between machines and can change on
+reinstall. Discover it before running any Java or Maven command:
 
 ```bash
-JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64 mvn compile
-JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64 mvn test
+ls /usr/lib/jvm/          # list installed JVMs; names vary, symlinks are common
+grep -E "IMPLEMENTOR|JAVA_VERSION" /usr/lib/jvm/<dir>/release
 ```
 
-Note: the path `/usr/lib/jvm/java-17-temurin-jdk` documented earlier does not exist; use `temurin-17-jdk-amd64`.
+The `release` file in a JDK root directory identifies the vendor and version.
+A correct match shows `IMPLEMENTOR="Eclipse Adoptium"` and `JAVA_VERSION="17.…"`.
+Example: the directory may be named `temurin-17-jdk` (a symlink), or
+`java-17-temurin-jdk`, or carry a platform suffix — verify by the `release`
+file contents, never by the name.
+
+## Build commands
+
+Always run Maven with the discovered Temurin 17 as `JAVA_HOME`
+(dependencies are cached for it):
+
+```bash
+JAVA_HOME=/usr/lib/jvm/<discovered-temurin-17-dir> mvn compile
+JAVA_HOME=/usr/lib/jvm/<discovered-temurin-17-dir> mvn test
+```
+
+## Sandbox and restricted internet access
+
+Agents run in a sandbox without direct internet access. If a build or test run
+fails with symptoms of a missing environment dependency — most commonly Maven
+artifacts absent from the local repository cache — notify the user **immediately**
+instead of retrying or working around it. The user has to run such commands
+manually outside the sandbox; usually a plain `mvn test` run by the user is
+enough to pull all required dependencies into the local cache. Retry only after
+the user confirms the command has been run.
 
 ## Tests with coverage
 
