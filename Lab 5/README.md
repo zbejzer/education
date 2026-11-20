@@ -1,6 +1,7 @@
 # Zadania 4 (estymatory: wartości oczekiwanej, wariancji, dystrybuanty, kwantyli, rozkład estymatora metodą Monte-Carlo)
 
-1. Wygeneruj próbę liczności $n=10$ z rozkładu normalnego standardowego $F \sim N(0, 1)$.
+<!-- markdownlint-disable MD029 -->
+3. Wygeneruj próbę liczności $n=10$ z rozkładu normalnego standardowego $F \sim N(0, 1)$.
 
     a) Oblicz $\overline{X}_n$, $S_n^2$, $\tilde{S}_n^2$ oraz $\hat{F}_n(0)$. Porównaj wyniki z wartościami rzeczywistymi (do ich obliczenia użyj odpowiednich funkcji w R).
 
@@ -8,7 +9,7 @@
 
     c) Zaplanuj i wykonaj eksperymenty z próbkami, z innych rozkładów.
 
-2. Wygeneruj próbę liczności $n=10$ z rozkładu normalnego standardowego $F \sim N(0, 1)$.
+4. Wygeneruj próbę liczności $n=10$ z rozkładu normalnego standardowego $F \sim N(0, 1)$.
 
     a) Korzystając z klasycznego estymatora kwantyli (funkcja `quantile` w R, z domyślnym ustawieniem), wyestymuj kwantyle rzędu $\alpha = 5\%, 50\%$ i $95\%$. Oblicz rzeczywiste wartości kwantyli (funkcja `qnorm`) i porównaj wyniki.
 
@@ -16,7 +17,7 @@
 
     c) Zaplanuj i wykonaj eksperyment z próbkami, z innych rozkładów.
 
-3. Wygeneruj próbę liczności $n=10$ z rozkładu normalnego standardowego $F \sim N(0, 1)$.
+5. Wygeneruj próbę liczności $n=10$ z rozkładu normalnego standardowego $F \sim N(0, 1)$.
 
     a) Narysuj na jednym wykresie dystrybuantę teoretyczną i empiryczną.
 
@@ -24,7 +25,7 @@
 
     c) Zaplanuj i wykonaj eksperyment z próbkami, z innych rozkładów.
 
-4. Zbadaj empiryczny rozkład średniej empirycznej $\overline{X}_n$ w eksperymentcie Monte Carlo.
+6. Zbadaj empiryczny rozkład średniej empirycznej $\overline{X}_n$ w eksperymentcie Monte Carlo.
 
     a) Wygeneruj $N = 1000$ prób o liczności $n = 10$ z rozkładu $N(0, 1)$. Dla każdej z prób oblicz średnią empiryczną.
 
@@ -34,7 +35,7 @@
 
     d) Powtórz kroki a) i c) z próbkami z innych rozkładów.
 
-5. Zbadaj empiryczny rozkład wariancji empirycznej $S_n^2$ w eksperymencie Monte Carlo.
+7. Zbadaj empiryczny rozkład wariancji empirycznej $S_n^2$ w eksperymencie Monte Carlo.
 
     a) Wygeneruj $N = 1000$ prób o liczności $n = 10$ z rozkładu $N(0, 1)$. Dla każdej z prób oblicz wariancję empiryczną.
 
@@ -44,7 +45,7 @@
 
     d) Powtórz kroki a) i c) dla estymatora wybranego kwantyla i wartości dystrybuanty w punkcie zero $F(0)$.
 
-6. Wygeneruj próbę o liczności $n = 10$ z rozkładu wykładniczego z parametrem $\lambda = 1$.
+8. Wygeneruj próbę o liczności $n = 10$ z rozkładu wykładniczego z parametrem $\lambda = 1$.
 
     a) Zapisz teoretyczne wzory wartości oczekiwanej i mediany, dla zmiennej $X \sim \text{Exp}(\lambda)$. Oblicz wartość oczekiwaną i medianę dla $\lambda = 1$.
 
