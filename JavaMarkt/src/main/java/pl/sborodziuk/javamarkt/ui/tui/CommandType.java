@@ -7,7 +7,8 @@ public enum CommandType {
     UNDO(Target.SESSION, "Attempt to reverse the last operation"),
     ADD_PRODUCT(Target.COMMAND, "add", "Add product to cart", "<code> <name> <price>"),
     REGISTER_PRODUCT(Target.COMMAND, "register", "Register product in catalog", "<code> <name> <price>"),
-    UNREGISTER_PRODUCT(Target.COMMAND, "unregister", "Remove product from catalog", "<code>");
+    UNREGISTER_PRODUCT(Target.COMMAND, "unregister", "Remove product from catalog", "<code>"),
+    REMOVE_PRODUCT(Target.COMMAND, "remove", "Remove product from cart", "<code>");
 
     public enum Target {
         SHELL,

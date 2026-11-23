@@ -6,4 +6,6 @@ public interface CommandVisitor<T> {
     T visitRegisterProduct(RegisterProductCommand command);
 
     T visitUnregisterProduct(UnregisterProductCommand command);
+
+    T visitRemoveProduct(RemoveProductCommand command);
 }

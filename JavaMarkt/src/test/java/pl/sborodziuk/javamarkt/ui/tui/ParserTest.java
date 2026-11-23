@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import pl.sborodziuk.javamarkt.command.AddProductCommand;
 import pl.sborodziuk.javamarkt.command.Command;
 import pl.sborodziuk.javamarkt.command.RegisterProductCommand;
+import pl.sborodziuk.javamarkt.command.RemoveProductCommand;
 import pl.sborodziuk.javamarkt.command.UnregisterProductCommand;
 import pl.sborodziuk.javamarkt.model.Product;
 import pl.sborodziuk.javamarkt.model.ProductCatalog;
@@ -168,6 +169,15 @@ class ParserTest {
     }
 
     @Test
+    void parseResolvesRemoveProductKeyword() {
+        ParsedCommand command = parser.parse("remove P001");
+
+        assertAll(
+                () -> assertEquals(CommandType.REMOVE_PRODUCT, command.commandType()),
+                () -> assertEquals(List.of("P001"), command.arguments()));
+    }
+
+    @Test
     void parseResolvesHistoryKeyword() {
         ParsedCommand command = parser.parse("history");
 
@@ -240,6 +250,37 @@ class ParserTest {
                 () -> assertTrue(command instanceof UnregisterProductCommand,
                         "toCommand should build an UnregisterProductCommand"),
                 () -> assertNull(session.getProductCatalog().findByCode("PRU7")));
+    }
+
+    @Test
+    void toCommandBuildsRemoveProductCommand() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.executeCommand(new AddProductCommand("PRM7", "Removable", 5.0));
+
+        Command command = parser.toCommand(parser.parse("remove PRM7"));
+        command.execute(session);
+
+        assertAll(
+                () -> assertTrue(command instanceof RemoveProductCommand,
+                        "toCommand should build a RemoveProductCommand"),
+                () -> assertEquals(0, session.getCart().getSize()));
+    }
+
+    @Test
+    void toCommandRejectsRemoveProductWithWrongArgumentCount() {
+        ParsedCommand noArgs = new ParsedCommand(CommandType.REMOVE_PRODUCT, List.of());
+        ParsedCommand twoArgs = new ParsedCommand(CommandType.REMOVE_PRODUCT, List.of("P001", "P002"));
+
+        CommandFormatException missing = assertThrows(
+                CommandFormatException.class, () -> parser.toCommand(noArgs));
+        CommandFormatException tooMany = assertThrows(
+                CommandFormatException.class, () -> parser.toCommand(twoArgs));
+
+        assertAll(
+                () -> assertTrue(missing.getMessage().contains("Missing arguments")),
+                () -> assertTrue(missing.getMessage().contains(CommandType.REMOVE_PRODUCT.getSyntax())),
+                () -> assertTrue(tooMany.getMessage().contains("Too many arguments")),
+                () -> assertTrue(tooMany.getMessage().contains(CommandType.REMOVE_PRODUCT.getSyntax())));
     }
 
     @Test

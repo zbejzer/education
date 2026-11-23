@@ -63,8 +63,8 @@ class RegisterProductCommandTest {
         UserSession session = new UserSession(new ProductCatalog());
         RegisterProductCommand command = new RegisterProductCommand("PRG8", "Keyboard", 149.99);
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class, () -> command.undo(session));
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class, () -> command.undo(session));
 
         assertTrue(exception.getMessage().contains("PRG8"));
     }

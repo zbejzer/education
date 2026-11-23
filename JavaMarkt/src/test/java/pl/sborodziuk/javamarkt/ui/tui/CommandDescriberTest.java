@@ -8,6 +8,7 @@ import pl.sborodziuk.javamarkt.command.AddProductCommand;
 import pl.sborodziuk.javamarkt.command.Command;
 import pl.sborodziuk.javamarkt.command.CommandVisitor;
 import pl.sborodziuk.javamarkt.command.RegisterProductCommand;
+import pl.sborodziuk.javamarkt.command.RemoveProductCommand;
 import pl.sborodziuk.javamarkt.command.UnregisterProductCommand;
 import pl.sborodziuk.javamarkt.model.Product;
 import pl.sborodziuk.javamarkt.model.ProductCatalog;
@@ -44,6 +45,15 @@ class CommandDescriberTest {
 
         assertAll(
                 () -> assertEquals(CommandType.UNREGISTER_PRODUCT, parsed.commandType()),
+                () -> assertEquals(List.of("R001"), parsed.arguments()));
+    }
+
+    @Test
+    void parseDescribesRemoveProductCommand() {
+        ParsedCommand parsed = describer.parse(new RemoveProductCommand("R001"));
+
+        assertAll(
+                () -> assertEquals(CommandType.REMOVE_PRODUCT, parsed.commandType()),
                 () -> assertEquals(List.of("R001"), parsed.arguments()));
     }
 
@@ -93,6 +103,13 @@ class CommandDescriberTest {
     }
 
     @Test
+    void describeEntryRendersRemoveProductEntry() {
+        String entry = describer.describeEntry(describer.parse(new RemoveProductCommand("R001")));
+
+        assertEquals("remove R001", entry);
+    }
+
+    @Test
     void describedAddProductCommandRoundTripsThroughParser() {
         UserSession session = new UserSession(new ProductCatalog());
 
@@ -129,5 +146,16 @@ class CommandDescriberTest {
         command.execute(session);
 
         assertNull(session.getProductCatalog().findByCode("R001"));
+    }
+
+    @Test
+    void describedRemoveProductCommandRoundTripsThroughParser() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.executeCommand(new AddProductCommand("R001", "Keyboard", 149.99));
+
+        Command command = parser.toCommand(describer.parse(new RemoveProductCommand("R001")));
+        command.execute(session);
+
+        assertEquals(0, session.getCart().getSize());
     }
 }

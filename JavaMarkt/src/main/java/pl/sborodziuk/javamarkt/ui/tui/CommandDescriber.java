@@ -6,6 +6,7 @@ import pl.sborodziuk.javamarkt.command.AddProductCommand;
 import pl.sborodziuk.javamarkt.command.Command;
 import pl.sborodziuk.javamarkt.command.CommandVisitor;
 import pl.sborodziuk.javamarkt.command.RegisterProductCommand;
+import pl.sborodziuk.javamarkt.command.RemoveProductCommand;
 import pl.sborodziuk.javamarkt.command.UnregisterProductCommand;
 
 public class CommandDescriber implements CommandVisitor<ParsedCommand> {
@@ -32,6 +33,12 @@ public class CommandDescriber implements CommandVisitor<ParsedCommand> {
     @Override
     public ParsedCommand visitUnregisterProduct(UnregisterProductCommand command) {
         return new ParsedCommand(CommandType.UNREGISTER_PRODUCT,
+                List.of(command.getCode()));
+    }
+
+    @Override
+    public ParsedCommand visitRemoveProduct(RemoveProductCommand command) {
+        return new ParsedCommand(CommandType.REMOVE_PRODUCT,
                 List.of(command.getCode()));
     }
 

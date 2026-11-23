@@ -71,7 +71,8 @@ class CommandTypeTest {
                 () -> assertEquals(CommandType.Target.SESSION, CommandType.UNDO.getTarget()),
                 () -> assertEquals(CommandType.Target.COMMAND, CommandType.ADD_PRODUCT.getTarget()),
                 () -> assertEquals(CommandType.Target.COMMAND, CommandType.REGISTER_PRODUCT.getTarget()),
-                () -> assertEquals(CommandType.Target.COMMAND, CommandType.UNREGISTER_PRODUCT.getTarget()));
+                () -> assertEquals(CommandType.Target.COMMAND, CommandType.UNREGISTER_PRODUCT.getTarget()),
+                () -> assertEquals(CommandType.Target.COMMAND, CommandType.REMOVE_PRODUCT.getTarget()));
     }
 
     @Test
@@ -79,6 +80,21 @@ class CommandTypeTest {
         assertAll(
                 () -> assertEquals("register", CommandType.REGISTER_PRODUCT.getKeyword()),
                 () -> assertEquals("unregister", CommandType.UNREGISTER_PRODUCT.getKeyword()));
+    }
+
+    @Test
+    void removeProductUsesKeywordAndSyntax() {
+        assertAll(
+                () -> assertEquals("remove", CommandType.REMOVE_PRODUCT.getKeyword()),
+                () -> assertEquals("remove <code>", CommandType.REMOVE_PRODUCT.getSyntax()));
+    }
+
+    @Test
+    void fromKeywordResolvesRemoveProductCaseInsensitively() {
+        assertAll(
+                () -> assertEquals(CommandType.REMOVE_PRODUCT, CommandType.fromKeyword("remove")),
+                () -> assertEquals(CommandType.REMOVE_PRODUCT, CommandType.fromKeyword("REMOVE")),
+                () -> assertEquals(CommandType.REMOVE_PRODUCT, CommandType.fromKeyword("Remove")));
     }
 
     @Test
@@ -106,6 +122,7 @@ class CommandTypeTest {
                 () -> assertEquals(0, CommandType.UNDO.getRequiredArgumentCount()),
                 () -> assertEquals(3, CommandType.ADD_PRODUCT.getRequiredArgumentCount()),
                 () -> assertEquals(3, CommandType.REGISTER_PRODUCT.getRequiredArgumentCount()),
-                () -> assertEquals(1, CommandType.UNREGISTER_PRODUCT.getRequiredArgumentCount()));
+                () -> assertEquals(1, CommandType.UNREGISTER_PRODUCT.getRequiredArgumentCount()),
+                () -> assertEquals(1, CommandType.REMOVE_PRODUCT.getRequiredArgumentCount()));
     }
 }

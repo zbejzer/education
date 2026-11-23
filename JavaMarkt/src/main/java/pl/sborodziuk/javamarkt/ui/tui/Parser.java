@@ -5,6 +5,7 @@ import java.util.List;
 import pl.sborodziuk.javamarkt.command.AddProductCommand;
 import pl.sborodziuk.javamarkt.command.Command;
 import pl.sborodziuk.javamarkt.command.RegisterProductCommand;
+import pl.sborodziuk.javamarkt.command.RemoveProductCommand;
 import pl.sborodziuk.javamarkt.command.UnregisterProductCommand;
 
 public class Parser {
@@ -33,6 +34,8 @@ public class Parser {
                     return buildRegisterProduct(command);
                 case UNREGISTER_PRODUCT:
                     return buildUnregisterProduct(command);
+                case REMOVE_PRODUCT:
+                    return buildRemoveProduct(command);
                 default:
                     throw new UnknownCommandException(command.commandType().getKeyword());
             }
@@ -53,6 +56,10 @@ public class Parser {
 
     private Command buildUnregisterProduct(ParsedCommand command) {
         return new UnregisterProductCommand(command.arguments().get(0));
+    }
+
+    private Command buildRemoveProduct(ParsedCommand command) {
+        return new RemoveProductCommand(command.arguments().get(0));
     }
 
     void requireValidArgumentCount(CommandType type, List<String> arguments) {

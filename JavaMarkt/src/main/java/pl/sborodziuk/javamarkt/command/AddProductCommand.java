@@ -26,8 +26,10 @@ public class AddProductCommand implements Command {
 
     @Override
     public void undo(UserSession session) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'undo'");
+        if (session.getCart().removeProduct(product.getCode()) == null) {
+            throw new IllegalStateException(
+                    "Product with code " + product.getCode() + " is not in the cart.");
+        }
     }
 
 }

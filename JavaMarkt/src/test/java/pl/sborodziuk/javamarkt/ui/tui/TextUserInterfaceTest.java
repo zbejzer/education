@@ -96,6 +96,24 @@ class TextUserInterfaceTest {
         }
 
         @Test
+        void handleHelpCommandListsRemoveProductCommand() {
+                TextUserInterface tui = newInterfaceWithInput("");
+
+                tui.handleCommand(new ParsedCommand(CommandType.HELP, List.of()));
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains(CommandType.REMOVE_PRODUCT.getKeyword()),
+                                                "Help output should contain keyword: remove"),
+                                () -> assertTrue(output.contains(CommandType.REMOVE_PRODUCT.getDescription()),
+                                                "Help output should contain description: "
+                                                                + CommandType.REMOVE_PRODUCT.getDescription()),
+                                () -> assertTrue(output.contains(
+                                                "(Syntax: " + CommandType.REMOVE_PRODUCT.getSyntax() + ")"),
+                                                "Help output should contain syntax for: remove"));
+        }
+
+        @Test
         void handleExitCommandPrintsExitMessage() {
                 TextUserInterface tui = newInterfaceWithInput("");
 
@@ -452,7 +470,33 @@ class TextUserInterfaceTest {
         }
 
         @Test
-        void startReportsBlockedUndoWhenNonUndoableCommandIsLast() {
+        void startUndoesLastRemoveCommandAndRestoresCartItem() {
+                UserSession session = new UserSession(new ProductCatalog());
+                System.setIn(new ByteArrayInputStream(
+                                "add P001 Monitor 799.99\nremove P001\nundo\nexit\n"
+                                                .getBytes(StandardCharsets.UTF_8)));
+                TextUserInterface tui = new TextUserInterface(session);
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains("Undone: remove P001"),
+                                                "UNDO should describe the reversed remove canonically"),
+                                () -> assertEquals(1, session.getCart().getSize(),
+                                                "Undoing the remove must restore the cart item"),
+                                () -> assertEquals("P001",
+                                                session.getCart().getAllItems()[0].getProduct().getCode()),
+                                () -> assertEquals("Monitor",
+                                                session.getCart().getAllItems()[0].getProduct().getName()),
+                                () -> assertEquals(799.99,
+                                                session.getCart().getAllItems()[0].getProduct().getPrice()),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE)),
+                                () -> assertFalse(tui.isRunning()));
+        }
+
+        @Test
+        void startUndoesLastAddCommandAndEmptiesCartEntry() {
                 ProductCatalog catalog = new ProductCatalog();
                 UserSession session = new UserSession(catalog);
                 System.setIn(new ByteArrayInputStream(
@@ -464,14 +508,13 @@ class TextUserInterfaceTest {
 
                 String output = output();
                 assertAll(
-                                () -> assertTrue(output.contains("Cannot undo the last operation."),
-                                                "The add at the top of history must block deeper undo"),
+                                () -> assertTrue(output.contains("Undone: add P001 Monitor 799.99"),
+                                                "UNDO should describe the reversed add canonically"),
+                                () -> assertEquals(0, session.getCart().getSize(),
+                                                "Undoing the add must empty the cart entry"),
                                 () -> assertEquals("Keyboard", catalog.findByCode("R001").getName(),
                                                 "Catalog must keep the registered product"),
-                                () -> assertEquals(1, session.getCart().getSize(),
-                                                "Cart must keep the added item"),
-                                () -> assertTrue(output.contains(EXIT_MESSAGE),
-                                                "Loop must survive a blocked undo and process EXIT"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE)),
                                 () -> assertFalse(tui.isRunning()));
         }
 

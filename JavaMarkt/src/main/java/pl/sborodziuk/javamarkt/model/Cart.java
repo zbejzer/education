@@ -22,6 +22,26 @@ public class Cart {
         recalculate();
     }
 
+    public Product removeProduct(String code) {
+        if (code == null || code.isBlank()) {
+            throw new IllegalArgumentException("Product code cannot be blank.");
+        }
+
+        for (int i = 0; i < size; i++) {
+            if (!items[i].getCode().equals(code)) {
+                continue;
+            }
+            Product removed = items[i].getProduct();
+            CartItem[] updated = copyOf(items, size - 1);
+            System.arraycopy(items, i + 1, updated, i, size - i - 1);
+            items = updated;
+            size--;
+            recalculate();
+            return removed;
+        }
+        return null;
+    }
+
     public int getSize() {
         return size;
     }

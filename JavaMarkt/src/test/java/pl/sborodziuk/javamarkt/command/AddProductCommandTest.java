@@ -49,4 +49,32 @@ class AddProductCommandTest {
         assertEquals(0, session.getCart().getSize(),
                 "Rejected commands must never modify the cart");
     }
+
+    @Test
+    void undoRemovesTheAddedProductFromCart() {
+        UserSession session = new UserSession(new ProductCatalog());
+        AddProductCommand command = new AddProductCommand("P001", "Monitor", 799.99);
+        command.execute(session);
+
+        command.undo(session);
+
+        assertAll(
+                () -> assertEquals(0, session.getCart().getSize()),
+                () -> assertEquals(0, session.getCart().getAllItems().length));
+    }
+
+    @Test
+    void undoThrowsAndKeepsCartIntactWhenProductIsAbsent() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.executeCommand(new AddProductCommand("P002", "Keyboard", 149.50));
+        AddProductCommand command = new AddProductCommand("P001", "Monitor", 799.99);
+
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class, () -> command.undo(session));
+
+        assertAll(
+                () -> assertTrue(exception.getMessage().contains("P001")),
+                () -> assertEquals(1, session.getCart().getSize()),
+                () -> assertEquals("P002", session.getCart().getAllItems()[0].getProduct().getCode()));
+    }
 }
