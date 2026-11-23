@@ -27,7 +27,7 @@ public class RegisterProductCommand implements Command {
     @Override
     public void undo(UserSession session) {
         if (!session.getProductCatalog().removeProduct(product.getCode())) {
-            throw new IllegalArgumentException(
+            throw new IllegalStateException(
                     "Product with code " + product.getCode() + " does not exist.");
         }
     }
