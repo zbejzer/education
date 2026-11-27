@@ -91,6 +91,11 @@ class CommandTypeTest {
     }
 
     @Test
+    void fromKeywordRejectsNullKeyword() {
+        assertThrows(IllegalArgumentException.class, () -> CommandType.fromKeyword(null));
+    }
+
+    @Test
     void getTargetClassifiesCommandsByTarget() {
         assertAll(
                 () -> assertEquals(CommandType.Target.SHELL, CommandType.HELP.getTarget()),

@@ -12,10 +12,13 @@ public class Cart {
     }
 
     public CartItem[] getAllItems() {
-        return items;
+        return copyOf(items, size);
     }
 
     public void addProduct(Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException("Product cannot be null.");
+        }
         items = copyOf(items, size + 1);
         items[size] = new CartItem(product);
         size++;

@@ -29,6 +29,9 @@ public class UserSession {
     }
 
     public void executeCommand(Command command) {
+        if (command == null) {
+            throw new IllegalArgumentException("Command cannot be null.");
+        }
         command.execute(this);
         history.addLast(command);
     }

@@ -39,6 +39,15 @@ class UserSessionTest {
     }
 
     @Test
+    void executeCommandRejectsNullCommand() {
+        UserSession session = new UserSession(new ProductCatalog());
+
+        assertThrows(IllegalArgumentException.class, () -> session.executeCommand(null));
+
+        assertTrue(session.getHistory().isEmpty());
+    }
+
+    @Test
     void executeCommandRunsCommandAgainstThisSession() {
         UserSession session = new UserSession(new ProductCatalog());
         AtomicReference<UserSession> captured = new AtomicReference<>();

@@ -51,6 +51,70 @@ class CartTest {
     }
 
     @Test
+    void addProductRejectsNullProduct() {
+        Cart cart = new Cart();
+
+        assertThrows(IllegalArgumentException.class, () -> cart.addProduct(null));
+
+        assertEquals(0, cart.getSize());
+    }
+
+    @Test
+    void addProductSupportsZeroPriceProduct() {
+        Cart cart = new Cart();
+        Product product = new Product("P040", "Gratis", 0.0);
+
+        cart.addProduct(product);
+        int sizeAfterAdd = cart.getSize();
+        double price = cart.getAllItems()[0].getPrice();
+        double discountPrice = cart.getAllItems()[0].getDiscountPrice();
+        Product removed = cart.removeProduct("P040");
+
+        assertAll(
+                () -> assertEquals(1, sizeAfterAdd),
+                () -> assertEquals(0.0, price),
+                () -> assertEquals(0.0, discountPrice),
+                () -> assertSame(product, removed),
+                () -> assertEquals(0, cart.getSize()));
+    }
+
+    @Test
+    void getAllItemsSnapshotIsIsolatedFromCart() {
+        Cart cart = new Cart();
+        Product first = new Product("P041", "Monitor", 799.99);
+        cart.addProduct(first);
+
+        CartItem[] snapshot = cart.getAllItems();
+        snapshot[0] = null;
+        cart.addProduct(new Product("P042", "Keyboard", 149.50));
+
+        assertAll(
+                () -> assertEquals(1, snapshot.length),
+                () -> assertNull(snapshot[0]),
+                () -> assertEquals(2, cart.getSize()),
+                () -> assertSame(first, cart.getAllItems()[0].getProduct()));
+    }
+
+    @Test
+    void getAllItemsSnapshotUnaffectedByRemoveProduct() {
+        Cart cart = new Cart();
+        Product first = new Product("P043", "Monitor", 799.99);
+        Product second = new Product("P044", "Keyboard", 149.50);
+        cart.addProduct(first);
+        cart.addProduct(second);
+
+        CartItem[] snapshot = cart.getAllItems();
+        cart.removeProduct("P043");
+
+        assertAll(
+                () -> assertEquals(2, snapshot.length),
+                () -> assertSame(first, snapshot[0].getProduct()),
+                () -> assertSame(second, snapshot[1].getProduct()),
+                () -> assertEquals(1, cart.getSize()),
+                () -> assertSame(second, cart.getAllItems()[0].getProduct()));
+    }
+
+    @Test
     void recalculateResetsDiscountPriceToPriceForAllProducts() {
         Cart cart = new Cart();
         Product product = new Product("P004", "Headphones", 200.0);
