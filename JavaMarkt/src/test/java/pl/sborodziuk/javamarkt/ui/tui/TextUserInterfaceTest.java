@@ -88,7 +88,7 @@ class TextUserInterfaceTest {
         }
 
         @Test
-        void handleHelpCommandKeepsInterfaceRunning() {
+        void handleHelpCommandDoesNotStartInterface() {
                 TextUserInterface tui = newInterfaceWithInput("");
 
                 tui.handleCommand(new ParsedCommand(CommandType.HELP, List.of()));
@@ -224,6 +224,86 @@ class TextUserInterfaceTest {
                                 () -> assertTrue(output.contains(EXIT_MESSAGE),
                                                 "Loop must survive unknown commands and process EXIT"),
                                 () -> assertFalse(tui.isRunning()));
+        }
+
+        @Test
+        void startReportsErrorForAddingUnregisteredProductAndContinuesLoop() {
+                UserSession session = new UserSession(new ProductCatalog());
+                System.setIn(new ByteArrayInputStream("add GHOST\nexit\n".getBytes(StandardCharsets.UTF_8)));
+                TextUserInterface tui = new TextUserInterface(session);
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains("Error: Product with code GHOST does not exist."),
+                                                "Adding an unregistered product should be reported as an error"),
+                                () -> assertEquals(0, session.getCart().getSize(),
+                                                "Rejected add must not touch the cart"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE),
+                                                "Loop must survive a rejected command"),
+                                () -> assertEquals(2, countPrompts(output),
+                                                "Rejected input should re-prompt before EXIT"));
+        }
+
+        @Test
+        void startReportsErrorForRemovingProductNotInCartAndContinuesLoop() {
+                UserSession session = new UserSession(new ProductCatalog());
+                System.setIn(new ByteArrayInputStream("remove GHOST\nexit\n".getBytes(StandardCharsets.UTF_8)));
+                TextUserInterface tui = new TextUserInterface(session);
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(
+                                                output.contains("Error: Product with code GHOST is not in the cart."),
+                                                "Removing an absent product should be reported as an error"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE),
+                                                "Loop must survive a rejected command"),
+                                () -> assertEquals(2, countPrompts(output),
+                                                "Rejected input should re-prompt before EXIT"));
+        }
+
+        @Test
+        void startReportsErrorForUnregisteringUnknownProductAndContinuesLoop() {
+                TextUserInterface tui = newInterfaceWithInput("unregister GHOST\nexit\n");
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains("Error: Product with code GHOST does not exist."),
+                                                "Unregistering an unknown product should be reported as an error"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE),
+                                                "Loop must survive a rejected command"),
+                                () -> assertEquals(2, countPrompts(output),
+                                                "Rejected input should re-prompt before EXIT"));
+        }
+
+        @Test
+        void startReportsErrorForInvalidPricesAndContinuesLoop() {
+                ProductCatalog catalog = new ProductCatalog();
+                UserSession session = new UserSession(catalog);
+                System.setIn(new ByteArrayInputStream(
+                                "register R001 Keyboard abc\nregister R002 Keyboard -5\nexit\n"
+                                                .getBytes(StandardCharsets.UTF_8)));
+                TextUserInterface tui = new TextUserInterface(session);
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains(
+                                                "Error: Invalid price. Usage: register <code> <name> <price>"),
+                                                "A non-numeric price should report the expected usage"),
+                                () -> assertTrue(output.contains("Error: Price cannot be negative or infinite"),
+                                                "A negative price should be rejected by product validation"),
+                                () -> assertTrue(catalog.isEmpty(), "Rejected registrations must not create products"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE),
+                                                "Loop must survive rejected registrations"),
+                                () -> assertEquals(3, countPrompts(output),
+                                                "Each rejected input should re-prompt before EXIT"));
         }
 
         @Test

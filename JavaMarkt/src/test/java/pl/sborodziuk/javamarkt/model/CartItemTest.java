@@ -14,6 +14,16 @@ class CartItemTest {
     }
 
     @Test
+    void sellableAccessorsDelegateToProduct() {
+        CartItem item = new CartItem(new Product("P007", "Dock", 249.0));
+
+        assertAll(
+                () -> assertEquals("P007", item.getCode()),
+                () -> assertEquals("Dock", item.getName()),
+                () -> assertEquals(249.0, item.getPrice()));
+    }
+
+    @Test
     void setDiscountPriceAcceptsZero() {
         CartItem item = new CartItem(new Product("P005", "Promo item", 50.0));
 

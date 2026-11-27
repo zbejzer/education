@@ -54,6 +54,35 @@ class ProductCatalogTest {
     }
 
     @Test
+    void removeProductRemovesOnlyTargetProduct() {
+        ProductCatalog catalog = new ProductCatalog();
+        catalog.addProduct(new Product("PCR2", "Removable", 5.0));
+        catalog.addProduct(new Product("PCR3", "Kept", 7.0));
+
+        assertTrue(catalog.removeProduct("PCR2"));
+
+        assertAll(
+                () -> assertNull(catalog.findByCode("PCR2")),
+                () -> assertEquals("Kept", catalog.findByCode("PCR3").getName()),
+                () -> assertEquals(1, catalog.getSize()));
+    }
+
+    @Test
+    void addProductAllowsReAddingCodeAfterRemoval() {
+        ProductCatalog catalog = new ProductCatalog();
+        catalog.addProduct(new Product("PCR4", "Original", 5.0));
+
+        catalog.removeProduct("PCR4");
+        catalog.addProduct(new Product("PCR4", "Replacement", 9.0));
+
+        Product reAdded = catalog.findByCode("PCR4");
+        assertAll(
+                () -> assertEquals("Replacement", reAdded.getName()),
+                () -> assertEquals(9.0, reAdded.getPrice()),
+                () -> assertEquals(1, catalog.getSize()));
+    }
+
+    @Test
     void removeProductReturnsFalseForUnknownCode() {
         ProductCatalog catalog = new ProductCatalog();
 
@@ -77,7 +106,8 @@ class ProductCatalogTest {
 
         assertAll(
                 () -> assertEquals("PCW1", catalog.findByCode("PCW1").getCode()),
-                () -> assertNull(catalog.findByCode("  PCW1  ")));
+                () -> assertNull(catalog.findByCode("  PCW1  ")),
+                () -> assertNull(catalog.findByCode("pcw1")));
     }
 
     @Test
@@ -109,6 +139,35 @@ class ProductCatalogTest {
     }
 
     @Test
+    void getAllProductsReturnsSnapshotUnaffectedByLaterChanges() {
+        ProductCatalog catalog = new ProductCatalog();
+        catalog.addProduct(new Product("PCT4", "Fourth", 4.0));
+
+        Product[] snapshot = catalog.getAllProducts();
+        catalog.addProduct(new Product("PCT5", "Fifth", 5.0));
+
+        assertAll(
+                () -> assertEquals(1, snapshot.length),
+                () -> assertEquals(2, catalog.getSize()),
+                () -> assertEquals(2, catalog.getAllProducts().length));
+    }
+
+    @Test
+    void iterationReflectsRemoval() {
+        ProductCatalog catalog = new ProductCatalog();
+        catalog.addProduct(new Product("PCT6", "Sixth", 6.0));
+        catalog.addProduct(new Product("PCT7", "Seventh", 7.0));
+        catalog.removeProduct("PCT6");
+
+        List<String> codes = new ArrayList<>();
+        for (Product product : catalog) {
+            codes.add(product.getCode());
+        }
+
+        assertEquals(List.of("PCT7"), codes);
+    }
+
+    @Test
     void iterationYieldsExactlyTheAddedProducts() {
         ProductCatalog catalog = new ProductCatalog();
         catalog.addProduct(new Product("PCT3", "Third", 3.0));
@@ -123,6 +182,18 @@ class ProductCatalogTest {
         assertAll(
                 () -> assertEquals(3, codes.size()),
                 () -> assertEquals(Set.of("PCT1", "PCT2", "PCT3"), new HashSet<>(codes)));
+    }
+
+    @Test
+    void isEmptyAndGetSizeReflectRemoval() {
+        ProductCatalog catalog = new ProductCatalog();
+        catalog.addProduct(new Product("PCS2", "Transient", 2.0));
+
+        catalog.removeProduct("PCS2");
+
+        assertAll(
+                () -> assertTrue(catalog.isEmpty()),
+                () -> assertEquals(0, catalog.getSize()));
     }
 
     @Test

@@ -59,6 +59,22 @@ class RegisterProductCommandTest {
     }
 
     @Test
+    void undoLeavesOtherProductsInCatalog() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.getProductCatalog().addProduct(new Product("PRG5", "Existing", 10.0));
+        RegisterProductCommand command = new RegisterProductCommand("PRG6", "Keyboard", 149.99);
+        command.execute(session);
+
+        command.undo(session);
+
+        Product existing = session.getProductCatalog().findByCode("PRG5");
+        assertAll(
+                () -> assertNull(session.getProductCatalog().findByCode("PRG6")),
+                () -> assertEquals("Existing", existing.getName()),
+                () -> assertEquals(1, session.getProductCatalog().getSize()));
+    }
+
+    @Test
     void undoThrowsWhenProductIsMissingFromCatalog() {
         UserSession session = new UserSession(new ProductCatalog());
         RegisterProductCommand command = new RegisterProductCommand("PRG8", "Keyboard", 149.99);

@@ -1,5 +1,6 @@
 package pl.sborodziuk.javamarkt.ui.tui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,6 +62,28 @@ class ParserTest {
     }
 
     @Test
+    void parseTreatsTabsAndRepeatedSpacesAsWhitespace() {
+        ParsedCommand command = parser.parse("register\tR001\tKeyboard   149.99");
+
+        assertAll(
+                () -> assertEquals(CommandType.REGISTER_PRODUCT, command.commandType()),
+                () -> assertEquals(List.of("R001", "Keyboard", "149.99"), command.arguments()));
+    }
+
+    @Test
+    void parsedCommandCopiesArgumentsDefensively() {
+        List<String> source = new ArrayList<>(List.of("P001"));
+
+        ParsedCommand command = new ParsedCommand(CommandType.ADD_PRODUCT, source);
+        source.add("P002");
+
+        assertAll(
+                () -> assertEquals(List.of("P001"), command.arguments()),
+                () -> assertThrows(UnsupportedOperationException.class,
+                        () -> command.arguments().add("P003")));
+    }
+
+    @Test
     void parseThrowsOnNullInput() {
         assertThrows(IllegalArgumentException.class, () -> parser.parse(null));
     }
@@ -104,7 +127,7 @@ class ParserTest {
     }
 
     @Test
-    void validateArgumentCountAcceptsExactArgumentCountForEveryCommand() {
+    void requireValidArgumentCountAcceptsExactArgumentCountForEveryCommand() {
         for (CommandType type : CommandType.values()) {
             String[] args = new String[type.getRequiredArgumentCount()];
             Arrays.fill(args, "x");
@@ -115,7 +138,7 @@ class ParserTest {
     }
 
     @Test
-    void validateArgumentCountRejectsTooManyArgumentsForEveryCommand() {
+    void requireValidArgumentCountRejectsTooManyArgumentsForEveryCommand() {
         for (CommandType type : CommandType.values()) {
             String[] args = new String[type.getRequiredArgumentCount() + 1];
             Arrays.fill(args, "x");
@@ -128,7 +151,7 @@ class ParserTest {
     }
 
     @Test
-    void validateArgumentCountRejectsTooFewArgumentsForEveryCommand() {
+    void requireValidArgumentCountRejectsTooFewArgumentsForEveryCommand() {
         for (CommandType type : CommandType.values()) {
             if (type.getRequiredArgumentCount() == 0) {
                 continue;
@@ -291,6 +314,23 @@ class ParserTest {
         assertTrue(exception.getMessage().contains(CommandType.REGISTER_PRODUCT.getSyntax()));
         assertInstanceOf(NumberFormatException.class, exception.getCause(),
                 "Original NumberFormatException should be chained as the cause");
+    }
+
+    @Test
+    void toCommandRejectsPricesRejectedByProductValidation() {
+        ParsedCommand negative = new ParsedCommand(CommandType.REGISTER_PRODUCT,
+                List.of("R001", "Keyboard", "-5.0"));
+        ParsedCommand notANumber = new ParsedCommand(CommandType.REGISTER_PRODUCT,
+                List.of("R001", "Keyboard", "NaN"));
+
+        IllegalArgumentException negativeError = assertThrows(IllegalArgumentException.class,
+                () -> parser.toCommand(negative));
+        IllegalArgumentException notANumberError = assertThrows(IllegalArgumentException.class,
+                () -> parser.toCommand(notANumber));
+
+        assertAll(
+                () -> assertTrue(negativeError.getMessage().contains("Price cannot be negative or infinite")),
+                () -> assertTrue(notANumberError.getMessage().contains("Price cannot be negative or infinite")));
     }
 
     @Test

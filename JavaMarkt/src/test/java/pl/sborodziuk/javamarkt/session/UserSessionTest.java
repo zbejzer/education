@@ -6,6 +6,7 @@ import pl.sborodziuk.javamarkt.command.AddProductCommand;
 import pl.sborodziuk.javamarkt.command.Command;
 import pl.sborodziuk.javamarkt.command.CommandVisitor;
 import pl.sborodziuk.javamarkt.command.RegisterProductCommand;
+import pl.sborodziuk.javamarkt.command.RemoveProductCommand;
 import pl.sborodziuk.javamarkt.command.UnregisterProductCommand;
 import pl.sborodziuk.javamarkt.model.Product;
 import pl.sborodziuk.javamarkt.model.ProductCatalog;
@@ -194,6 +195,68 @@ class UserSessionTest {
                 () -> assertEquals(149.99, restored.getPrice()),
                 () -> assertEquals(1, session.getHistory().size()),
                 () -> assertSame(register, session.getHistory().get(0)));
+    }
+
+    @Test
+    void undoLastCommandReversesAddProduct() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.getProductCatalog().addProduct(new Product("USC1", "Monitor", 100.0));
+        Command command = new AddProductCommand("USC1");
+        session.executeCommand(command);
+
+        Command undone = session.undoLastCommand();
+
+        assertAll(
+                () -> assertSame(command, undone),
+                () -> assertEquals(0, session.getCart().getSize()),
+                () -> assertTrue(session.getHistory().isEmpty()));
+    }
+
+    @Test
+    void undoLastCommandRestoresRemovedProduct() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.getProductCatalog().addProduct(new Product("USC2", "Keyboard", 149.99));
+        session.executeCommand(new AddProductCommand("USC2"));
+        Command remove = new RemoveProductCommand("USC2");
+        session.executeCommand(remove);
+
+        Command undone = session.undoLastCommand();
+
+        assertAll(
+                () -> assertSame(remove, undone),
+                () -> assertEquals(1, session.getCart().getSize()),
+                () -> assertEquals("USC2", session.getCart().getAllItems()[0].getProduct().getCode()),
+                () -> assertEquals(1, session.getHistory().size()));
+    }
+
+    @Test
+    void undoLastCommandUnwindsMultipleCommandsInLifoOrder() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.getProductCatalog().addProduct(new Product("USC3", "Monitor", 100.0));
+        session.getProductCatalog().addProduct(new Product("USC4", "Keyboard", 149.99));
+        Command first = new AddProductCommand("USC3");
+        Command second = new AddProductCommand("USC4");
+        Command third = new AddProductCommand("USC3");
+        session.executeCommand(first);
+        session.executeCommand(second);
+        session.executeCommand(third);
+
+        Command undoneThird = session.undoLastCommand();
+        int sizeAfterFirstUndo = session.getCart().getSize();
+        Command undoneSecond = session.undoLastCommand();
+        int sizeAfterSecondUndo = session.getCart().getSize();
+        String remainingCode = session.getCart().getAllItems()[0].getProduct().getCode();
+        Command undoneFirst = session.undoLastCommand();
+
+        assertAll(
+                () -> assertSame(third, undoneThird),
+                () -> assertEquals(2, sizeAfterFirstUndo),
+                () -> assertSame(second, undoneSecond),
+                () -> assertEquals(1, sizeAfterSecondUndo),
+                () -> assertEquals("USC3", remainingCode),
+                () -> assertSame(first, undoneFirst),
+                () -> assertEquals(0, session.getCart().getSize()),
+                () -> assertTrue(session.getHistory().isEmpty()));
     }
 
     @Test

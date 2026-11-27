@@ -25,7 +25,21 @@ class CartTest {
     }
 
     @Test
-    void addProductRecalculatesDiscountPriceForAddedProduct() {
+    void addProductAllowsDuplicateCodesAsSeparateItems() {
+        Cart cart = new Cart();
+        Product product = new Product("P002", "Keyboard", 149.50);
+
+        cart.addProduct(product);
+        cart.addProduct(product);
+
+        assertAll(
+                () -> assertEquals(2, cart.getSize()),
+                () -> assertSame(product, cart.getAllItems()[0].getProduct()),
+                () -> assertSame(product, cart.getAllItems()[1].getProduct()));
+    }
+
+    @Test
+    void addProductResetsDiscountPricesOfExistingItems() {
         Cart cart = new Cart();
         Product product = new Product("P003", "Mouse", 100.0);
         cart.addProduct(product);
@@ -102,6 +116,41 @@ class CartTest {
                 () -> assertEquals(2, cart.getSize()),
                 () -> assertSame(second, cart.getAllItems()[0].getProduct()),
                 () -> assertSame(third, cart.getAllItems()[1].getProduct()));
+    }
+
+    @Test
+    void removeProductRemovesMiddleItemAndKeepsOrder() {
+        Cart cart = new Cart();
+        Product first = new Product("P023", "Monitor", 799.99);
+        Product middle = new Product("P024", "Keyboard", 149.50);
+        Product last = new Product("P025", "Mouse", 100.0);
+        cart.addProduct(first);
+        cart.addProduct(middle);
+        cart.addProduct(last);
+
+        Product removed = cart.removeProduct("P024");
+
+        assertAll(
+                () -> assertSame(middle, removed),
+                () -> assertEquals(2, cart.getSize()),
+                () -> assertSame(first, cart.getAllItems()[0].getProduct()),
+                () -> assertSame(last, cart.getAllItems()[1].getProduct()));
+    }
+
+    @Test
+    void removeProductRemovesLastItemAndKeepsOrder() {
+        Cart cart = new Cart();
+        Product first = new Product("P026", "Monitor", 799.99);
+        Product last = new Product("P027", "Keyboard", 149.50);
+        cart.addProduct(first);
+        cart.addProduct(last);
+
+        Product removed = cart.removeProduct("P027");
+
+        assertAll(
+                () -> assertSame(last, removed),
+                () -> assertEquals(1, cart.getSize()),
+                () -> assertSame(first, cart.getAllItems()[0].getProduct()));
     }
 
     @Test
@@ -183,6 +232,19 @@ class CartTest {
         cart.addProduct(new Product("P032", "Monitor", 799.99));
 
         assertFalse(cart.contains("P033"));
+    }
+
+    @Test
+    void containsReturnsFalseAfterProductRemoved() {
+        Cart cart = new Cart();
+        cart.addProduct(new Product("P035", "Monitor", 799.99));
+
+        boolean presentBeforeRemoval = cart.contains("P035");
+        cart.removeProduct("P035");
+
+        assertAll(
+                () -> assertTrue(presentBeforeRemoval),
+                () -> assertFalse(cart.contains("P035")));
     }
 
     @Test

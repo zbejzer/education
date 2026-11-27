@@ -39,6 +39,25 @@ class AddProductCommandTest {
     }
 
     @Test
+    void executeTwiceCreatesTwoEntriesAndUndoRemovesOne() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.getProductCatalog().addProduct(new Product("P003", "Mouse", 100.0));
+        AddProductCommand command = new AddProductCommand("P003");
+
+        command.execute(session);
+        command.execute(session);
+
+        int sizeAfterTwoAdds = session.getCart().getSize();
+        command.undo(session);
+
+        assertAll(
+                () -> assertEquals(2, sizeAfterTwoAdds),
+                () -> assertEquals(1, session.getCart().getSize()),
+                () -> assertSame(session.getProductCatalog().findByCode("P003"),
+                        session.getCart().getAllItems()[0].getProduct()));
+    }
+
+    @Test
     void executeThrowsForUnregisteredCode() {
         UserSession session = new UserSession(new ProductCatalog());
 

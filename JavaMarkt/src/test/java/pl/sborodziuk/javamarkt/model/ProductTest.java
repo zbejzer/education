@@ -37,7 +37,9 @@ class ProductTest {
                 () -> assertThrows(IllegalArgumentException.class,
                         () -> new Product("P004", "NaN item", Double.NaN)),
                 () -> assertThrows(IllegalArgumentException.class,
-                        () -> new Product("P004", "Infinite item", Double.POSITIVE_INFINITY))
+                        () -> new Product("P004", "Infinite item", Double.POSITIVE_INFINITY)),
+                () -> assertThrows(IllegalArgumentException.class,
+                        () -> new Product("P004", "Infinite item", Double.NEGATIVE_INFINITY))
         );
     }
 

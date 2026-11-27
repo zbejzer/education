@@ -42,6 +42,39 @@ class RemoveProductCommandTest {
     }
 
     @Test
+    void executeThrowsOnEmptyCart() {
+        UserSession session = new UserSession(new ProductCatalog());
+        RemoveProductCommand command = new RemoveProductCommand("PRM-EMPTY");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class, () -> command.execute(session));
+
+        assertAll(
+                () -> assertTrue(exception.getMessage().contains("PRM-EMPTY")),
+                () -> assertEquals(0, session.getCart().getSize()));
+    }
+
+    @Test
+    void executeRemovesOnlyTargetAndKeepsOtherItemsInOrder() {
+        UserSession session = new UserSession(new ProductCatalog());
+        ProductCatalog catalog = session.getProductCatalog();
+        catalog.addProduct(new Product("PRM6", "First", 1.0));
+        catalog.addProduct(new Product("PRM7", "Second", 2.0));
+        catalog.addProduct(new Product("PRM8", "Third", 3.0));
+        session.executeCommand(new AddProductCommand("PRM6"));
+        session.executeCommand(new AddProductCommand("PRM7"));
+        session.executeCommand(new AddProductCommand("PRM8"));
+        RemoveProductCommand command = new RemoveProductCommand("PRM7");
+
+        command.execute(session);
+
+        assertAll(
+                () -> assertEquals(2, session.getCart().getSize()),
+                () -> assertEquals("PRM6", session.getCart().getAllItems()[0].getProduct().getCode()),
+                () -> assertEquals("PRM8", session.getCart().getAllItems()[1].getProduct().getCode()));
+    }
+
+    @Test
     void constructionRejectsBlankCode() {
         assertAll(
                 () -> assertThrows(IllegalArgumentException.class,
@@ -83,7 +116,7 @@ class RemoveProductCommandTest {
     }
 
     @Test
-    void executeReturnsFirstMatchAndUndoReattachesAtTheEnd() {
+    void executeRemovesFirstMatchAndUndoReattachesAtTheEnd() {
         UserSession session = new UserSession(new ProductCatalog());
         Cart cart = session.getCart();
         cart.addProduct(new Product("PRM4", "First", 1.0));

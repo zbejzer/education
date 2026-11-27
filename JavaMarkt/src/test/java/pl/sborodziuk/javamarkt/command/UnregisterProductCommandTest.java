@@ -61,6 +61,26 @@ class UnregisterProductCommandTest {
     }
 
     @Test
+    void executeAndUndoLeaveOtherCatalogProductsIntact() {
+        UserSession session = new UserSession(new ProductCatalog());
+        ProductCatalog catalog = session.getProductCatalog();
+        catalog.addProduct(new Product("PRU6", "Removable", 5.0));
+        catalog.addProduct(new Product("PRU7", "Kept", 7.0));
+        UnregisterProductCommand command = new UnregisterProductCommand("PRU6");
+
+        command.execute(session);
+        boolean removedOnlyTarget = catalog.findByCode("PRU6") == null
+                && catalog.findByCode("PRU7") != null;
+        command.undo(session);
+
+        assertAll(
+                () -> assertTrue(removedOnlyTarget),
+                () -> assertEquals("Removable", catalog.findByCode("PRU6").getName()),
+                () -> assertEquals("Kept", catalog.findByCode("PRU7").getName()),
+                () -> assertEquals(2, catalog.getSize()));
+    }
+
+    @Test
     void undoThrowsWhenCodeWasReRegisteredWithDifferentProduct() {
         UserSession session = new UserSession(new ProductCatalog());
         ProductCatalog catalog = session.getProductCatalog();

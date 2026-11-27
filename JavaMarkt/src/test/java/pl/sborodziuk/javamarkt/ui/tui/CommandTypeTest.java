@@ -1,5 +1,8 @@
 package pl.sborodziuk.javamarkt.ui.tui;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,12 +10,28 @@ import static org.junit.jupiter.api.Assertions.*;
 class CommandTypeTest {
 
     @Test
+    void everyCommandTypeHasDistinctKeywordAndResolvesFromIt() {
+        Set<String> keywords = new HashSet<>();
+
+        for (CommandType type : CommandType.values()) {
+            String keyword = type.getKeyword();
+            assertAll(
+                    () -> assertTrue(keywords.add(keyword), "Duplicate keyword: " + keyword),
+                    () -> assertSame(type, CommandType.fromKeyword(keyword)),
+                    () -> assertSame(type, CommandType.fromKeyword(keyword.toUpperCase())));
+        }
+
+        assertEquals(CommandType.values().length, keywords.size());
+    }
+
+    @Test
     void getKeywordReturnsLowercaseName() {
         assertAll(
                 () -> assertEquals("help", CommandType.HELP.getKeyword()),
                 () -> assertEquals("exit", CommandType.EXIT.getKeyword()),
                 () -> assertEquals("history", CommandType.HISTORY.getKeyword()),
-                () -> assertEquals("undo", CommandType.UNDO.getKeyword()));
+                () -> assertEquals("undo", CommandType.UNDO.getKeyword()),
+                () -> assertEquals("clear_history", CommandType.CLEAR_HISTORY.getKeyword()));
     }
 
     @Test
@@ -21,7 +40,8 @@ class CommandTypeTest {
                 () -> assertEquals("help", CommandType.HELP.getSyntax()),
                 () -> assertEquals("exit", CommandType.EXIT.getSyntax()),
                 () -> assertEquals("history", CommandType.HISTORY.getSyntax()),
-                () -> assertEquals("undo", CommandType.UNDO.getSyntax())
+                () -> assertEquals("undo", CommandType.UNDO.getSyntax()),
+                () -> assertEquals("clear_history", CommandType.CLEAR_HISTORY.getSyntax())
         );
     }
 
