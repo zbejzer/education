@@ -96,6 +96,57 @@ keeps the command history in a stack-like structure supporting undo.
 
 ## Testing
 
-Each layer has focused unit tests (`src/test/java/...`) mirroring the package
-structure: model entities, command execution/undo, session history, and the TUI
-parser/command-describing behavior.
+Tests are executable specifications of behavior, not a coverage exercise. JaCoCo's
+0-missed-branch gate is a floor: it proves the branches that exist are exercised, not
+that the scenarios the domain cares about exist. Every test change is checked against
+two gates:
+
+1. **Coverage gate** — `.kilo/jacoco_parser.py` reports 0 missed branches.
+2. **Semantic gate** — every behavior has a test whose name and assertions state the
+   scenario and expected outcome, and the test group has no obvious missing scenario.
+
+### Test design contract
+
+- One test = one observable behavior. The name states condition and expected outcome
+  (`recalculateOnEmptyCartDoesNotThrow`), not the method or implementation detail.
+- Assert observable state (return values, cart/catalog contents, output), not private
+  structure or interaction counts.
+- Test only behavior that exists. If a scenario belongs to an unimplemented feature,
+  record the gap and implement the feature with its tests; never add a failing or
+  aspirational test to the suite.
+- Arrange state explicitly in every test; tests must not depend on execution order.
+- Cover the semantic matrix, not just branches: success, boundary, failure, and
+  state transition (empty/non-empty, before/after, first/middle/last,
+  duplicate/unique, execute/undo).
+- Follow the existing JUnit 5 style (`@Test`, `assertAll` for related checks,
+  `assertSame` where identity is contractual). Do not introduce parameterized tests
+  or new libraries the project does not already use.
+
+### Adding or reviewing a test group
+
+1. **Baseline** — run the suite and the JaCoCo parser; record counts and failures.
+2. **Name audit** — verify each name describes its assertion. Rename overclaiming or
+   method-oriented names and add the missing assertion when a name promises more than
+   the body checks.
+3. **Semantic gap analysis** — read each test class as a specification. From the
+   names and grouped setup alone, list scenarios the group implies but never
+   exercises.
+4. **Existence check** — locate the production path for each candidate scenario. If
+   it is absent, report it as an unimplemented feature or known gap instead of writing
+   a test.
+5. **Write tests** — add only verified, high-value scenarios; prefer one new test per
+   behavior over extending an unrelated test.
+6. **Verify** — run the full suite and the JaCoCo parser; 0 missed branches and no
+   regressions.
+7. **Parallel review** — for medium or large test changes, run independent read-only
+   reviewers in parallel (business logic, duplication, dead code) before completion.
+   The fan-out policy lives in `.kilo/AGENTS.md`.
+
+### Test layers
+
+| Layer | Specifies |
+|---|---|
+| `model` | Entity invariants and collection semantics: validation, identity, ordering, duplicates, snapshots, empty/boundary state. |
+| `command` | One operation's execute/undo contract, including failure paths and state restoration. |
+| `session` | History semantics: recording, LIFO undo, failed-undo retention, snapshots, clearing. |
+| `ui.tui` | Parsing and validation, command translation, help/history/undo rendering, REPL survival after rejected input. |
