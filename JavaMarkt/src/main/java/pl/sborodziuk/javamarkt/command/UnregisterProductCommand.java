@@ -29,6 +29,10 @@ public class UnregisterProductCommand implements Command {
         if (removed == null) {
             throw new IllegalArgumentException("Product with code " + code + " does not exist.");
         }
+        if (session.getCart().contains(code)) {
+            throw new IllegalArgumentException(
+                    "Product with code " + code + " is in the cart. Remove it before unregistering.");
+        }
         session.getProductCatalog().removeProduct(code);
         this.removed = removed;
     }

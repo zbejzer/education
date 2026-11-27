@@ -32,7 +32,15 @@ class CommandTypeTest {
 
     @Test
     void getSyntaxPrefixesCustomKeywordWithDeclaredSyntax() {
-        assertEquals("add <code> <name> <price>", CommandType.ADD_PRODUCT.getSyntax());
+        assertEquals("add <code>", CommandType.ADD_PRODUCT.getSyntax());
+    }
+
+    @Test
+    void fromKeywordResolvesClearHistoryCaseInsensitively() {
+        assertAll(
+                () -> assertEquals(CommandType.CLEAR_HISTORY, CommandType.fromKeyword("clear_history")),
+                () -> assertEquals(CommandType.CLEAR_HISTORY, CommandType.fromKeyword("CLEAR_HISTORY")),
+                () -> assertEquals(CommandType.CLEAR_HISTORY, CommandType.fromKeyword("Clear_History")));
     }
 
     @Test
@@ -69,6 +77,7 @@ class CommandTypeTest {
                 () -> assertEquals(CommandType.Target.SHELL, CommandType.EXIT.getTarget()),
                 () -> assertEquals(CommandType.Target.QUERY, CommandType.HISTORY.getTarget()),
                 () -> assertEquals(CommandType.Target.SESSION, CommandType.UNDO.getTarget()),
+                () -> assertEquals(CommandType.Target.SESSION, CommandType.CLEAR_HISTORY.getTarget()),
                 () -> assertEquals(CommandType.Target.COMMAND, CommandType.ADD_PRODUCT.getTarget()),
                 () -> assertEquals(CommandType.Target.COMMAND, CommandType.REGISTER_PRODUCT.getTarget()),
                 () -> assertEquals(CommandType.Target.COMMAND, CommandType.UNREGISTER_PRODUCT.getTarget()),
@@ -120,7 +129,8 @@ class CommandTypeTest {
                 () -> assertEquals(0, CommandType.EXIT.getRequiredArgumentCount()),
                 () -> assertEquals(0, CommandType.HISTORY.getRequiredArgumentCount()),
                 () -> assertEquals(0, CommandType.UNDO.getRequiredArgumentCount()),
-                () -> assertEquals(3, CommandType.ADD_PRODUCT.getRequiredArgumentCount()),
+                () -> assertEquals(0, CommandType.CLEAR_HISTORY.getRequiredArgumentCount()),
+                () -> assertEquals(1, CommandType.ADD_PRODUCT.getRequiredArgumentCount()),
                 () -> assertEquals(3, CommandType.REGISTER_PRODUCT.getRequiredArgumentCount()),
                 () -> assertEquals(1, CommandType.UNREGISTER_PRODUCT.getRequiredArgumentCount()),
                 () -> assertEquals(1, CommandType.REMOVE_PRODUCT.getRequiredArgumentCount()));

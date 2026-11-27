@@ -80,6 +80,11 @@ public class TextUserInterface {
                 undoLastOperation();
                 return;
 
+            case CLEAR_HISTORY:
+                session.clearHistory();
+                System.out.println("History cleared.");
+                return;
+
             default:
                 throw new IllegalStateException("Unhandled command type: " + command.commandType().getKeyword());
         }
@@ -126,8 +131,8 @@ public class TextUserInterface {
             } else {
                 System.out.println("Undone: " + describeRecordedCommand(undone));
             }
-        } catch (UnsupportedOperationException e) {
-            System.out.println("Cannot undo the last operation.");
+        } catch (UnsupportedOperationException | IllegalStateException e) {
+            System.out.println("Cannot undo the last operation: " + e.getMessage());
         }
     }
 

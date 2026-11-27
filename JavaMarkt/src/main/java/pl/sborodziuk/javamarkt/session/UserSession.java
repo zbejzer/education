@@ -47,4 +47,8 @@ public class UserSession {
     public List<Command> getHistory() {
         return List.copyOf(history);
     }
+
+    public void clearHistory() {
+        history.clear();
+    }
 }

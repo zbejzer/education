@@ -42,6 +42,15 @@ public class Cart {
         return null;
     }
 
+    public boolean contains(String code) {
+        for (int i = 0; i < size; i++) {
+            if (items[i].getCode().equals(code)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int getSize() {
         return size;
     }

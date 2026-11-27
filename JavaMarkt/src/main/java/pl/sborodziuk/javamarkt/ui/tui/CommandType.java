@@ -5,7 +5,8 @@ public enum CommandType {
     EXIT(Target.SHELL, "Exit the application"),
     HISTORY(Target.QUERY, "Show submitted operations history"),
     UNDO(Target.SESSION, "Attempt to reverse the last operation"),
-    ADD_PRODUCT(Target.COMMAND, "add", "Add product to cart", "<code> <name> <price>"),
+    CLEAR_HISTORY(Target.SESSION, "Discard all recorded operations (cart and catalog unchanged)"),
+    ADD_PRODUCT(Target.COMMAND, "add", "Add product to cart", "<code>"),
     REGISTER_PRODUCT(Target.COMMAND, "register", "Register product in catalog", "<code> <name> <price>"),
     UNREGISTER_PRODUCT(Target.COMMAND, "unregister", "Remove product from catalog", "<code>"),
     REMOVE_PRODUCT(Target.COMMAND, "remove", "Remove product from cart", "<code>");
@@ -68,7 +69,7 @@ public enum CommandType {
     }
 
     public static CommandType fromKeyword(String keyword) {
-        String normalizedKeyword = keyword.toLowerCase().replace(' ', '_');
+        String normalizedKeyword = keyword.toLowerCase();
 
         for (CommandType cmd : values()) {
             if (cmd.getKeyword().equals(normalizedKeyword)) {

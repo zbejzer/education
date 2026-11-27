@@ -23,11 +23,11 @@ class CommandDescriberTest {
 
     @Test
     void parseDescribesAddProductCommand() {
-        ParsedCommand parsed = describer.parse(new AddProductCommand("P001", "Monitor", 799.99));
+        ParsedCommand parsed = describer.parse(new AddProductCommand("P001"));
 
         assertAll(
                 () -> assertEquals(CommandType.ADD_PRODUCT, parsed.commandType()),
-                () -> assertEquals(List.of("P001", "Monitor", "799.99"), parsed.arguments()));
+                () -> assertEquals(List.of("P001"), parsed.arguments()));
     }
 
     @Test
@@ -83,9 +83,9 @@ class CommandDescriberTest {
 
     @Test
     void describeEntryRendersAddProductEntry() {
-        String entry = describer.describeEntry(describer.parse(new AddProductCommand("P001", "Monitor", 799.99)));
+        String entry = describer.describeEntry(describer.parse(new AddProductCommand("P001")));
 
-        assertEquals("add P001 Monitor 799.99", entry);
+        assertEquals("add P001", entry);
     }
 
     @Test
@@ -112,16 +112,16 @@ class CommandDescriberTest {
     @Test
     void describedAddProductCommandRoundTripsThroughParser() {
         UserSession session = new UserSession(new ProductCatalog());
+        session.getProductCatalog().addProduct(new Product("P001", "Monitor", 799.99));
 
-        Command command = parser.toCommand(describer.parse(new AddProductCommand("P001", "Monitor", 799.99)));
+        Command command = parser.toCommand(describer.parse(new AddProductCommand("P001")));
         command.execute(session);
 
         Product added = session.getCart().getAllItems()[0].getProduct();
         assertAll(
                 () -> assertEquals(1, session.getCart().getSize()),
-                () -> assertEquals("P001", added.getCode()),
-                () -> assertEquals("Monitor", added.getName()),
-                () -> assertEquals(799.99, added.getPrice()));
+                () -> assertSame(session.getProductCatalog().findByCode("P001"), added),
+                () -> assertEquals("P001", added.getCode()));
     }
 
     @Test
@@ -151,7 +151,8 @@ class CommandDescriberTest {
     @Test
     void describedRemoveProductCommandRoundTripsThroughParser() {
         UserSession session = new UserSession(new ProductCatalog());
-        session.executeCommand(new AddProductCommand("R001", "Keyboard", 149.99));
+        session.getProductCatalog().addProduct(new Product("R001", "Keyboard", 149.99));
+        session.executeCommand(new AddProductCommand("R001"));
 
         Command command = parser.toCommand(describer.parse(new RemoveProductCommand("R001")));
         command.execute(session);

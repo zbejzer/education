@@ -68,7 +68,7 @@ history, undo) are handled by the UI itself, while domain requests are converted
   instances can therefore be stored in the catalog, cart, and history safely.
 
 The `ProductCatalog` additionally plays the role of an **in-memory repository**
-(add / update / remove / find-by-code with uniqueness enforcement), and `UserSession`
+(add / remove / find-by-code with uniqueness enforcement), and `UserSession`
 keeps the command history in a stack-like structure supporting undo.
 
 ## Cross-Cutting Decisions
@@ -80,6 +80,16 @@ keeps the command history in a stack-like structure supporting undo.
   them, prints a message, and keeps running.
 - **Single source of state** — all mutable state lives in `UserSession` (catalog, cart,
   history); the UI and commands are stateless apart from command parameters.
+- **Catalog-anchored cart invariant** — the cart may only contain products currently
+  registered in the catalog, and only via the catalog's own instances: `add <code>`
+  resolves the product through the catalog and inserts that instance. Consequently
+  `unregister` is blocked while the code is in the cart (hard delete of a referenced
+  product is impossible; real shops retire products via a soft status flip, which is
+  out of scope here). With LIFO undo ordering and same-instance restores, this holds
+  at all times without undo-time checks.
+- **Total, recoverable undo** — a failed undo keeps its command at the top of the
+  history (preserving LIFO safety); `clear_history` discards recorded operations
+  without touching state, so a stuck history can never trap the user.
 - **Extension points** — the `Sellable` interface abstracts anything purchasable, and
   the cart's price recalculation step is a hook intended for future promotion logic,
   keeping the catalog/cart structure open to new product-like and pricing concepts.

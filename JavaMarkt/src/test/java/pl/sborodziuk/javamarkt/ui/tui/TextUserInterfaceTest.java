@@ -4,6 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import pl.sborodziuk.javamarkt.command.RegisterProductCommand;
+import pl.sborodziuk.javamarkt.command.UnregisterProductCommand;
 import pl.sborodziuk.javamarkt.model.Product;
 import pl.sborodziuk.javamarkt.model.ProductCatalog;
 import pl.sborodziuk.javamarkt.session.UserSession;
@@ -282,9 +284,10 @@ class TextUserInterfaceTest {
 
         @Test
         void startProcessesAddProductCommandAgainstSessionCart() {
-                UserSession session = new UserSession(new ProductCatalog());
+                ProductCatalog catalog = new ProductCatalog();
+                UserSession session = new UserSession(catalog);
                 System.setIn(new ByteArrayInputStream(
-                                "add P001 Monitor 799.99\nexit\n".getBytes(StandardCharsets.UTF_8)));
+                                "register P001 Monitor 799.99\nadd P001\nexit\n".getBytes(StandardCharsets.UTF_8)));
                 TextUserInterface tui = new TextUserInterface(session);
 
                 tui.start();
@@ -293,7 +296,9 @@ class TextUserInterfaceTest {
                 assertAll(
                                 () -> assertEquals(1, session.getCart().getSize(),
                                                 "ADD should add one item to the cart"),
-                                () -> assertEquals("P001", session.getCart().getAllItems()[0].getProduct().getCode()),
+                                () -> assertSame(catalog.findByCode("P001"),
+                                                session.getCart().getAllItems()[0].getProduct(),
+                                                "Cart must hold the catalog's instance"),
                                 () -> assertEquals(799.99, session.getCart().getAllItems()[0].getProduct().getPrice()),
                                 () -> assertTrue(output.contains(EXIT_MESSAGE),
                                                 "Loop should continue to EXIT after ADD"));
@@ -356,9 +361,11 @@ class TextUserInterfaceTest {
 
         @Test
         void startListsSubmittedCommandsInHistoryInSubmissionOrder() {
-                UserSession session = new UserSession(new ProductCatalog());
+                ProductCatalog catalog = new ProductCatalog();
+                UserSession session = new UserSession(catalog);
+                catalog.addProduct(new Product("P001", "Monitor", 799.99));
                 System.setIn(new ByteArrayInputStream(
-                                "register R001 Keyboard 149.99\nadd P001 Monitor 799.99\nhistory\nexit\n"
+                                "register R001 Keyboard 149.99\nadd P001\nhistory\nexit\n"
                                                 .getBytes(StandardCharsets.UTF_8)));
                 TextUserInterface tui = new TextUserInterface(session);
 
@@ -367,10 +374,10 @@ class TextUserInterfaceTest {
                 String output = output();
                 assertAll(
                                 () -> assertTrue(output.contains("1. register R001 Keyboard 149.99")),
-                                () -> assertTrue(output.contains("2. add P001 Monitor 799.99")),
+                                () -> assertTrue(output.contains("2. add P001")),
                                 () -> assertTrue(
                                                 output.indexOf("1. register R001 Keyboard 149.99") < output
-                                                                .indexOf("2. add P001 Monitor 799.99"),
+                                                                .indexOf("2. add P001"),
                                                 "History entries must follow submission order"),
                                 () -> assertTrue(output.contains(EXIT_MESSAGE)),
                                 () -> assertFalse(tui.isRunning(), "Loop should end after EXIT"),
@@ -413,17 +420,19 @@ class TextUserInterfaceTest {
 
         @Test
         void startRendersHistoryCanonicallyRegardlessOfInputSpacing() {
-                UserSession session = new UserSession(new ProductCatalog());
+                ProductCatalog catalog = new ProductCatalog();
+                UserSession session = new UserSession(catalog);
+                catalog.addProduct(new Product("P001", "Monitor", 799.99));
                 System.setIn(new ByteArrayInputStream(
-                                "add  P001   Monitor  799.990\nhistory\nexit\n".getBytes(StandardCharsets.UTF_8)));
+                                "add  P001\nhistory\nexit\n".getBytes(StandardCharsets.UTF_8)));
                 TextUserInterface tui = new TextUserInterface(session);
 
                 tui.start();
 
                 String output = output();
                 assertAll(
-                                () -> assertTrue(output.contains("1. add P001 Monitor 799.99")),
-                                () -> assertFalse(output.contains("799.990")),
+                                () -> assertTrue(output.contains("1. add P001"),
+                                                "History should render the add canonically from 'add  P001' input"),
                                 () -> assertTrue(output.contains(EXIT_MESSAGE)));
         }
 
@@ -451,7 +460,7 @@ class TextUserInterfaceTest {
                 ProductCatalog catalog = new ProductCatalog();
                 UserSession session = new UserSession(catalog);
                 System.setIn(new ByteArrayInputStream(
-                                "register R001 Keyboard 149.99\nadd P001 Monitor 799.99\nunregister R001\nundo\nexit\n"
+                                "register R001 Keyboard 149.99\nregister P001 Monitor 799.99\nadd P001\nunregister R001\nundo\nexit\n"
                                                 .getBytes(StandardCharsets.UTF_8)));
                 TextUserInterface tui = new TextUserInterface(session);
 
@@ -473,7 +482,7 @@ class TextUserInterfaceTest {
         void startUndoesLastRemoveCommandAndRestoresCartItem() {
                 UserSession session = new UserSession(new ProductCatalog());
                 System.setIn(new ByteArrayInputStream(
-                                "add P001 Monitor 799.99\nremove P001\nundo\nexit\n"
+                                "register P001 Monitor 799.99\nadd P001\nremove P001\nundo\nexit\n"
                                                 .getBytes(StandardCharsets.UTF_8)));
                 TextUserInterface tui = new TextUserInterface(session);
 
@@ -500,7 +509,7 @@ class TextUserInterfaceTest {
                 ProductCatalog catalog = new ProductCatalog();
                 UserSession session = new UserSession(catalog);
                 System.setIn(new ByteArrayInputStream(
-                                "register R001 Keyboard 149.99\nadd P001 Monitor 799.99\nundo\nexit\n"
+                                "register R001 Keyboard 149.99\nregister P001 Monitor 799.99\nadd P001\nundo\nexit\n"
                                                 .getBytes(StandardCharsets.UTF_8)));
                 TextUserInterface tui = new TextUserInterface(session);
 
@@ -508,7 +517,7 @@ class TextUserInterfaceTest {
 
                 String output = output();
                 assertAll(
-                                () -> assertTrue(output.contains("Undone: add P001 Monitor 799.99"),
+                                () -> assertTrue(output.contains("Undone: add P001"),
                                                 "UNDO should describe the reversed add canonically"),
                                 () -> assertEquals(0, session.getCart().getSize(),
                                                 "Undoing the add must empty the cart entry"),
@@ -528,6 +537,102 @@ class TextUserInterfaceTest {
                 assertAll(
                                 () -> assertTrue(output.contains("Nothing to undo.")),
                                 () -> assertTrue(output.contains(EXIT_MESSAGE)),
+                                () -> assertFalse(tui.isRunning()));
+        }
+
+        @Test
+        void startReportsErrorWhenUnregisteringProductInCart() {
+                ProductCatalog catalog = new ProductCatalog();
+                UserSession session = new UserSession(catalog);
+                System.setIn(new ByteArrayInputStream(
+                                "register R001 Keyboard 149.99\nadd R001\nunregister R001\nexit\n"
+                                                .getBytes(StandardCharsets.UTF_8)));
+                TextUserInterface tui = new TextUserInterface(session);
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains(
+                                                "Error: Product with code R001 is in the cart"),
+                                                "Unregistering an in-cart product should be reported as an error"),
+                                () -> assertEquals("Keyboard", catalog.findByCode("R001").getName(),
+                                                "Blocked unregister must keep the catalog entry"),
+                                () -> assertEquals(1, session.getCart().getSize(),
+                                                "Blocked unregister must keep the cart"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE),
+                                                "Loop must survive a blocked unregister and process EXIT"),
+                                () -> assertFalse(tui.isRunning()));
+        }
+
+        @Test
+        void startAllowsUnregisterAfterRemoveFromCart() {
+                ProductCatalog catalog = new ProductCatalog();
+                UserSession session = new UserSession(catalog);
+                System.setIn(new ByteArrayInputStream(
+                                "register R001 Keyboard 149.99\nadd R001\nremove R001\nunregister R001\nhistory\nexit\n"
+                                                .getBytes(StandardCharsets.UTF_8)));
+                TextUserInterface tui = new TextUserInterface(session);
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains("1. register R001 Keyboard 149.99")),
+                                () -> assertTrue(output.contains("2. add R001")),
+                                () -> assertTrue(output.contains("3. remove R001")),
+                                () -> assertTrue(output.contains("4. unregister R001")),
+                                () -> assertTrue(catalog.isEmpty(),
+                                                "Unregister after remove must clear the catalog"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE)));
+        }
+
+        @Test
+        void startClearHistoryDiscardsHistoryButKeepsState() {
+                ProductCatalog catalog = new ProductCatalog();
+                UserSession session = new UserSession(catalog);
+                System.setIn(new ByteArrayInputStream(
+                                "register R001 Keyboard 149.99\nadd R001\nclear_history\nhistory\nundo\nexit\n"
+                                                .getBytes(StandardCharsets.UTF_8)));
+                TextUserInterface tui = new TextUserInterface(session);
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains("History cleared.")),
+                                () -> assertTrue(output.contains("History is empty."),
+                                                "History must be empty after clear_history"),
+                                () -> assertTrue(output.contains("Nothing to undo."),
+                                                "Undo must have nothing to reverse after clear_history"),
+                                () -> assertEquals(1, session.getCart().getSize(),
+                                                "clear_history must not touch the cart"),
+                                () -> assertEquals("Keyboard", catalog.findByCode("R001").getName(),
+                                                "clear_history must not touch the catalog"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE)),
+                                () -> assertFalse(tui.isRunning()));
+        }
+
+        @Test
+        void startReportsCannotUndoInsteadOfCrashing() {
+                ProductCatalog catalog = new ProductCatalog();
+                UserSession session = new UserSession(catalog);
+                session.executeCommand(new RegisterProductCommand("R001", "Keyboard", 149.99));
+                session.executeCommand(new UnregisterProductCommand("R001"));
+                session.executeCommand(new RegisterProductCommand("R001", "Other", 20.0));
+                catalog.removeProduct("R001");
+
+                System.setIn(new ByteArrayInputStream("undo\nexit\n".getBytes(StandardCharsets.UTF_8)));
+                TextUserInterface tui = new TextUserInterface(session);
+
+                tui.start();
+
+                String output = output();
+                assertAll(
+                                () -> assertTrue(output.contains("Cannot undo the last operation"),
+                                                "A failed undo must be reported instead of crashing the REPL"),
+                                () -> assertTrue(output.contains(EXIT_MESSAGE),
+                                                "Loop must survive a failed undo and process EXIT"),
                                 () -> assertFalse(tui.isRunning()));
         }
 

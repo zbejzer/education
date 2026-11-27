@@ -165,4 +165,30 @@ class CartTest {
 
         assertEquals(799.99, cart.getAllItems()[0].getDiscountPrice());
     }
+
+    @Test
+    void containsReturnsTrueForPresentCode() {
+        Cart cart = new Cart();
+        cart.addProduct(new Product("P030", "Monitor", 799.99));
+        cart.addProduct(new Product("P031", "Keyboard", 149.50));
+
+        assertAll(
+                () -> assertTrue(cart.contains("P030")),
+                () -> assertTrue(cart.contains("P031")));
+    }
+
+    @Test
+    void containsReturnsFalseForAbsentCode() {
+        Cart cart = new Cart();
+        cart.addProduct(new Product("P032", "Monitor", 799.99));
+
+        assertFalse(cart.contains("P033"));
+    }
+
+    @Test
+    void containsReturnsFalseOnEmptyCart() {
+        Cart cart = new Cart();
+
+        assertFalse(cart.contains("P034"));
+    }
 }

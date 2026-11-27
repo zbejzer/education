@@ -46,18 +46,18 @@ class ParserTest {
 
     @Test
     void parseExtractsArgumentsAfterFirstWhitespace() {
-        ParsedCommand command = parser.parse("add   P001 Monitor 799.99");
+        ParsedCommand command = parser.parse("add   P001");
 
         assertAll(
                 () -> assertEquals(CommandType.ADD_PRODUCT, command.commandType()),
-                () -> assertEquals(List.of("P001", "Monitor", "799.99"), command.arguments()));
+                () -> assertEquals(List.of("P001"), command.arguments()));
     }
 
     @Test
     void parseTokenizesArgumentsOnWhitespace() {
-        ParsedCommand command = parser.parse("add P001  Monitor   799.99");
+        ParsedCommand command = parser.parse("add P001  ");
 
-        assertEquals(List.of("P001", "Monitor", "799.99"), command.arguments());
+        assertEquals(List.of("P001"), command.arguments());
     }
 
     @Test
@@ -143,11 +143,11 @@ class ParserTest {
 
     @Test
     void parseResolvesAddProductKeywordWithArguments() {
-        ParsedCommand command = parser.parse("add P001 Monitor 799.99");
+        ParsedCommand command = parser.parse("add P001");
 
         assertAll(
                 () -> assertEquals(CommandType.ADD_PRODUCT, command.commandType()),
-                () -> assertEquals(List.of("P001", "Monitor", "799.99"), command.arguments()));
+                () -> assertEquals(List.of("P001"), command.arguments()));
     }
 
     @Test
@@ -196,31 +196,28 @@ class ParserTest {
     }
 
     @Test
+    void parseResolvesClearHistoryKeyword() {
+        ParsedCommand command = parser.parse("clear_history");
+
+        assertAll(
+                () -> assertEquals(CommandType.CLEAR_HISTORY, command.commandType()),
+                () -> assertEquals(List.of(), command.arguments()));
+    }
+
+    @Test
     void toCommandBuildsAddProductCommand() {
         UserSession session = new UserSession(new ProductCatalog());
+        session.getProductCatalog().addProduct(new Product("P001", "Monitor", 799.99));
 
-        Command command = parser.toCommand(parser.parse("add P001 Monitor 799.99"));
+        Command command = parser.toCommand(parser.parse("add P001"));
         command.execute(session);
 
         Product added = session.getCart().getAllItems()[0].getProduct();
         assertAll(
                 () -> assertTrue(command instanceof AddProductCommand,
                         "toCommand should build an AddProductCommand"),
-                () -> assertEquals("P001", added.getCode()),
-                () -> assertEquals("Monitor", added.getName()),
-                () -> assertEquals(799.99, added.getPrice()));
-    }
-
-    @Test
-    void toCommandThrowsOnNonNumericPrice() {
-        ParsedCommand command = new ParsedCommand(CommandType.ADD_PRODUCT, List.of("P001", "Monitor", "abc"));
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> parser.toCommand(command));
-        assertTrue(exception.getMessage().contains(CommandType.ADD_PRODUCT.getSyntax()));
-        assertInstanceOf(NumberFormatException.class, exception.getCause(),
-                "Original NumberFormatException should be chained as the cause");
+                () -> assertSame(session.getProductCatalog().findByCode("P001"), added),
+                () -> assertEquals("P001", added.getCode()));
     }
 
     @Test
@@ -255,7 +252,8 @@ class ParserTest {
     @Test
     void toCommandBuildsRemoveProductCommand() {
         UserSession session = new UserSession(new ProductCatalog());
-        session.executeCommand(new AddProductCommand("PRM7", "Removable", 5.0));
+        session.getProductCatalog().addProduct(new Product("PRM7", "Removable", 5.0));
+        session.executeCommand(new AddProductCommand("PRM7"));
 
         Command command = parser.toCommand(parser.parse("remove PRM7"));
         command.execute(session);

@@ -21,16 +21,6 @@ public class ProductCatalog implements Iterable<Product> {
         }
     }
 
-    public void updateProduct(Product product) {
-        if (product == null) {
-            throw new IllegalArgumentException("Product cannot be null.");
-        }
-        if (products.replace(product.getCode(), product) == null) {
-            throw new IllegalArgumentException(
-                    "Product with code " + product.getCode() + " does not exist.");
-        }
-    }
-
     public boolean removeProduct(String code) {
         if (code == null || code.isBlank()) {
             throw new IllegalArgumentException("Product code cannot be blank.");

@@ -73,4 +73,38 @@ class UnregisterProductCommandTest {
 
         assertEquals("Other", catalog.findByCode("PRU3").getName());
     }
+
+    @Test
+    void executeThrowsWhenProductIsInCart() {
+        UserSession session = new UserSession(new ProductCatalog());
+        ProductCatalog catalog = session.getProductCatalog();
+        catalog.addProduct(new Product("PRU4", "Keyboard", 149.99));
+        session.executeCommand(new AddProductCommand("PRU4"));
+        UnregisterProductCommand command = new UnregisterProductCommand("PRU4");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class, () -> command.execute(session));
+
+        assertAll(
+                () -> assertTrue(exception.getMessage().contains("PRU4")),
+                () -> assertTrue(exception.getMessage().contains("in the cart")),
+                () -> assertEquals("Keyboard", catalog.findByCode("PRU4").getName(),
+                        "Blocked unregister must keep the catalog entry"),
+                () -> assertEquals(1, session.getCart().getSize(),
+                        "Blocked unregister must keep the cart"));
+    }
+
+    @Test
+    void executeSucceedsAfterRemovedFromCart() {
+        UserSession session = new UserSession(new ProductCatalog());
+        ProductCatalog catalog = session.getProductCatalog();
+        catalog.addProduct(new Product("PRU5", "Keyboard", 149.99));
+        session.executeCommand(new AddProductCommand("PRU5"));
+        session.executeCommand(new RemoveProductCommand("PRU5"));
+
+        UnregisterProductCommand command = new UnregisterProductCommand("PRU5");
+        command.execute(session);
+
+        assertNull(catalog.findByCode("PRU5"));
+    }
 }

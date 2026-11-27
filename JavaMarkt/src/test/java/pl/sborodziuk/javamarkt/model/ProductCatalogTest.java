@@ -45,36 +45,6 @@ class ProductCatalogTest {
     }
 
     @Test
-    void updateProductReplacesExistingProduct() {
-        ProductCatalog catalog = new ProductCatalog();
-        catalog.addProduct(new Product("PCU1", "Original", 10.0));
-
-        catalog.updateProduct(new Product("PCU1", "Updated", 25.0));
-
-        Product updated = catalog.findByCode("PCU1");
-        assertAll(
-                () -> assertEquals("Updated", updated.getName()),
-                () -> assertEquals(25.0, updated.getPrice()),
-                () -> assertEquals(1, catalog.getSize()));
-    }
-
-    @Test
-    void updateProductRejectsUnknownCode() {
-        ProductCatalog catalog = new ProductCatalog();
-
-        assertThrows(IllegalArgumentException.class,
-                () -> catalog.updateProduct(new Product("PCU999", "Ghost", 1.0)));
-        assertNull(catalog.findByCode("PCU999"));
-    }
-
-    @Test
-    void updateProductRejectsNullProduct() {
-        ProductCatalog catalog = new ProductCatalog();
-
-        assertThrows(IllegalArgumentException.class, () -> catalog.updateProduct(null));
-    }
-
-    @Test
     void removeProductRemovesProductByCode() {
         ProductCatalog catalog = new ProductCatalog();
         catalog.addProduct(new Product("PCR1", "Removable", 5.0));

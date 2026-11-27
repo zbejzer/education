@@ -34,6 +34,9 @@ public class RemoveProductCommand implements Command {
 
     @Override
     public void undo(UserSession session) {
+        if (removed == null) {
+            throw new IllegalStateException("Command has not been executed.");
+        }
         session.getCart().addProduct(removed);
     }
 }

@@ -17,9 +17,7 @@ public class CommandDescriber implements CommandVisitor<ParsedCommand> {
     @Override
     public ParsedCommand visitAddProduct(AddProductCommand command) {
         return new ParsedCommand(CommandType.ADD_PRODUCT,
-                List.of(command.getProduct().getCode(),
-                        command.getProduct().getName(),
-                        String.valueOf(command.getProduct().getPrice())));
+                List.of(command.getCode()));
     }
 
     @Override

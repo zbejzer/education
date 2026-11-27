@@ -16,7 +16,7 @@ public class Parser {
 
         String[] parts = rawInput.trim().split("\\s+", 2);
 
-        String normalizedKeyword = parts[0].toLowerCase().replace(' ', '_');
+        String normalizedKeyword = parts[0].toLowerCase();
         String rest = parts.length > 1 ? parts[1] : "";
         List<String> arguments = rest.isBlank() ? List.of() : List.of(rest.trim().split("\\s+"));
 
@@ -45,8 +45,7 @@ public class Parser {
     }
 
     private Command buildAddProduct(ParsedCommand command) {
-        List<String> arguments = command.arguments();
-        return new AddProductCommand(arguments.get(0), arguments.get(1), Double.parseDouble(arguments.get(2)));
+        return new AddProductCommand(command.arguments().get(0));
     }
 
     private Command buildRegisterProduct(ParsedCommand command) {

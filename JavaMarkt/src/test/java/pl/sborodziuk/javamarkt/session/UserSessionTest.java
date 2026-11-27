@@ -65,8 +65,9 @@ class UserSessionTest {
     @Test
     void executeCommandAppliesCommandEffectToCart() {
         UserSession session = new UserSession(new ProductCatalog());
+        session.getProductCatalog().addProduct(new Product("P001", "Monitor", 799.99));
 
-        session.executeCommand(new AddProductCommand("P001", "Monitor", 799.99));
+        session.executeCommand(new AddProductCommand("P001"));
 
         assertAll(
                 () -> assertEquals(1, session.getCart().getSize()),
@@ -91,7 +92,8 @@ class UserSessionTest {
                         "Unhandled command type: " + getClass().getSimpleName());
             }
         };
-        AddProductCommand second = new AddProductCommand("PSU1", "Monitor", 799.99);
+        session.getProductCatalog().addProduct(new Product("PSU1", "Monitor", 799.99));
+        AddProductCommand second = new AddProductCommand("PSU1");
 
         session.executeCommand(first);
         session.executeCommand(second);
@@ -131,7 +133,8 @@ class UserSessionTest {
     @Test
     void getHistorySnapshotIsImmutable() {
         UserSession session = new UserSession(new ProductCatalog());
-        session.executeCommand(new AddProductCommand("PSU2", "Monitor", 799.99));
+        session.getProductCatalog().addProduct(new Product("PSU2", "Monitor", 799.99));
+        session.executeCommand(new AddProductCommand("PSU2"));
 
         List<Command> snapshot = session.getHistory();
 
@@ -141,10 +144,12 @@ class UserSessionTest {
     @Test
     void getHistorySnapshotIsIsolatedFromLaterExecutions() {
         UserSession session = new UserSession(new ProductCatalog());
-        session.executeCommand(new AddProductCommand("PSU3", "Monitor", 799.99));
+        session.getProductCatalog().addProduct(new Product("PSU3", "Monitor", 799.99));
+        session.getProductCatalog().addProduct(new Product("PSU4", "Keyboard", 149.99));
+        session.executeCommand(new AddProductCommand("PSU3"));
 
         List<Command> snapshot = session.getHistory();
-        session.executeCommand(new AddProductCommand("PSU4", "Keyboard", 149.99));
+        session.executeCommand(new AddProductCommand("PSU4"));
 
         assertAll(
                 () -> assertEquals(1, snapshot.size()),
@@ -218,5 +223,41 @@ class UserSessionTest {
         assertAll(
                 () -> assertEquals(1, history.size()),
                 () -> assertSame(blocked, history.get(0)));
+    }
+
+    @Test
+    void clearHistoryEmptiesHistory() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.getProductCatalog().addProduct(new Product("PSU5", "Monitor", 799.99));
+        session.executeCommand(new AddProductCommand("PSU5"));
+
+        session.clearHistory();
+
+        assertTrue(session.getHistory().isEmpty());
+    }
+
+    @Test
+    void undoLastCommandReturnsNullAfterClear() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.getProductCatalog().addProduct(new Product("PSU6", "Monitor", 799.99));
+        session.executeCommand(new AddProductCommand("PSU6"));
+
+        session.clearHistory();
+
+        assertNull(session.undoLastCommand());
+    }
+
+    @Test
+    void clearHistoryKeepsCartAndCatalogIntact() {
+        UserSession session = new UserSession(new ProductCatalog());
+        session.getProductCatalog().addProduct(new Product("PSU7", "Monitor", 799.99));
+        session.executeCommand(new AddProductCommand("PSU7"));
+
+        session.clearHistory();
+
+        assertAll(
+                () -> assertEquals(1, session.getCart().getSize()),
+                () -> assertEquals("PSU7", session.getCart().getAllItems()[0].getProduct().getCode()),
+                () -> assertEquals("Monitor", session.getProductCatalog().findByCode("PSU7").getName()));
     }
 }

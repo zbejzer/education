@@ -14,7 +14,8 @@ class RemoveProductCommandTest {
     @Test
     void executeRemovesProductFromCart() {
         UserSession session = new UserSession(new ProductCatalog());
-        session.executeCommand(new AddProductCommand("PRM1", "Removable", 5.0));
+        session.getProductCatalog().addProduct(new Product("PRM1", "Removable", 5.0));
+        session.executeCommand(new AddProductCommand("PRM1"));
         RemoveProductCommand command = new RemoveProductCommand("PRM1");
 
         command.execute(session);
@@ -27,7 +28,8 @@ class RemoveProductCommandTest {
     @Test
     void executeThrowsForUnknownCode() {
         UserSession session = new UserSession(new ProductCatalog());
-        session.executeCommand(new AddProductCommand("PRM2", "Kept", 5.0));
+        session.getProductCatalog().addProduct(new Product("PRM2", "Kept", 5.0));
+        session.executeCommand(new AddProductCommand("PRM2"));
         RemoveProductCommand command = new RemoveProductCommand("PRM-UNKNOWN");
 
         IllegalArgumentException exception = assertThrows(
@@ -53,7 +55,8 @@ class RemoveProductCommandTest {
     @Test
     void undoRestoresRemovedProduct() {
         UserSession session = new UserSession(new ProductCatalog());
-        session.executeCommand(new AddProductCommand("PRM3", "Removable", 5.0));
+        session.getProductCatalog().addProduct(new Product("PRM3", "Removable", 5.0));
+        session.executeCommand(new AddProductCommand("PRM3"));
         RemoveProductCommand command = new RemoveProductCommand("PRM3");
         command.execute(session);
 
@@ -62,9 +65,21 @@ class RemoveProductCommandTest {
         assertEquals(1, session.getCart().getSize());
         Product restored = session.getCart().getAllItems()[0].getProduct();
         assertAll(
+                () -> assertSame(session.getProductCatalog().findByCode("PRM3"), restored),
                 () -> assertEquals("PRM3", restored.getCode()),
                 () -> assertEquals("Removable", restored.getName()),
                 () -> assertEquals(5.0, restored.getPrice()));
+    }
+
+    @Test
+    void undoBeforeExecuteThrowsIllegalState() {
+        UserSession session = new UserSession(new ProductCatalog());
+        RemoveProductCommand command = new RemoveProductCommand("PRM5");
+
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class, () -> command.undo(session));
+
+        assertTrue(exception.getMessage().contains("has not been executed"));
     }
 
     @Test
